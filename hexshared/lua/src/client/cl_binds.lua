@@ -30,7 +30,7 @@ local lp = LocalPlayer()
 hook.Add( "PlayerButtonDown", "HexSh::CheckBind", function( ply, button )
     if (!lp:IsPlayer()) then return end
 
-    if delay < CurTime() then 
+   --[[ if delay < CurTime() then 
         for k,v in pairs( HexSh.keyBinds ) do 
             if (v.Key == button) then 
                 if (!v.AccessCallback()) then return end
@@ -38,5 +38,5 @@ hook.Add( "PlayerButtonDown", "HexSh::CheckBind", function( ply, button )
             end
         end
         delay = CurTime() + 0.2
-    end
+    end]]
 end)
