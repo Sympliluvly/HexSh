@@ -4,9 +4,9 @@ if (!HexSh) then return end
 HexSh.SQL = HexSh.SQL or {}
 
 function HexSh.SQL.GetConnection()
-	return HexSh.Config.MySQL
+	return HexSh.Config["SERVER"].MySQL
 end
-
+ 
 local ccfg = {
 	mysql = HexSh.SQL.GetConnection().use or false,
 	host = HexSh.SQL.GetConnection().IP or "",
@@ -158,7 +158,7 @@ function HexSh.SQL:QueryValue( query )
 end
 
 function HexSh.SQL:UsingMySQL()
-	return HexSh.Config.MySQL.use
+	return HexSh.Config["SERVER"].MySQL.use
 end
 
 function HexSh.SQL:Escape(str)

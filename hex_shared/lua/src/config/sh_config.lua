@@ -1,0 +1,2 @@
+//
+HexSh.Config.Language = "ENG"

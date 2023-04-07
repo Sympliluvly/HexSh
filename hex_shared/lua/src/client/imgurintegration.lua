@@ -26,4 +26,22 @@ function HexSh:getImgurImage( ImgurID )
         end)
     end
     return HexSh.CachedImgurImage[ "zizhogv" ]
-end;
+end
+
+
+
+
+local blur = Material("pp/blurscreen");
+
+function HexSh:drawBlurRect( x, y, w, h, amount, density )
+    surface.SetDrawColor(255, 255, 255)
+    surface.SetMaterial(blur)
+    for i = 1, density do
+		blur:SetFloat( "$blur", ( i / 3 ) * ( amount or 6 ) )
+        blur:Recompute()
+        render.UpdateScreenEffectTexture()
+        render.SetScissorRect( x, y, x + w, y + h, true )
+        surface.DrawTexturedRect( 0 * -1, 0 * -1, ScrW(), ScrH() )
+        render.SetScissorRect( 0, 0, 0, 0, false )
+    end
+end

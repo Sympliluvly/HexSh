@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../hex_characters"
+		},
+		{
+			"path": "../hex_communications"
+		}
+	],
+	"settings": {}
+}
