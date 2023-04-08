@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../hex_communications"
+		},
+		{
+			"path": "../hex_swbfiiesc"
 		}
 	],
 	"settings": {}

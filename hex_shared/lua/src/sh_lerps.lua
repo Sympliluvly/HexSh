@@ -1,6 +1,6 @@
 --[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
 if (!HexSh) then return end
- 
+
 function HexSh:LerpColor( from, to, time )
 
 	local interpolation_data = {
@@ -8,7 +8,7 @@ function HexSh:LerpColor( from, to, time )
 		from = table.Copy( from ),
 		to = table.Copy( to ),
 		ceil_r = to.r > from.r,
-		ceil_g = to.g > from.g,
+		ceil_g = to.g > from.g, 
 		ceil_b = to.b > from.b,
 		curtime = SysTime()
 	}

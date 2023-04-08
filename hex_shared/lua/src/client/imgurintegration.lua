@@ -45,3 +45,65 @@ function HexSh:drawBlurRect( x, y, w, h, amount, density )
         render.SetScissorRect( 0, 0, 0, 0, false )
     end
 end
+
+function HexSh:DrawCircle(x, y, r, col)
+
+    local circle = {};
+
+    for i = 1, 360 do
+
+        circle[i] = {};
+
+        circle[i].x = x + math.cos(math.rad(i * 360) / 360) * r;
+
+        circle[i].y = y + math.sin(math.rad(i * 360) / 360) * r;
+
+    end;
+
+    surface.SetDrawColor(col);
+
+    draw.NoTexture();
+
+    surface.DrawPoly(circle);
+    
+end;
+
+function HexSh:ClickAnimation( trad, speed, speed2, color )
+
+    local data = {};
+
+    local self = data;
+
+    self.Rad, self.Alpha, self.ClickX, self.ClickY = 0, 0, 0, 0;
+
+    function data:Click( me )
+
+        self.ClickX, self.ClickY = me:CursorPos();
+
+        self.Rad = 0;
+
+        self.Alpha = color["a"];
+
+    end;
+
+    function data:Animate()
+
+        if ( self.Alpha >= 1 ) then
+
+            surface.SetDrawColor( Color( color["r"], color["g"], color["b"], 20 ) );
+
+            draw.NoTexture();
+
+            HexSh:DrawCircle( self.ClickX, self.ClickY, self.Rad, color );
+
+            self.Rad = Lerp( FrameTime() * speed, self.Rad, trad || w );
+
+            self.Alpha = Lerp( FrameTime() * speed2, self.Alpha, 0 );
+
+        end;
+
+    end;
+
+    return data;
+    
+end

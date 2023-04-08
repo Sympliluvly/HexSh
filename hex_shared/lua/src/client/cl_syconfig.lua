@@ -3,7 +3,7 @@ HexSh.UI =  HexSh.UI or {}
 HexSh.UI.Configs = HexSh.UI.Configs or {}
 
 net.Receive("HexSh::LoadConfig", function()
-    HexSh.Config = HexSh:ReadCompressedTable()
+    HexSh.Config.IConfig = HexSh:ReadCompressedTable()
 end)
 
 local toDecimal = function( x ) return ( ( x <= 100 ) && x || 100 ) * 0.01 end;
@@ -24,14 +24,14 @@ net.Receive("HexSh::OpenConfigMenu", function()
         local pnl = vgui.Create( "DPanel", sheet )
         pnl:Dock( FILL )
         pnl.Paint = function( self, w,  h ) 
-            draw.RoundedBox( 4, 0, 0, w, h, v.color ) 
+            draw.RoundedBox( 4, 0, 0, w, h, Color(26,95,197)  ) 
             draw.SimpleText(v.name, "DermaLarge", 12, 16, black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         end 
         sheet:AddSheet( v.name, pnl, nil )
 
-
+        HexSh.UI.Configs["SWBFIIESC"].vguif(pnl)
+    
     end
-
 end)
 
 hook.Add("OnContextMenuClose", "HexSh::OnlyContexConfigOpen", function()
@@ -63,11 +63,11 @@ list.Set( "DesktopWindows", "HexConfig", {
 )
 
 
-function HexSh:registerConfig( name, icon, color, vguif )
+function HexSh:registerConfig( name, color, vguif )
     HexSh.UI.Configs[name] = {}
     HexSh.UI.Configs[name].name = name 
     HexSh.UI.Configs[name].color = color || Color(26,95,197) 
-    HexSh.UI.Configs[name].vgui = vguif
+    HexSh.UI.Configs[name].vguif = vguif
 end
 
 //HexSh:registerConfig( "Communications", nil, nil, function( parent )

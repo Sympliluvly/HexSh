@@ -31,7 +31,7 @@ net.Receive("HexSH::WriteConfig", function(len,ply)
 end)
 
 net.Receive("HexSh::LoadConfig", function(len,ply)
-    local cfgtbl = table.Copy(HexSh.Config)
+    local cfgtbl = table.Copy(HexSh.Config.IConfig)
     cfgtbl["SERVER"] = nil
 
     net.Start("HexSh::LoadConfig")
@@ -47,7 +47,7 @@ end)
 
 hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     if (!ply.hexshinit) then 
-        local cfgtbl = table.Copy(HexSh.Config)
+        local cfgtbl = table.Copy(HexSh.Config.IConfig)
         cfgtbl["SERVER"] = nil
     
         net.Start("HexSh::LoadConfig")

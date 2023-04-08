@@ -7,6 +7,7 @@
 HexSh = HexSh or {}
 HexSh.DL = "github"
 HexSh.Config = HexSh.Config or {}
+HexSh.Config.IConfig = HexSh.Config.IConfig or {}
 HexSh.Lang = HexSh.Lang or {}
 HEXAGON = HEXAGON or HexSh
 
@@ -53,8 +54,10 @@ local function loaddlc()
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
                 HexSh.Lang[v] = {}
                 HexSh.Config[v] = {}
+                HexSh.Config.IConfig[v] = {}
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
+                MsgC( Color(183,95,255), "[HexSH] ~ ", Color(255,255,255), v .. " loaded...\n" )
                 hook.Call("HexSH.SrcLoaded","",v)
             end
         end
@@ -79,4 +82,11 @@ function HexSh:ReadCompressedTable()
     return util.JSONToTable( util.Decompress(data) )
 end
 //\\
+
+function HexSh:getConfig(src)
+	return HexSh.Config[src]
+end
+function HexSh:getIConfig(src)
+	return HexSh.Config.IConfig[src] 
+end
 
