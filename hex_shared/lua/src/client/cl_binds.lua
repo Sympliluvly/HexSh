@@ -22,21 +22,3 @@ function HexSh:CreateBind(index,Title,Description,Key,OnPress,AccessCallback)
 
     HexSh.keyBinds[ index ] = data
 end
-
-
-
-
-local lp = LocalPlayer()
-hook.Add( "PlayerButtonDown", "HexSh::CheckBind", function( ply, button )
-    if (!lp:IsPlayer()) then return end
-
-   --[[ if delay < CurTime() then 
-        for k,v in pairs( HexSh.keyBinds ) do 
-            if (v.Key == button) then 
-                if (!v.AccessCallback()) then return end
-                v.OnPress()
-            end
-        end
-        delay = CurTime() + 0.2
-    end]]
-end)

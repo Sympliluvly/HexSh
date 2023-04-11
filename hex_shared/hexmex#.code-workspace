@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../hex_swbfiiesc"
+		},
+		{
+			"path": "../hex_bindmanager"
 		}
 	],
 	"settings": {}

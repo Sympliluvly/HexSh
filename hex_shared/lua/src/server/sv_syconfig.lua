@@ -8,36 +8,36 @@ net.Receive("HexSH::WriteConfig", function(len,ply)
     if (!ply:GetUserGroup() == "superadmin") then return end
     local readNewData = HexSh:ReadCompressedTable()
 
-    if (!file.Exists("hexsh/config.json")) then
+    if (!file.Exists("hexsh/config.json", "DATA")) then
         file.CreateDir("hexsh")
-
         local cfgtbl = table.Copy(readNewData)
-        cfgtbl["SERVER"] = nil
 
         file.Write("hexsh/config.json", util.TableToJSON(cfgtbl))
     else
         local cfgtbl = table.Copy(readNewData)
-        cfgtbl["SERVER"] = nil
-
         file.Write("hexsh/config.json", util.TableToJSON(cfgtbl))
     end
     
-    local cfgtbl = table.Copy(readNewData)
-    cfgtbl["SERVER"] = nil
-
     net.Start("HexSh::LoadConfig")
-        HexSh:WriteCompressedTable(cfgtbl)
+        HexSh:WriteCompressedTable(readNewData)
     net.Broadcast()
 end)
 
 net.Receive("HexSh::LoadConfig", function(len,ply)
-    local cfgtbl = table.Copy(HexSh.Config.IConfig)
-    cfgtbl["SERVER"] = nil
+    local export = HexSh.Config.IConfig
+       
+    if (!file.Exists("hexsh/config.json", "DATA")) then
+        file.CreateDir("hexsh")
+        export = HexSh.Config.IConfig
+    else
+        export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+        HexSh.Config.IConfig = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+    end
 
     net.Start("HexSh::LoadConfig")
-        HexSh:WriteCompressedTable(cfgtbl)
+        HexSh:WriteCompressedTable(export)
     net.Send(ply)
-end)
+end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
     if (!ply:GetUserGroup() == "superadmin") then return end
@@ -46,12 +46,19 @@ net.Receive("HexSh::OpenConfigMenu", function(len,ply)
 end)
 
 hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
-    if (!ply.hexshinit) then 
-        local cfgtbl = table.Copy(HexSh.Config.IConfig)
-        cfgtbl["SERVER"] = nil
-    
+    if (!ply.hexshinit) then     
+        local export = HexSh.Config.IConfig
+       
+        if (!file.Exists("hexsh/config.json", "DATA")) then
+            file.CreateDir("hexsh")
+            export = HexSh.Config.IConfig
+        else
+            export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+            HexSh.Config.IConfig = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+        end
+        
         net.Start("HexSh::LoadConfig")
-            HexSh:WriteCompressedTable(cfgtbl)
+            HexSh:WriteCompressedTable(export)
         net.Send(ply)
     end
     ply.hexshinit = false 

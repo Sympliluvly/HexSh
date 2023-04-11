@@ -9,12 +9,16 @@ HexSh.DL = "github"
 HexSh.Config = HexSh.Config or {}
 HexSh.Config.IConfig = HexSh.Config.IConfig or {}
 HexSh.Lang = HexSh.Lang or {}
+HexSh.UI =  HexSh.UI or {}
+HexSh.UI.Configs = HexSh.UI.Configs or {}
+HexSh.Srcs = HexSh.Srcs or  {}
+HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
 HEXAGON = HEXAGON or HexSh
 
 local supportedlanguages = {
     ["ENG"] = true,
     ["GER"] = true,
-    ["JAP"] = true,
+    ["JAP"] = true, 
     ["SPA"] = true,
 };
 
@@ -34,6 +38,12 @@ local function loadbase()
         AddCSLuaFile("src/client/"..f)
         if (CLIENT) then include("src/client/"..f) end
     end
+    --[[ CLIENT2 ]]--
+    local files, folder = file.Find( "src/client/design/*", "LUA" )
+    for _, f in pairs( files ) do 
+        AddCSLuaFile("src/client/design/"..f)
+        if (CLIENT) then include("src/client/design/"..f) end
+    end
     --[[ SERVER ]]
     local files, folder = file.Find( "src/server/*", "LUA" )
     for _, f in pairs( files ) do 
@@ -45,7 +55,7 @@ local function loadbase()
         AddCSLuaFile("src/"..f)
         include("src/"..f)
     end
-    hook.Call("HexSH.Loaded","",nil);
+    hook.Run("HexSH.Loaded",nil);
 end
 local function loaddlc()
     local files, folder = file.Find( "hexsh/*", "LUA" )
@@ -55,17 +65,35 @@ local function loaddlc()
                 HexSh.Lang[v] = {}
                 HexSh.Config[v] = {}
                 HexSh.Config.IConfig[v] = {}
+                HexSh.Srcs[v] = true
+                if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
+                    AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
+                    include("hexsh/"..v.."/sh_iconfig.lua")
+                end
+                if (file.Exists("hexsh/"..v.."/sh_config.lua", "LUA")) then 
+                    AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
+                    include("hexsh/"..v.."/sh_config.lua")
+                end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
                 MsgC( Color(183,95,255), "[HexSH] ~ ", Color(255,255,255), v .. " loaded...\n" )
-                hook.Call("HexSH.SrcLoaded","",v)
+                hook.Run("HexSH.SrcLoaded",v)
             end
         end
     end 
 end
 
-loadbase()
-loaddlc()
+--[[ LOGO ]]
+if (CLIENT) then
+    if ( !file.Exists( "hexsh/cache/img/BmestJw.png", "DATA" ) ) then 
+        http.Fetch( "https://i.imgur.com/BmestJw.png", function( Body, Len, Headers )     
+            file.Write( "hexsh/cache/img/BmestJw.png", Body )
+            HexSh.CachedImgurImage[ "BmestJw" ] = Material( "data/hexsh/cache/img/BmestJw.png", "noclamp smooth");
+        end)
+    else
+        HexSh.CachedImgurImage[ "BmestJw" ] = Material( "data/hexsh/cache/img/BmestJw.png", "noclamp smooth" )
+    end
+end
 
 // Compressed NetWorks
 function HexSh:WriteCompressedTable(table)
@@ -74,19 +102,20 @@ function HexSh:WriteCompressedTable(table)
     net.WriteInt(#data, 32)
     net.WriteData(data, #data)
 end
-
-
 function HexSh:ReadCompressedTable()
     local num = net.ReadInt(32)
     local data = net.ReadData(num)
     return util.JSONToTable( util.Decompress(data) )
 end
-//\\
 
 function HexSh:getConfig(src)
 	return HexSh.Config[src]
 end
+
 function HexSh:getIConfig(src)
 	return HexSh.Config.IConfig[src] 
 end
 
+
+loadbase()
+loaddlc()
