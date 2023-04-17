@@ -58,10 +58,41 @@ local function loadbase()
     hook.Run("HexSH.Loaded",nil);
 end
 local function loaddlc()
+    HexSh.Srcs = {}
     local files, folder = file.Find( "hexsh/*", "LUA" )
     for k,v in pairs( folder ) do
+        if (string.Left(v,5)=="psrc_") then 
+            local str = string.Trim(V.."psrc_", "psrc_")
+            local rep = "src_"..str
+            if (HexSh.Srcs[rep]) then 
+                continue 
+                MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), rep .. " does already exist!!\n" )
+            end
+            if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
+                HexSh.Lang[rep] = {}
+                HexSh.Config[rep] = {}
+                HexSh.Config.IConfig[rep] = {}
+                HexSh.Srcs[rep] = true
+                if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
+                    AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
+                    include("hexsh/"..v.."/sh_iconfig.lua")
+                end
+                if (file.Exists("hexsh/"..v.."/sh_config.lua", "LUA")) then 
+                    AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
+                    include("hexsh/"..v.."/sh_config.lua")
+                end
+                AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
+                include("hexsh/"..v.."/sh_init.lua")
+                MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
+                hook.Run("HexSH.SrcLoaded",v)
+            end
+        end
         if ( string.Left(v, 4 ) == "src_" ) then
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
+                if (HexSh.Srcs[v]) then 
+                    continue 
+                    MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), v .. " does already exist!!\n" )
+                end
                 HexSh.Lang[v] = {}
                 HexSh.Config[v] = {}
                 HexSh.Config.IConfig[v] = {}
@@ -76,7 +107,7 @@ local function loaddlc()
                 end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
-                MsgC( Color(183,95,255), "[HexSH] ~ ", Color(255,255,255), v .. " loaded...\n" )
+                MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
                 hook.Run("HexSH.SrcLoaded",v)
             end
         end
