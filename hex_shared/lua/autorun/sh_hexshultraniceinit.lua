@@ -81,6 +81,13 @@ local function loaddlc()
                     AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
                     include("hexsh/"..v.."/sh_config.lua")
                 end
+                if (file.Exists("hexsh/"..v.."/language/eng.lua")) then 
+                    local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
+                    for _, f in pairs( ffiles ) do 
+                        AddCSLuaFile("hexsh/"..v.."/language//"..f)
+                        include("hexsh/"..v.."/language/"..f)
+                    end
+                end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
                 MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
@@ -105,6 +112,13 @@ local function loaddlc()
                     AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
                     include("hexsh/"..v.."/sh_config.lua")
                 end
+                if (file.Exists("hexsh/"..v.."/language/eng.lua")) then 
+                    local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
+                    for _, f in pairs( ffiles ) do 
+                        AddCSLuaFile("hexsh/"..v.."/language//"..f)
+                        include("hexsh/"..v.."/language/"..f)
+                    end
+                end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
                 MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
@@ -114,7 +128,7 @@ local function loaddlc()
     end 
 end
 
---[[ LOGO ]]
+-- LOGO
 if (CLIENT) then
     if ( !file.Exists( "hexsh/cache/img/BmestJw.png", "DATA" ) ) then 
         http.Fetch( "https://i.imgur.com/BmestJw.png", function( Body, Len, Headers )     
@@ -126,7 +140,7 @@ if (CLIENT) then
     end
 end
 
-// Compressed NetWorks
+-- Compressed NetWorks
 function HexSh:WriteCompressedTable(table)
     local data = util.TableToJSON(table)
     data = util.Compress(data)
@@ -139,12 +153,25 @@ function HexSh:ReadCompressedTable()
     return util.JSONToTable( util.Decompress(data) )
 end
 
+-- Get Configs
 function HexSh:getConfig(src)
 	return HexSh.Config[src]
 end
 
 function HexSh:getIConfig(src)
 	return HexSh.Config.IConfig[src] 
+end
+
+--AddLanguage
+function HexSh:addLanguage(src, langcode, phrases)
+    if (!HexSh) then return end 
+    if (!isstring(src)) then return end
+    if (!HexSh.Srcs[src]) then return end  
+    if (!isstring(langcode)) then return end 
+    if (!string.len(langcode) == 3) then return end 
+    if (!istable(phrases)) then return end 
+
+    HexSh.Lang[src][langcode] = phrases
 end
 
 
