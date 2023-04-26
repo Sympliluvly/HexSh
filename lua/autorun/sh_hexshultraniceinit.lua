@@ -65,8 +65,8 @@ local function loaddlc()
             local str = string.Trim(V.."psrc_", "psrc_")
             local rep = "src_"..str
             if (HexSh.Srcs[rep]) then 
-                continue 
                 MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), rep .. " does already exist!!\n" )
+                continue 
             end
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
                 HexSh.Lang[rep] = {}
@@ -97,8 +97,8 @@ local function loaddlc()
         if ( string.Left(v, 4 ) == "src_" ) then
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
                 if (HexSh.Srcs[v]) then 
-                    continue 
                     MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), v .. " does already exist!!\n" )
+                    continue 
                 end
                 HexSh.Lang[v] = {}
                 HexSh.Config[v] = {}
