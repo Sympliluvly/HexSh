@@ -1,2 +1,4 @@
 //
-//HexSh.Lang["src_sh"]["ENG"] = {}
+HexSh.Lang["src_sh"]["ENG"] = {
+    ["Modules"] = "Module",
+}
