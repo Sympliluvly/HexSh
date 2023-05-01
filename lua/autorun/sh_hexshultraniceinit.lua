@@ -72,7 +72,7 @@ local function loaddlc()
                 HexSh.Lang[rep] = {}
                 HexSh.Config[rep] = {}
                 HexSh.Config.IConfig[rep] = {}
-                HexSh.Srcs[rep] = true
+                HexSh.Srcs[rep] = {}
                 if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
                     AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
                     include("hexsh/"..v.."/sh_iconfig.lua")
@@ -81,13 +81,13 @@ local function loaddlc()
                     AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
                     include("hexsh/"..v.."/sh_config.lua")
                 end
-               // if (file.Exists("hexsh/"..v.."/language/eng.lua")) then 
-               //     local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
-                //    for _, f in pairs( ffiles ) do 
-               //         AddCSLuaFile("hexsh/"..v.."/language//"..f)
-                //        include("hexsh/"..v.."/language/"..f)
-               //     end
-               // end
+                if (file.Exists("hexsh/"..v.."/language/eng.lua","LUA")) then 
+                    local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
+                    for _, f in pairs( ffiles ) do 
+                        AddCSLuaFile("hexsh/"..v.."/language//"..f)
+                        include("hexsh/"..v.."/language/"..f)
+                    end
+                end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
                 MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
@@ -103,7 +103,7 @@ local function loaddlc()
                 HexSh.Lang[v] = {}
                 HexSh.Config[v] = {}
                 HexSh.Config.IConfig[v] = {}
-                HexSh.Srcs[v] = true
+                HexSh.Srcs[v] = {}
                 if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
                     AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
                     include("hexsh/"..v.."/sh_iconfig.lua")
@@ -112,13 +112,14 @@ local function loaddlc()
                     AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
                     include("hexsh/"..v.."/sh_config.lua")
                 end
-              //  if (file.Exists("hexsh/"..v.."/language/eng.lua")) then 
-              //      local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
-              //      for _, f in pairs( ffiles ) do 
-              //          AddCSLuaFile("hexsh/"..v.."/language//"..f)
-              //         include("hexsh/"..v.."/language/"..f)
-              //      end
-                //end
+                if (file.Exists("hexsh/"..v.."/language/eng.lua","LUA")) then 
+                    local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
+                    for _, f in pairs( ffiles ) do 
+                        print(f)
+                        AddCSLuaFile("hexsh/"..v.."/language/"..f)
+                        include("hexsh/"..v.."/language/"..f)
+                    end
+                end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
                 MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )

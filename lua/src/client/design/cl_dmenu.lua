@@ -19,6 +19,8 @@ function PANEL:Init()
    --self:GetCanvas():GetChildren() 
 end
 
---function PANEL:Paint(w,h)
-    
---end
+function PANEL:Paint(w,h)
+    draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
+end
+
+vgui.Register("HexSH.UI.Menu", PANEL, "DMenu")
