@@ -14,6 +14,15 @@ HexSh.Srcs = HexSh.Srcs or  {}
 HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
 HEXAGON = HEXAGON or HexSh
 
+HexSh._Languages = {
+    ["GER"] = true,
+    ["ENG"] = true,
+    ["JAP"] = true,
+    ["FRA"] = true,
+    ["SPA"] = true,
+    --["UNI"] = false,
+}
+
 --[[ Load Order ]]--
 local function loadbase()
     --[[ CONFIG ]]
@@ -21,9 +30,21 @@ local function loadbase()
         include("src/config/sv_config.lua")
     end 
 
+    HexSh.Lang["src_sh"] = {}
+    HexSh.Config["src_sh"] = {}
+    HexSh.Config.IConfig["src_sh"] = {}
+    HexSh.Srcs["src_sh"] = {}
+
     AddCSLuaFile("src/config/sh_config.lua")
     include("src/config/sh_config.lua") 
+
+    local files, folder = file.Find( "src/language/*", "LUA" )
+    for _,f in pairs(files) do 
+        AddCSLuaFile("src/language/"..f)
+        include("src/language/"..f)
+    end
     
+
     --[[ CLIENT]]--
     local files, folder = file.Find( "src/client/*", "LUA" )
     for _, f in pairs( files ) do 
@@ -53,9 +74,10 @@ local function loaddlc()
     HexSh.Srcs = {}
     local files, folder = file.Find( "hexsh/*", "LUA" )
     for k,v in ipairs( folder ) do
+        if (v == "src_sh") then continue end
         --[[
             Primary Source Loader!!
-            This loader loads Files like corefiles, that means that are the first files
+            This loader loads Files like corsefiles, that means that are the first files
             that the loader loads.
 
             IMPORTANT!:
@@ -143,7 +165,7 @@ local function loaddlc()
                 end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
-                MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
+                MsgC( Color(183,95,255), "[HexSH] ~ Source -", Color(255,255,255), v .. " loaded...\n" )
                 hook.Run("HexSH.SrcLoaded",v)
             end
         end

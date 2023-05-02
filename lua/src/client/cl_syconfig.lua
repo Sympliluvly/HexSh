@@ -2,6 +2,7 @@
 // Here begins good code!
 net.Receive("HexSh::LoadConfig", function()
     HexSh.Config.IConfig = HexSh:ReadCompressedTable()
+    PrintTable(HexSh.Config.IConfig)
 end)
 hook.Add("InitPostEntity", "HEXMENXLoadcfg", function()
     net.Start("HexSh::LoadConfig")

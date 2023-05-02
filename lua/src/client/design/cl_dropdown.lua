@@ -65,7 +65,7 @@ function PANEL:OpenMenu(pControlOpener)
 		
 
 		option.Paint = function (self, w, h)
-			local col = (self:IsHovered() and purple) or bgLightGray
+			local col = (self:IsHovered() and purple) or bgButton
 			local dropdownParent = self:GetParent()
 			if (dropdownParent.multiple and dropdownParent.selectedItems[v]) then
 				col = purple
@@ -73,8 +73,8 @@ function PANEL:OpenMenu(pControlOpener)
 
 			if (k == #this.Choices) then
 				draw.RoundedBoxEx(12, 0, 0, w, h, col, false, false, true, true)
-            elseif (k == 1) then 
-				draw.RoundedBoxEx(12, 0, 0, w, h, col, true, true, false, false)
+           -- elseif (k == 1) then 
+				--draw.RoundedBoxEx(12, 0, 0, w, h, col, true, true, false, false)
             else
 				surface.SetDrawColor(col)
 				surface.DrawRect(0,0,w,h)
@@ -134,7 +134,7 @@ end
 
 
 function PANEL:Paint(w,h)
-    draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
+    draw.RoundedBox(7.5,0,0,w,h,bgButton)
 end
 
 vgui.Register("HexSh.UI.DropDown", PANEL, "DComboBox")

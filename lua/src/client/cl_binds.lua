@@ -22,3 +22,8 @@ function HexSh:CreateBind(index,Title,Description,Key,OnPress,AccessCallback)
 
     HexSh.keyBinds[ index ] = data
 end
+
+concommand.Add("df", function()
+    net.Start("HexSh::LoadConfig")
+    net.SendToServer()
+end)

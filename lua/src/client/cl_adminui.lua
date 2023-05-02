@@ -17,7 +17,7 @@ function HexSh.adminUI:AddMenu(idx, title, icon, f )
     HexSh.adminUI.Items.S[idx].Btns = {
         [title] = {
             title = title,
-            icon = icon,
+            icon = icon, 
             f = f
         }
     }
@@ -35,13 +35,10 @@ local bgGray = Color(38,35,38) --bg
 local white = Color(255,255,255)
 local purple = Color(188,19,235)
 
-
-hook.Add("HexChars.admin.GetItems","",function()
+--hooks
+hook.Add("HexSh::GetAdminItems", "",function()
     -- For Config
     HexSh.adminUI:AddSubMenu("cfg", HexSh:L("src_sh", "Cfg"), HexSh:getImgurImage("uLS7i9M") )
-    HexSh.adminUI:AddMenu("cfg", "testest", HexSh:getImgurImage("uLS7i9M"), function()
-        
-    end )
 
     -- For Admin
     HexSh.adminUI:AddSubMenu("admin", HexSh:L("src_sh", "Admin"), HexSh:getImgurImage("mqCcBCZ") )
@@ -90,9 +87,59 @@ hook.Add("HexChars.admin.GetItems","",function()
             end
         end
     end)
+
+    HexSh.adminUI:AddNMenu("baseconfig", HexSh:L("src_sh", "BCfg"), HexSh:getImgurImage("G24BSo5"), function(parent)
+        local field = function(title, tooltip)
+            local p = vgui.Create("DPanel",parent)
+            p:Dock(TOP)
+            p:DockMargin(5,2,5,3)
+            p:SetTall( toDecimal(9) * parent:GetTall() )
+            p.Paint = function( self,w,h )
+                draw.RoundedBoxEx(7.5,0,0,w,h,bgGray,true,true,true,true)
+            end
+
+            local t = vgui.Create("DLabel",p)
+            t:SetText(title)
+            t:SetTooltip("")
+            t:SetFont("DermaLarge")
+            t:SetTextColor( white )
+            t:Dock(LEFT)
+            t:DockMargin(5,0,0,0)
+            t:SizeToContents()
+
+            return p 
+        end
+        local write = function()
+            net.Start("HexSH::WriteConfig")
+              HexSh:WriteCompressedTable(HexSh.Config.IConfig)
+            net.SendToServer()
+        end
+        local cfg = HexSh.Config.IConfig["src_sh"]
+
+
+        local ChangeLang = field(HexSh:L("src_sh","changeLang"),"")
+        ChangeLang.Change = vgui.Create("HexSh.UI.DropDown",ChangeLang)
+        ChangeLang.Change:Dock(RIGHT)
+        ChangeLang.Change:DockMargin(0,5,5,5)
+        ChangeLang.Change:SetValue(HexSh.Config.IConfig["src_sh"].Language)
+        ChangeLang.Change:SetFont("DermaLarge")
+        ChangeLang.Change:SetWide( toDecimal(40) * parent:GetWide() )
+        for k,v in pairs(HexSh._Languages) do 
+            ChangeLang.Change:AddChoice(k,k)
+        end
+        ChangeLang.Change.OnSelect = function(self, index, value)
+            print(value)
+            cfg.Language = value 
+            write()
+        end
+
+    end)
 end)
 
---hooks
-hook.Add("InitPostEntity","HexChars.admin::LoadItems", function()
-    hook.Run("HexChars.admin.GetItems")
+
+
+timer.Simple(0.1, function()  
+   hook.Run("HexSh::GetAdminItems")
 end)   
+hook.Run("HexSh::GetAdminItems")
+  

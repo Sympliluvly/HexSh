@@ -31,8 +31,18 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
         export = HexSh.Config.IConfig
     else
         export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
-        HexSh.Config.IConfig = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+
+        --Check if not saved data in neww Sh
+        for k, v in pairs(HexSh.Config.IConfig) do
+            if (export[k] && HexSh.Config.IConfig[k]) then 
+                if (export[k] != HexSh.Config.IConfig[k]) then 
+                    table.Merge(export[k], HexSh.Config.IConfig[k])
+                end
+            end
+        end
     end
+
+    HexSh.Config.IConfig = export
 
     net.Start("HexSh::LoadConfig")
         HexSh:WriteCompressedTable(export)
@@ -54,8 +64,18 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
             export = HexSh.Config.IConfig
         else
             export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
-            HexSh.Config.IConfig = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+    
+            --Check if not saved data in neww Sh
+            for k, v in pairs(HexSh.Config.IConfig) do
+                if (export[k] && HexSh.Config.IConfig[k]) then 
+                    if (export[k] != HexSh.Config.IConfig[k]) then 
+                        table.Merge(export[k], HexSh.Config.IConfig[k])
+                    end
+                end
+            end
         end
+    
+        HexSh.Config.IConfig = export
         
         net.Start("HexSh::LoadConfig")
             HexSh:WriteCompressedTable(export)

@@ -1,5 +1,6 @@
-//
-HexSh.Config.Language = "ENG"
-HexSh.Config.Ranks = {
+-- Rare Config
+local cfg = HexSh.Config.IConfig["src_sh"]
+cfg.Language = "ENG"
+cfg.Ranks = {
     ["superadmin"] = true    
 }
