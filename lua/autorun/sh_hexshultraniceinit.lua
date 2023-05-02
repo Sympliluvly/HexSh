@@ -60,19 +60,35 @@ end
 local function loaddlc()
     HexSh.Srcs = {}
     local files, folder = file.Find( "hexsh/*", "LUA" )
-    for k,v in pairs( folder ) do
+    for k,v in ipairs( folder ) do
+        --[[
+            Primary Source Loader!!
+            This loader loads Files like corefiles, that means that are the first files
+            that the loader loads.
+
+            IMPORTANT!:
+                - The folder calls "psrc_***" but you rech this for example
+                at the language system with "src_***" 
+
+                e.g "prc_HexMex" => HexSh.Config["src_HexMex"]
+                its only a visual distinguisher
+
+        ]]
         if (string.Left(v,5)=="psrc_") then 
-            local str = string.Trim(V.."psrc_", "psrc_")
+            local str = string.Trim(v.."psrc_", "psrc_")
             local rep = "src_"..str
             if (HexSh.Srcs[rep]) then 
-                MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), rep .. " does already exist!!\n" )
+                MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), rep .. " does already exist & blocks the PrimarySRC!!!\n" )
                 continue 
             end
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
+                -- Register Tables
                 HexSh.Lang[rep] = {}
                 HexSh.Config[rep] = {}
                 HexSh.Config.IConfig[rep] = {}
                 HexSh.Srcs[rep] = {}
+                
+                -- Load Importants
                 if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
                     AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
                     include("hexsh/"..v.."/sh_iconfig.lua")
@@ -88,12 +104,26 @@ local function loaddlc()
                         include("hexsh/"..v.."/language/"..f)
                     end
                 end
+
+                -- load Script
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
                 MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
                 hook.Run("HexSH.SrcLoaded",v)
+
+                -- load Script submodules
+                local _, SubModule = file.Find("hexsh/"..v.."/modules/*", "LUA")
+                for _, f in pairs(SubModule) do 
+                    if file.Exists("hexsh/"..v.."/modules/sh_init.lua", "LUA") then 
+                        AddCSLuaFile("hexsh/"..v.."/modules/sh_init.lua")
+                        include("hexsh/"..v.."/modules/sh_init.lua")
+                        MsgC( Color(183,95,255), "[HexSH] ~ "..v.." -", Color(255,255,255), "SubModule: "..v.." loaded...\n" )
+                        hook.Run("HexSH.SrcLoaded",v)
+                    end
+                end
             end
         end
+
         if ( string.Left(v, 4 ) == "src_" ) then
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
                 if (HexSh.Srcs[v]) then 
