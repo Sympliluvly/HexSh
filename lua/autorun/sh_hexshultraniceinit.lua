@@ -5,7 +5,6 @@
 --[[----------------------------------------]]
 
 HexSh = HexSh or {}
-HexSh.DL = "github"
 HexSh.Config = HexSh.Config or {}
 HexSh.Config.IConfig = HexSh.Config.IConfig or {}
 HexSh.Lang = HexSh.Lang or {}
@@ -14,13 +13,6 @@ HexSh.UI.Configs = HexSh.UI.Configs or {}
 HexSh.Srcs = HexSh.Srcs or  {}
 HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
 HEXAGON = HEXAGON or HexSh
-
-local supportedlanguages = {
-    ["ENG"] = true,
-    ["GER"] = true,
-    ["JAP"] = true, 
-    ["SPA"] = true,
-};
 
 --[[ Load Order ]]--
 local function loadbase()
@@ -71,8 +63,7 @@ local function loaddlc()
                 at the language system with "src_***" 
 
                 e.g "prc_HexMex" => HexSh.Config["src_HexMex"]
-                its only a visual distinguisher
-
+                its only a visual distinguisher.
         ]]
         if (string.Left(v,5)=="psrc_") then 
             local str = string.Trim(v.."psrc_", "psrc_")
@@ -159,7 +150,7 @@ local function loaddlc()
     end 
 end
 
--- LOGO
+--[[ LOGO ]]--
 if (CLIENT) then
     if ( !file.Exists( "hexsh/cache/img/BmestJw.png", "DATA" ) ) then 
         http.Fetch( "https://i.imgur.com/BmestJw.png", function( Body, Len, Headers )     
@@ -171,7 +162,7 @@ if (CLIENT) then
     end
 end
 
--- Compressed NetWorks
+-- [[ Compressed NetWorks ]]--
 function HexSh:WriteCompressedTable(table)
     local data = util.TableToJSON(table)
     data = util.Compress(data)
@@ -184,7 +175,7 @@ function HexSh:ReadCompressedTable()
     return util.JSONToTable( util.Decompress(data) )
 end
 
--- Get Configs
+--[[ Get Configs ]]--
 function HexSh:getConfig(src)
 	return HexSh.Config[src]
 end
@@ -193,7 +184,7 @@ function HexSh:getIConfig(src)
 	return HexSh.Config.IConfig[src] 
 end
 
---AddLanguage
+--[[ AddLanguage ]]--
 function HexSh:addLanguage(src, langcode, phrases)
     if (!HexSh) then return end 
     if (!isstring(src)) then return end
@@ -205,6 +196,6 @@ function HexSh:addLanguage(src, langcode, phrases)
     HexSh.Lang[src][langcode] = phrases
 end
 
-
+-- Load
 loadbase()
 loaddlc()
