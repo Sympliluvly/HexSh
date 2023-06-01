@@ -1,8 +1,9 @@
 //
 HexSh.Lang["src_sh"]["GER"] = {
-    ["Modules"] = "Modules", 
-    ["Cfg"] = "Config",
+    ["Modules"] = "Module", 
+    ["Cfg"] = "Einstellung",
     ["Admin"] = "Admin",
-    ["BCfg"] = "Base Config",
-    ["changeLang"] = "Language",
-}
+    ["BCfg"] = "Haupt Einst.",
+    ["changeLang"] = "Sprache",
+    ["back"] = "Zurück",
+} 

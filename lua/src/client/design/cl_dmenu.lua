@@ -2,13 +2,11 @@
 
 local PANEL = {}
 local deactivatered = Color(250,0,0,130)
-local purple = Color(188,19,235)
+
 local black = Color(0,0,0,255)
 local white = Color(255,255,255)
-local bgGray = Color(38,35,38) --bg
-local bgGray2 = Color(30,27,30)
+ --bg
 local bgButton = Color(45,45,45) -- buttonhovere
-local bgDarkGray = Color(33,31,31)
 local bgLightGray = Color(49,47,50)
 local bghovergray = Color(46,48,52,250)
 local getAlpha = function(col, a)

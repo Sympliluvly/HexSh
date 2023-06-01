@@ -1,10 +1,8 @@
 -- Selection for HexAdmin UI
-local purple = Color(188,19,235)
+
 local black = Color(0,0,0,255)
 local white = Color(255,255,255)
-local bgGray = Color(38,35,38)
-local bgGray2 = Color(30,27,30)
-local bgDarkGray = Color(33,31,31)
+
 local bgLightGray = Color(49,47,50)
 local bgButton = Color(45,45,45) -- buttonhovere
 local bghovergray = Color(46,48,52,250)
@@ -46,7 +44,7 @@ function PANEL:Init()
         self.EditLayer:SetPos((toDecimal(99) * self:GetParent():GetWide()) - self.EditLayer:GetWide(), (toDecimal(90) * self:GetParent():GetTall()) - self.EditLayer:GetTall())
         self.EditLayer:AlphaTo(255,0.3,0)
         self.EditLayer.Paint = function(s,w,h)
-            draw.RoundedBox(2.5,0,0,w,h,purple)
+            draw.RoundedBox(2.5,0,0,w,h,HexSh.adminUI.Color.purple)
             draw.RoundedBox(2.5,1,1,w-3,h-3,bgLightGray)
         end
 
@@ -66,7 +64,7 @@ function PANEL:Init()
     ScrollBar:SetSize(10,0)
 
     function ScrollBar.btnGrip:Paint( w, h )  
-        draw.RoundedBox( 80, 0, 0, w, h, purple ); 
+        draw.RoundedBox( 80, 0, 0, w, h, HexSh.adminUI.Color.purple ); 
     end;
 
     function ScrollBar:Paint( w, h )       
@@ -91,7 +89,6 @@ function PANEL:firstButtons()
         self:AddSubMenu(k,v.title,v.icon)
     end
     for k,v in pairs(HexSh.adminUI.Items) do 
-        print(k,v)
         if k == "S" then continue end 
         self:AddButton(v.title,v.icon,v.f)
     end
@@ -115,13 +112,13 @@ function PANEL:AddBackButton()
 
         if (s.LerpAlpha:GetValue() > 0) then 
             draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(purple,s.LerpAlpha:GetValue()))
+            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
         local m = HexSh:getImgurImage("ZEJjns5")
         AddMat(s,m)
 
-        draw.SimpleText("Back", "HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(HexSh:L("src_sh", "back"), "HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 end
 
@@ -140,7 +137,7 @@ function PANEL:AddButton(t,i,f)
 
         if (s.LerpAlpha:GetValue() > 0) then 
             draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(purple,s.LerpAlpha:GetValue()))
+            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
         if i then 
@@ -172,7 +169,7 @@ function PANEL:AddSubMenu(ix,t,i,f)
 
         if (s.LerpAlpha:GetValue() > 0) then 
             draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(purple,s.LerpAlpha:GetValue()))
+            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
         if i then 

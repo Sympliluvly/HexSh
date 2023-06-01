@@ -2,13 +2,11 @@
 
 local PANEL  = {}
 local deactivatered = Color(250,0,0,130)
-local purple = Color(188,19,235)
+
 local black = Color(0,0,0,255)
 local white = Color(255,255,255)
-local bgGray = Color(38,35,38) --bg
-local bgGray2 = Color(30,27,30)
+ --bg
 local bgButton = Color(45,45,45) -- buttonhovere
-local bgDarkGray = Color(33,31,31)
 local bgLightGray = Color(49,47,50)
 local bghovergray = Color(46,48,52,250)
 local getAlpha = function(col, a)
@@ -65,10 +63,10 @@ function PANEL:OpenMenu(pControlOpener)
 		
 
 		option.Paint = function (self, w, h)
-			local col = (self:IsHovered() and purple) or bgButton
+			local col = (self:IsHovered() and HexSh.adminUI.Color.purple) or bgButton
 			local dropdownParent = self:GetParent()
 			if (dropdownParent.multiple and dropdownParent.selectedItems[v]) then
-				col = purple
+				col = HexSh.adminUI.Color.purple
 			end
 
 			if (k == #this.Choices) then
@@ -98,7 +96,7 @@ function PANEL:OpenMenu(pControlOpener)
     ScrollBar:SetSize(10,0)
 
     function ScrollBar.btnGrip:Paint( w, h )  
-        draw.RoundedBoxEx( 12, 0, 0, w, h, purple, false,true,false,true ); 
+        draw.RoundedBoxEx( 12, 0, 0, w, h, HexSh.adminUI.Color.purple, false,true,false,true ); 
     end;
 
     function ScrollBar:Paint( w, h )       

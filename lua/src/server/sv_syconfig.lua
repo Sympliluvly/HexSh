@@ -31,15 +31,6 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
         export = HexSh.Config.IConfig
     else
         export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
-
-        --Check if not saved data in neww Sh
-        for k, v in pairs(HexSh.Config.IConfig) do
-            if (export[k] && HexSh.Config.IConfig[k]) then 
-                if (export[k] != HexSh.Config.IConfig[k]) then 
-                    table.Merge(export[k], HexSh.Config.IConfig[k])
-                end
-            end
-        end
     end
 
     HexSh.Config.IConfig = export
@@ -50,7 +41,8 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    if (!ply:GetUserGroup() == "superadmin") then return end
+    if (!ply:IsSuperAdmin()) then return end
+
     net.Start("HexSh::OpenConfigMenu")
     net.Send(ply)
 end)
@@ -63,16 +55,7 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
             file.CreateDir("hexsh")
             export = HexSh.Config.IConfig
         else
-            export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
-    
-            --Check if not saved data in neww Sh
-            for k, v in pairs(HexSh.Config.IConfig) do
-                if (export[k] && HexSh.Config.IConfig[k]) then 
-                    if (export[k] != HexSh.Config.IConfig[k]) then 
-                        table.Merge(export[k], HexSh.Config.IConfig[k])
-                    end
-                end
-            end
+            export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))          
         end
     
         HexSh.Config.IConfig = export

@@ -17,9 +17,8 @@ HEXAGON = HEXAGON or HexSh
 HexSh._Languages = {
     ["GER"] = true,
     ["ENG"] = true,
-    ["JAP"] = true,
     ["FRA"] = true,
-    ["SPA"] = true,
+
     --["UNI"] = false,
 }
 
@@ -158,7 +157,6 @@ local function loaddlc()
                 if (file.Exists("hexsh/"..v.."/language/eng.lua","LUA")) then 
                     local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
                     for _, f in pairs( ffiles ) do 
-                        print(f)
                         AddCSLuaFile("hexsh/"..v.."/language/"..f)
                         include("hexsh/"..v.."/language/"..f)
                     end
@@ -218,6 +216,32 @@ function HexSh:addLanguage(src, langcode, phrases)
     HexSh.Lang[src][langcode] = phrases
 end
 
+function HexSh:LoadScriptFiles(dir)
+    --[[ CLIENT]]--
+    local files, folder = file.Find( "hexsh/"..dir.."/client/*", "LUA" )
+    for _, f in pairs( files ) do 
+        AddCSLuaFile("hexsh/"..dir.."/client/"..f)
+        if (CLIENT) then include("hexsh/"..dir.."/client/"..f) end
+    end
+
+    --[[ SERVER ]]
+    local files, folder = file.Find( "hexsh/"..dir.."/server/*", "LUA" )
+    for _, f in pairs( files ) do 
+        if (SERVER) then include("hexsh/"..dir.."/server/"..f) end
+    end
+
+    --[[ SHARED]]
+    local files, folder = file.Find( "hexsh/"..dir.."/shared/*", "LUA" )
+    for _, f in pairs( files ) do 
+        AddCSLuaFile("hexsh/"..dir.."/shared/"..f)
+        include("hexsh/"..dir.."/shared/"..f)
+    end
+end
+
 -- Load
+if GAMEMODE then 
+    loadbase()
+    loaddlc()
+end 
 loadbase()
 loaddlc()

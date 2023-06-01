@@ -5,4 +5,5 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["Admin"] = "Admin",
     ["BCfg"] = "Base Config",
     ["changeLang"] = "Language",
+    ["back"] = "Back",
 }

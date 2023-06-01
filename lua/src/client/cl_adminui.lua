@@ -1,6 +1,18 @@
 --[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
 HexSh.adminUI = HexSh.adminUI || {}
 
+HexSh.adminUI.Color = {
+    purple = Color(188,19,235),
+    black = Color(0,0,0,255),
+    white = Color(255,255,255),
+    bgGray = Color(38,35,38),
+    bgGray2 = Color(30,27,30),
+    bgDarkGray = Color(33,31,31),
+    bgLightGray = Color(49,47,50),
+    bgButton = Color(45,45,45), -- buttonhovere
+    bghovergray = Color(46,48,52,250),
+}
+
 HexSh.adminUI.Items = {}
 HexSh.adminUI.Items.S =  {}
 
@@ -14,12 +26,10 @@ function HexSh.adminUI:AddSubMenu(idx, title, icon )
 end 
 
 function HexSh.adminUI:AddMenu(idx, title, icon, f )
-    HexSh.adminUI.Items.S[idx].Btns = {
-        [title] = {
-            title = title,
-            icon = icon, 
-            f = f
-        }
+    HexSh.adminUI.Items.S[idx].Btns[title] = {
+        title = title,
+        icon = icon, 
+        f = f
     }
 end
 
@@ -31,16 +41,17 @@ function HexSh.adminUI:AddNMenu(idx, title, icon, f )
     }
 end 
 local toDecimal = function( x ) return ( ( x <= 100 ) && x || 100 ) * 0.01 end;
-local bgGray = Color(38,35,38) --bg
+ --bg
 local white = Color(255,255,255)
-local purple = Color(188,19,235)
+local l = function(p) return HexSh:L("src_sh", p) end 
+
 
 --hooks
-hook.Add("HexSh::GetAdminItems", "",function()
+hook.Add("HexSh::GetAdminItems", "", function()
     -- For Config
     HexSh.adminUI:AddSubMenu("cfg", HexSh:L("src_sh", "Cfg"), HexSh:getImgurImage("uLS7i9M") )
 
-    -- For Admin
+    -- For Adminw
     HexSh.adminUI:AddSubMenu("admin", HexSh:L("src_sh", "Admin"), HexSh:getImgurImage("mqCcBCZ") )
 
     --Repos
@@ -64,7 +75,7 @@ hook.Add("HexSh::GetAdminItems", "",function()
         ScrollBar:SetHideButtons( true );
         ScrollBar:SetSize(10,0)
         function ScrollBar.btnGrip:Paint( w, h )  
-            draw.RoundedBox( 0, 0, 0, w, h, purple ); 
+            draw.RoundedBox( 0, 0, 0, w, h, HexSh.adminUI.Color.purple ); 
         end;
         function ScrollBar:Paint( w, h )       
             draw.RoundedBox( 0, 0, 0, w, h, Color(77,14,95) ); 
@@ -82,7 +93,7 @@ hook.Add("HexSh::GetAdminItems", "",function()
             frame:DockMargin(4.5,4.5,4.5,4.5)
             frame:SetTall(50)
             frame.Paint = function(s,w,h)
-                draw.RoundedBoxEx(7.5,0,0,w,h,bgGray,true,true,true,true)
+                draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
                 draw.SimpleText(k,"HexSh.admin.FieldText", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
         end
@@ -95,7 +106,7 @@ hook.Add("HexSh::GetAdminItems", "",function()
             p:DockMargin(5,2,5,3)
             p:SetTall( toDecimal(9) * parent:GetTall() )
             p.Paint = function( self,w,h )
-                draw.RoundedBoxEx(7.5,0,0,w,h,bgGray,true,true,true,true)
+                draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
             end
 
             local t = vgui.Create("DLabel",p)
@@ -128,9 +139,12 @@ hook.Add("HexSh::GetAdminItems", "",function()
             ChangeLang.Change:AddChoice(k,k)
         end
         ChangeLang.Change.OnSelect = function(self, index, value)
-            print(value)
             cfg.Language = value 
             write()
+            hook.Run("HexSh::GetAdminItems")
+            HexSh.ConfigMenu:Remove()
+            net.Start("HexSh::OpenConfigMenu")
+            net.SendToServer()
         end
 
     end)
@@ -138,8 +152,5 @@ end)
 
 
 
-timer.Simple(0.1, function()  
-   hook.Run("HexSh::GetAdminItems")
-end)   
 hook.Run("HexSh::GetAdminItems")
   
