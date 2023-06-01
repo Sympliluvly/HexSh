@@ -35,7 +35,10 @@ local function loadbase()
     HexSh.Srcs["src_sh"] = {}
 
     AddCSLuaFile("src/config/sh_config.lua")
-    include("src/config/sh_config.lua") 
+    include("src/config/sh_config.lua")
+    
+    AddCSLuaFile("src/sh_lang.lua")
+    include("src/sh_lang.lua") 
 
     local files, folder = file.Find( "src/language/*", "LUA" )
     for _,f in pairs(files) do 

@@ -1,6 +1,8 @@
 --[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
 HexSh.adminUI = HexSh.adminUI || {}
 
+include("cl_imgurintegration.lua")
+  
 HexSh.adminUI.Color = {
     purple = Color(188,19,235),
     black = Color(0,0,0,255),
@@ -43,12 +45,13 @@ end
 local toDecimal = function( x ) return ( ( x <= 100 ) && x || 100 ) * 0.01 end;
  --bg
 local white = Color(255,255,255)
-local l = function(p) return HexSh:L("src_sh", p) end 
 
 
 --hooks
 hook.Add("HexSh::GetAdminItems", "", function()
+    local l = function(p) return HexSh:L("src_sh", p) end 
     -- For Config
+    
     HexSh.adminUI:AddSubMenu("cfg", HexSh:L("src_sh", "Cfg"), HexSh:getImgurImage("uLS7i9M") )
 
     -- For Adminw
