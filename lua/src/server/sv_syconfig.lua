@@ -23,21 +23,33 @@ net.Receive("HexSH::WriteConfig", function(len,ply)
     net.Broadcast()
 end)
 
-net.Receive("HexSh::LoadConfig", function(len,ply)
-    local export = HexSh.Config.IConfig
+--Msg(Color(250,0,0), "ICONFIG\n")
+--PrintTable(HexSh.Config.IConfig)
+--Msg(Color(250,0,0), "IngameCONFIG\n")
+--PrintTable(util.JSONToTable(file.Read("hexsh/config.json", "DATA")))
+
+local function Load(ply)
+    local export = {}
        
     if (!file.Exists("hexsh/config.json", "DATA")) then
         file.CreateDir("hexsh")
         export = HexSh.Config.IConfig
     else
         export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
+    
+        for k,v in pairs(HexSh.Config.IConfig) do 
+            if (export[k]) then continue end 
+            export[k] = v
+        end 
     end
-
-    HexSh.Config.IConfig = export
 
     net.Start("HexSh::LoadConfig")
         HexSh:WriteCompressedTable(export)
     net.Send(ply)
+end
+
+net.Receive("HexSh::LoadConfig", function(len,ply)
+    Load(ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
@@ -49,20 +61,7 @@ end)
 
 hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     if (!ply.hexshinit) then     
-        local export = HexSh.Config.IConfig
-       
-        if (!file.Exists("hexsh/config.json", "DATA")) then
-            file.CreateDir("hexsh")
-            export = HexSh.Config.IConfig
-        else
-            export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))          
-        end
-    
-        HexSh.Config.IConfig = export
-        
-        net.Start("HexSh::LoadConfig")
-            HexSh:WriteCompressedTable(export)
-        net.Send(ply)
+        Load(ply)
     end
     ply.hexshinit = false 
 end)
