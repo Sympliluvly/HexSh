@@ -37,14 +37,13 @@ local function Load(ply)
     else
         export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
     
-        for k,v in pairs(HexSh.Config.IConfig) do 
-            if (export[k]) then continue end 
-            export[k] = v
+        for k,v in pairs(export) do 
+            HexSh.Config.IConfig[k] = v
         end 
     end
 
     net.Start("HexSh::LoadConfig")
-        HexSh:WriteCompressedTable(export)
+        HexSh:WriteCompressedTable(HexSh.Config.IConfig)
     net.Send(ply)
 end
 
@@ -53,6 +52,9 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
+    print(ply:GetUserGroup())
+    PrintTable(HexSh:getIConfig("src_sh").Ranks)
+    print(HexSh:getIConfig("src_sh").Ranks[ply:GetUserGroup()])
     if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
 
     net.Start("HexSh::OpenConfigMenu")
