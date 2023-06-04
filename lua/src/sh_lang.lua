@@ -1,7 +1,7 @@
 --[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
 
 function HexSh:L(srcname, phrase)
-    if (HexSh.Lang[srcname][ HexSh.Config.IConfig["src_sh"].Language ][ phrase] == nil) then return tostring(HexSh.Lang[srcname][ "ENG" ][ phrase]) end;
+    if (HexSh.Lang[srcname][ HexSh.Config.IConfig["src_sh"].Language ][ phrase] == nil) then return tostring(phrase) end;
     return tostring( HexSh.Lang[srcname][HexSh.Config.IConfig["src_sh"].Language ][ phrase] );
 end;
 

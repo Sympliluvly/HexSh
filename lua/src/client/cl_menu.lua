@@ -15,6 +15,13 @@ end
 net.Receive("HexSh::OpenConfigMenu", function()
     local scrw,scrh = ScrW(), ScrH()
 
+    if (!LocalPlayer().HCS_AdminMenuconfig) then 
+        hook.Run("HexSh::GetAdminItems")
+        
+        LocalPlayer().HCS_AdminMenuconfig = true
+    end
+    
+
     local frame = vgui.Create("EditablePanel")
     frame:SetSize(toDecimal(40) * ScrW(), toDecimal(60) * ScrH())
     frame:Center()

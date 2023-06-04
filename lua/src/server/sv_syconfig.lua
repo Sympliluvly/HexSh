@@ -5,7 +5,7 @@ util.AddNetworkString("HexSh::WriteConfig")
 util.AddNetworkString("HexSh::OpenConfigMenu")
 
 net.Receive("HexSH::WriteConfig", function(len,ply)
-    if (!ply:GetUserGroup() == "superadmin") then return end
+    if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
     local readNewData = HexSh:ReadCompressedTable()
 
     if (!file.Exists("hexsh/config.json", "DATA")) then
@@ -53,7 +53,7 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    if (!ply:IsSuperAdmin()) then return end
+    if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
 
     net.Start("HexSh::OpenConfigMenu")
     net.Send(ply)
