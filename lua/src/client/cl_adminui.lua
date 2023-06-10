@@ -103,8 +103,28 @@ hook.Add("HexSh::GetAdminItems", "", function()
     end)
 
     HexSh.adminUI:AddNMenu("baseconfig", HexSh:L("src_sh", "BCfg"), HexSh:getImgurImage("G24BSo5"), function(parent)
+        local scroll = vgui.Create("DScrollPanel", parent)
+        scroll:Dock(FILL)
+        scroll:DockMargin(0,5,2,10)
+        local ScrollBar = scroll:GetVBar();
+
+        ScrollBar:SetHideButtons( true );
+        ScrollBar:SetSize(10,0)
+        function ScrollBar.btnGrip:Paint( w, h )  
+            draw.RoundedBox( 0, 0, 0, w, h, HexSh.adminUI.Color.purple ); 
+        end;
+        function ScrollBar:Paint( w, h )       
+            draw.RoundedBox( 0, 0, 0, w, h, Color(77,14,95) ); 
+        end;
+        function ScrollBar.btnUp:Paint( w, h )       
+            return; 
+        end;
+        function ScrollBar.btnDown:Paint( w, h )       
+            return;
+        end;
+
         local field = function(title)
-            local p = vgui.Create("DPanel",parent)
+            local p = vgui.Create("DPanel",scroll)
             p:Dock(TOP)
             p:DockMargin(5,2,5,3)
             p:SetTall( toDecimal(9) * parent:GetTall() )
@@ -147,7 +167,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
         local Ranks = field(HexSh:L("src_sh", "Access"))
         Ranks:SetTall(toDecimal(70) * parent:GetTall())
 
-        local li = vgui.Create("DListView", Ranks)
+        local li = vgui.Create("HexSh.UI.List", Ranks)
         li:Dock(RIGHT)
         li:DockMargin(3,3,7,3)
         li:SetWide(toDecimal(70) * Ranks:GetTall())
@@ -210,6 +230,9 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 GetRanks(cfg.Ranks) 
             end)
         end
+
+        local MySQL = field(HexSh:L("src_sh", "MYSQL"))
+        MySQL:SetTall(toDecimal(70) * parent:GetTall())
 
 
     end)

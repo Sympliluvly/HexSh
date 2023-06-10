@@ -39,11 +39,12 @@ net.Receive("HexSh::OpenConfigMenu", function()
         surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
         surface.DrawTexturedRectRotated( toDecimal(3.3) * frame:GetWide(),toDecimal(3.7) * frame:GetTall(),toDecimal(7) * frame:GetWide(), toDecimal(7) * frame:GetTall(), s.Rotate && CurTime() * 200 % 360 || 0  )
 
-        draw.SimpleText("H", "HexSh.Title", toDecimal(5.9) * frame:GetWide(),toDecimal(3) * frame:GetTall(),HexSh.adminUI.Color.purple,TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
-        draw.SimpleText("exagon", "HexSh.TitleSmall", toDecimal(9.4) * frame:GetWide(),toDecimal(3) * frame:GetTall(),white,TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
-        draw.SimpleText("C", "HexSh.Title", toDecimal(24.5) * frame:GetWide(),toDecimal(3) * frame:GetTall(),HexSh.adminUI.Color.purple,TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
-        draw.SimpleText("ryptics", "HexSh.TitleSmall", toDecimal(27.8) * frame:GetWide(),toDecimal(3) * frame:GetTall(),white,TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
-    end
+        local Hxpos, Cxpos = toDecimal(6.9) * frame:GetWide()
+        draw.MultiColorText("HexUI.TitlesUltimateBigest", Hxpos, toDecimal(3) * frame:GetTall(), TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER, HexSh.adminUI.Color.purple, "H", white, "exagon ", HexSh.adminUI.Color.purple, "C", white, "ryptics")
+        
+    end 
+
+
 
     local function addAnim(pnl)
         pnl.LerpAlpha = HexSh:Lerp(0,0,0.3)

@@ -12,4 +12,5 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["DeleteRank"] = "Delete Rank",
     ["DeleteRankTootlip"] = "Select the Rank and click on delete!",
     ["trydeleteSuperadmin"] = "You can't delete the superadmin Rank",
+    ["MYSQL"] = "MySQL Setup",
 }

@@ -110,9 +110,12 @@ function PANEL:AddBackButton()
     btn.Paint = function(s,w,h)
         if s.LerpAlpha then s.LerpAlpha:DoLerp() end 
 
+
         if (s.LerpAlpha:GetValue() > 0) then 
             draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
+            local hh = toDecimal(40)*btn:GetTall()
+            local y = (toDecimal(65)*btn:GetTall())-hh
+            draw.RoundedBox(100,0,y,6,hh,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
         local m = HexSh:getImgurImage("ZEJjns5")
@@ -137,7 +140,9 @@ function PANEL:AddButton(t,i,f)
 
         if (s.LerpAlpha:GetValue() > 0) then 
             draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
+            local hh = toDecimal(40)*btn:GetTall()
+            local y = (toDecimal(65)*btn:GetTall())-hh
+            draw.RoundedBox(100,0,y,6,hh,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
         if i then 
@@ -169,7 +174,9 @@ function PANEL:AddSubMenu(ix,t,i,f)
 
         if (s.LerpAlpha:GetValue() > 0) then 
             draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            draw.RoundedBox(100,0,(toDecimal(12.9)*btn:GetWide())-(h-20),6,h-20,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
+            local hh = toDecimal(40)*btn:GetTall()
+            local y = (toDecimal(65)*btn:GetTall())-hh
+            draw.RoundedBox(100,0,y,6,hh,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
         if i then 

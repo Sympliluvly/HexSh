@@ -55,3 +55,48 @@ for i=1, 60 do
     } )
 end
 
+local fontdatTITLES = {
+	font = "MuseoModerno Medium",
+	size = 40,
+	weight = 4000,
+	blursize = 0,
+	scanlines = 0,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = true,
+	additive = false,
+	outline = false,
+}
+local fontdatNormals = {
+	font = "Korataki",
+	size = 20,
+	weight = 2000,
+	blursize = 0,
+	scanlines = 0,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = true,
+	additive = false,
+	outline = false,
+}
+
+
+--Titles
+surface.CreateFont( "HexUI.TitlesBigest", fontdatTITLES )
+
+
+fontdatTITLES.size = 50
+fontdatTITLES.weight = 5000,
+surface.CreateFont( "HexUI.TitlesUltimateBigest", fontdatTITLES )
+
+fontdatTITLES.size = 20
+fontdatTITLES.weight = 2000,
+surface.CreateFont( "HexUI.TitlesBig", fontdatTITLES )
