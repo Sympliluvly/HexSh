@@ -17,3 +17,23 @@ end
 function math.colorAlpha(col, a)
     return Color(col["r"], col["g"], col["b"], a)
 end
+
+
+--fresh imported from DarkRP UwU
+function HexSh.findPlayer(info)
+    if not info or info == "" then return nil end
+    local pls = player.GetAll()
+
+    for k = 1, #pls do -- Proven to be faster than pairs loop.
+        local v = pls[k]
+
+        if info == v:SteamID64() then
+            return v
+        end
+
+        if string.find(string.lower(v:Nick()), string.lower(tostring(info)), 1, true) ~= nil then
+            return v
+        end
+    end
+    return nil
+end

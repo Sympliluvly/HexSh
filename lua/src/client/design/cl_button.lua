@@ -31,10 +31,14 @@ end
 
 function PANEL:Paint(w,h)
     if self.Lerp then self.Lerp:DoLerp() end 
+    if (self:GetDisabled() == true) then 
+        draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
+        draw.RoundedBox(7.5,0,0,w,h,deactivatered)
+    else
+        draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
+    end
 
-    draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
-    
-    if (self.Lerp:GetValue() > 0) then 
+    if (self.Lerp:GetValue() > 0 && !self:GetDisabled()) then 
         draw.RoundedBox(7.5,0,0,w,h,getAlpha(HexSh.adminUI.Color.purple,self.Lerp:GetValue()))
     end
 end

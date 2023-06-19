@@ -35,18 +35,49 @@ util.AddNetworkString("HexSh::SQLGET")
 util.AddNetworkString("HexSh::SQLWRITE")
 
 net.Receive("HexSh::SQLGET", function(len,ply)
+	if (!ply:GetUserGroup()=="superadmin") then 
+		net.Start("HexSh::SQLGET")
+			net.WriteBool(false)
+		net.Send(ply)
+
+		return 
+	end 
+
 	local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 	net.Start("HexSh::SQLGET")
+		net.WriteBool(true) --access
 		net.WriteBool(data.mysql) 
 		net.WriteString(HexSh_Decrypt(data.host))
 		net.WriteString(HexSh_Decrypt(data.username))
-		net.WriteString(HexSh_Decrypt(data.passsword))
+		net.WriteString(HexSh_Decrypt(data.password))
 		net.WriteString(HexSh_Decrypt(data.schema))
 		net.WriteUInt(tonumber(HexSh_Decrypt(data.port)), 17 )
-	snet.Send(ply)
+	net.Send(ply)
 end)
 net.Receive("HexSh::SQLWRITE", function(len,ply)
-	
+	--if (HexSh_blockspam(ply:SteamID64())) then
+	--	print("SSTOP")
+	--	return 
+	--end 
+	if (!ply:GetUserGroup() == "superadmin") then return end 
+
+	local mysql = net.ReadBool()
+	local host = net.ReadString()
+	local username = net.ReadString()
+	local password = net.ReadString()
+	local dbname = net.ReadString()
+	local port = net.ReadUInt( 17 )
+
+	file.Write("hexsh/sql.json",util.TableToJSON({
+		mysql = mysql,
+		host = HexSh_Encrypt(host),
+		username = HexSh_Encrypt(username),
+		password = HexSh_Encrypt(password),
+		schema = HexSh_Encrypt(dbname),
+		port = HexSh_Encrypt(port),
+	}))
+
+	HexSh.SQL:Connect()
 end)
 
 function HexSh.SQL.Constructor( self, config )
@@ -184,3 +215,4 @@ if HexSh.SQL then
 end
 
 HexSh.SQL:Connect()
+

@@ -46,7 +46,55 @@ local toDecimal = function( x ) return ( ( x <= 100 ) && x || 100 ) * 0.01 end;
  --bg
 local white = Color(255,255,255)
 
+function HexSh.adminUI.AddEditField(parent, title, element, var, tooltip, numeric, enabled, savefunction)
+    local p = vgui.Create("DPanel",parent)
+    p:Dock(TOP)
+    p:DockMargin(5,2,5,3)
+    p:SetTall( toDecimal(12) * parent:GetTall() )
+    p.Paint = function( self,w,h )
+        draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray2,true,true,true,true)
+    end
 
+    p.t = vgui.Create("DLabel",p)
+    p.t:SetText(title)
+    p.t:SetFont("DermaLarge")
+    p.t:SetTextColor( white )
+    p.t:Dock(LEFT)
+    p.t:DockMargin(5,0,0,0)
+    p.t:SizeToContents()
+
+    if ( element == "text" ) then 
+        p.entry = vgui.Create("HexSh.UI.TextEntry",p)
+        p.entry:Dock(RIGHT)
+        p.entry:DockMargin(0,5,5,5)
+        p.entry:SetText(var)
+        p.entry.curVar = var
+        p.entry:SetFont("HexSh.UI.20")
+        p.entry:SetTooltip(tooltip)
+        p.entry:SetWide( 200 )
+        if (enabled == false) then p.entry:SetDisabled(true) end
+        p.entry:SetNumeric(numeric)
+
+        p.entry.OnEnter = function( self )
+            savefunction( self, var, self:GetValue() )
+        end
+    end
+    if (element == "switch") then 
+        p.switch = vgui.Create( "HexSh.Switch",p );
+        p.switch:Dock( RIGHT );
+        p.switch:DockMargin( 9, 6, 10, 0 );
+        p.switch:SetText( "dd" );
+        p.switch:SetWide( 40 )
+        p.switch:SetTooltip(tooltip)
+        p.switch:SetChecked( var );
+        p.switch.OnChange = function(s)
+            savefunction(s)
+        end
+    end
+
+
+    return p
+end
 --hooks
 hook.Add("HexSh::GetAdminItems", "", function()
     local l = function(p) return HexSh:L("src_sh", p) end 
@@ -231,10 +279,81 @@ hook.Add("HexSh::GetAdminItems", "", function()
             end)
         end
 
-        local MySQL = field(HexSh:L("src_sh", "MYSQL"))
-        MySQL:SetTall(toDecimal(70) * parent:GetTall())
+        net.Start("HexSh::SQLGET")
+        net.SendToServer()
+         
+        net.Receive("HexSh::SQLGET", function()
+            local access = net.ReadBool()
+            if (!access) then 
+                local MySQL = field(HexSh:L("src_sh", "notMYSQL"))
+                MySQL:SetTall(toDecimal(8) * parent:GetTall())
+                return 
+            end
+            local mysql = net.ReadBool()
+            local host = net.ReadString()
+            local username = net.ReadString()
+            local password = net.ReadString()
+            local schema = net.ReadString()
+            local port = net.ReadUInt(17)
 
 
+
+            local MySQL = field(HexSh:L("src_sh", "MYSQL"))
+            MySQL:SetTall(toDecimal(75) * parent:GetTall())
+            
+            local utils = {}
+            local function SetDisabledElements(bool)
+                for k,v in pairs(utils) do 
+                    v.entry:SetDisabled(bool)
+                end
+            end
+            
+            local enableMySQL = HexSh.adminUI.AddEditField(MySQL, HexSh:L("src_sh", "MYSQLEnabled"), "switch", mysql, "", false, true, function(s) 
+                if (s:GetChecked()==false) then
+                    SetDisabledElements(true)
+                else
+                    SetDisabledElements(false)
+                end
+            
+            end)
+            enableMySQL:DockMargin(0,40,0,0)
+
+
+            local Ip = HexSh.adminUI.AddEditField(MySQL, HexSh:L("src_sh", "MYSQLIP"), "text", host,  HexSh:L("src_sh", "MYSQLIPTool"), true, true, function(s, var, val)  end)
+            local Username = HexSh.adminUI.AddEditField(MySQL, HexSh:L("src_sh", "MYSQLDBUser"), "text", username,  HexSh:L("src_sh", "MYSQLDBUserTool"), false, true, function(s, var, val)  end)
+            local Password = HexSh.adminUI.AddEditField(MySQL, HexSh:L("src_sh", "MYSQLDBPassword"), "text", password,  HexSh:L("src_sh", "MYSQLDBPasswordTool"), false, true, function(s, var, val)  end)
+            local DBName = HexSh.adminUI.AddEditField(MySQL, HexSh:L("src_sh", "MYSQLDatabase"), "text", schema,  HexSh:L("src_sh", "MYSQLDatabaseTool"), false, true, function(s, var, val)  end)
+            local Port = HexSh.adminUI.AddEditField(MySQL, HexSh:L("src_sh", "MYSQLPort"), "text", port, HexSh:L("src_sh", "MYSQLPortTool"), true, true, function(s, var, val)  end)
+            local Save = vgui.Create("HexSh.UI.Button", MySQL)
+                Save:Dock(TOP)
+                Save:SetTall(30)
+                Save:DockMargin(5,5,5,5)
+                Save:SetText(HexSh:L("src_sh", "Save"))
+                Save:SetFont("HexSh.UI.22")
+                Save.DoClick = function( s )
+                    net.Start("HexsSh::SQLWRITE")
+                        net.WriteBool(enableMySQL.switch:GetChecked())
+                        net.WriteString(Ip.entry:GetValue())
+                        net.WriteString(Username.entry:GetValue())
+                        net.WriteString(Password.entry:GetValue())
+                        net.WriteString(DBName.entry:GetValue())
+                        net.WriteUInt(tonumber(Port.entry:GetValue()),17)
+                    net.SendToServer()
+                
+                end
+
+            table.insert(utils,Ip)
+            table.insert(utils,Username)
+            table.insert(utils,Password)
+            table.insert(utils,DBName)
+            table.insert(utils,Port)
+        
+            if (!mysql) then 
+                SetDisabledElements(true)
+            end 
+
+        end)
+        
     end)
 end)
 
