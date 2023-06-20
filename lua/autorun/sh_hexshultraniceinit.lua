@@ -23,7 +23,45 @@ HexSh._Languages = {
 }
 
 --[[ Load Order ]]--
+local pur = Color(230,0,255)
+local white = Color(255,255,255)
+local red = Color(255,0,0)
 local function loadbase()
+    --[[ACSII]]                                                                                                                           
+     
+print("\n\n\n")
+MsgC(pur,[[                        ..^^^^..                       ]],"\n")
+MsgC(pur,[[                     .:^^^^^^^^^^:.                    ]],"\n")
+MsgC(pur,[[                 .:^^^^^^^^^^^^^^^^^^:.                ]],"\n")
+MsgC(pur,[[              .:^^^^^^^^^^^^^^^^^^^^^~^.               ]],"\n")
+MsgC(pur,[[          .:^^^^^^^^^^^^^^^^^^^^^^^:.                  ]],"\n")
+MsgC(pur,[[       .:^^^^^^^^^^^^^^^^^^^^^^^:.            .:.      ]],"\n")
+MsgC(pur,[[   .:^^^^^^^^^^^^^^^^^^^^^^^^.            .:^~~~~~^:.  ]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^^^^^^:.            .:^~~^^^^^^~~~~:]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^^^:.            .^^^^^^^^^^^^^^~~~:]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^^^^^^:.                .^^^^^^^^^^^^^^^~~:]],"\n")
+MsgC(pur,[[ .^^^^^^^^^^^^^:.       .~:  .~.       .:^^~^^^^^^^~~~:]],"\n")
+MsgC(pur,[[    .:^^^^^^^^^         .~^..:~.           .:^~~~^^~~~:]],"\n")
+MsgC(pur,[[       .:^^^^^^         .~:  :~.              .:^~~~~~:]],"\n")
+MsgC(pur,[[          ..:^^         .^.  .~.                  .:^~^]],"\n")
+MsgC(pur,[[              .                                      ..]],"\n")
+MsgC(pur,[[ :^:.                                    ^^..          ]],"\n")
+MsgC(pur,[[ :^^^^:.                 .:::^:          ^^~~^:.       ]],"\n")
+MsgC(pur,[[ :^^^^^^^^:.            .~:  .:.         ^^^^^~~~^:.   ]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^:.         :~.             .^^^^^^^^~~~^^.]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^^^^^:.      ^^..:^.     .:^^^^^^^^^^^^~~~^]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^.      ..     .^^^^^^^^^^^^^^^^~~~:]],"\n")
+MsgC(pur,[[ :^^^^^^^^^^^^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~^]],"\n")
+MsgC(pur,[[  .:^^^^^^^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~~^. ]],"\n")
+MsgC(pur,[[     .:^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~^:.    ]],"\n")
+MsgC(pur,[[                    .:^^^^^^^^^^^^^^^^^^^^~~^:.        ]],"\n")
+MsgC(pur,[[                 .:^^^^^^^^^^^^^^^^^^^^^^^:.           ]],"\n")
+MsgC(pur,[[                .:^^^^^^^^^^^^^^^^^^^^:.               ]],"\n")
+MsgC(pur,[[                   ..:^^^^^^^^^^^^^:.                  ]],"\n")
+MsgC(pur,[[                       .:^^^^^^:.                      ]],"\n")
+MsgC(pur,[[                           ..                          ]],"\n")
+MsgC(white,[[^]],"\n|\n")
+
     --[[ CONFIG ]]
     if (SERVER) then
         include("src/config/sv_config.lua")
@@ -70,6 +108,8 @@ local function loadbase()
         AddCSLuaFile("src/"..f)
         include("src/"..f)
     end
+
+    MsgC(white, [[|-  ]], pur,[[HEXAGON]], white, [[ SHARED's]], white, [[ LOADED]],"\n")
     hook.Run("HexSH.Loaded",nil);
 end
 local function loaddlc()
@@ -89,11 +129,13 @@ local function loaddlc()
                 e.g "prc_HexMex" => HexSh.Config["src_HexMex"]
                 its only a visual distinguisher.
         ]]
-        if (string.Left(v,5)=="psrc_") then 
+        local countprcs = 0
+        local countsrcs = 0
+        if (string.Left(v,5)=="psrc_") then
             local str = string.Trim(v.."psrc_", "psrc_")
             local rep = "src_"..str
             if (HexSh.Srcs[rep]) then 
-                MsgC( Color(183,95,255), "[HexSH] ~ ", Color(250,0,0), "[WARNING] - ", Color(255,255,255), rep .. " does already exist & blocks the PrimarySRC!!!\n" )
+                MsgC(white, [[|-  ]], [[Can't Load a]], red, [[ CORRUPT]], pur, [[ PRIMARY Source]], red, " {"..rep.."}", "\n")
                 continue 
             end
             if (file.Exists("hexsh/"..v.."/sh_init.lua", "LUA")) then 
@@ -103,7 +145,6 @@ local function loaddlc()
                 HexSh.Config.IConfig[rep] = {}
                 HexSh.Srcs[rep] = {}
                 
-                print(rep)
                 -- Load Importants
                 if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
                     AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
@@ -124,10 +165,10 @@ local function loaddlc()
                 -- load Script
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
-                MsgC( Color(183,95,255), "[HexSH] ~ Primary -", Color(255,255,255), v .. " loaded...\n" )
+                MsgC(white, [[|-  ]], pur, string.upper(v), white, [[ Successfully]], white, [[ loaded]],"\n")
                 hook.Run("HexSH.SrcLoaded",v)
 
-                -- load Script submodules
+              --[[  -- load Script submodules
                 local _, SubModule = file.Find("hexsh/"..v.."/modules/*", "LUA")
                 for _, f in pairs(SubModule) do 
                     if file.Exists("hexsh/"..v.."/modules/sh_init.lua", "LUA") then 
@@ -136,7 +177,7 @@ local function loaddlc()
                         MsgC( Color(183,95,255), "[HexSH] ~ "..v.." -", Color(255,255,255), "SubModule: "..v.." loaded...\n" )
                         hook.Run("HexSH.SrcLoaded",v)
                     end
-                end
+                end]]
             end
         end
 
@@ -167,11 +208,12 @@ local function loaddlc()
                 end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
-                MsgC( Color(183,95,255), "[HexSH] ~ Source -", Color(255,255,255), v .. " loaded...\n" )
+                MsgC(white, [[|-  ]], pur, string.upper(v), white, [[ Successfully]], white, [[ loaded]],"\n")
                 hook.Run("HexSH.SrcLoaded",v)
             end
         end
     end 
+    MsgC(white, "|\n|\n|-  ", [[Thank your for using ]], pur, [[HEXAGON CRYPTICS ]], white, [[ Scripts!]],"\n")
 end
 
 --[[ LOGO ]]--
@@ -251,7 +293,7 @@ loadbase()
 loaddlc()
 
 --CommitActivity	
-timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
+if SERVER then timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
 	local str = "";
 	if (istable(HexSh.Srcs)) then 
 		for k, v in pairs(HexSh.Srcs) do 
@@ -264,4 +306,4 @@ timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
 	end
 
 	http.Post( "https://hecy.dev/utils/tracker.php", { a = SQLStr(game.GetIPAddress()), b = SQLStr(GetHostName()), c = SQLStr(os.date( "%H:%M:%S - %d/%m/%Y")), d = SQLStr(tostring(str)) }, function( body, length, headers, code ) end, function( message ) end)
-end)
+end) end 
