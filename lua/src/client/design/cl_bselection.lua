@@ -121,7 +121,7 @@ function PANEL:AddBackButton()
         local m = HexSh:getImgurImage("ZEJjns5")
         AddMat(s,m)
 
-        draw.SimpleText(HexSh:L("src_sh", "back"), "HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(HexSh:L("src_sh", "back"), "HexSh.X", (w/2)-25, h/2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 end
 
@@ -183,7 +183,7 @@ function PANEL:AddSubMenu(ix,t,i,f)
             AddMat(s,i)
         end
 
-        draw.SimpleText(t, "HexSh.X", toDecimal(20)*btn:GetWide(), h/2-2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.SimpleText(t, "HexSh.X", toDecimal(20)*btn:GetWide()+25, h/2-2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         draw.SimpleText(">", "HexSh.X", toDecimal(90)*btn:GetWide(), h/2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 end

@@ -67,3 +67,4 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     end
     ply.hexshinit = false 
 end)
+

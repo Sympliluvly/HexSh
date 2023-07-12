@@ -107,7 +107,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
     end
 
     -- Body
-    local Select = vgui.Create("HexSh.adminUI.BSelect", frame)
+    HexSh.adminUI.MainSelect = vgui.Create("HexSh.adminUI.BSelect", frame)
 end)
 
 list.Set( "DesktopWindows", "HexConfig", {

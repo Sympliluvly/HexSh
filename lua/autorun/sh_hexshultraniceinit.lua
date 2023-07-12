@@ -14,6 +14,15 @@ HexSh.Srcs = HexSh.Srcs or  {}
 HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
 HEXAGON = HEXAGON or HexSh
 
+if (CLIENT) then   
+    surface.CreateFont( "HexSh.V", { 
+        font = "Roboto", 
+        size = 15, 
+        weight = 10,
+        italic = true,  
+    } )
+end
+
 HexSh._Languages = {
     ["GER"] = true,
     ["ENG"] = true,
@@ -88,13 +97,13 @@ MsgC(white,[[^]],"\n|\n")
     --[[ CLIENT]]--
     local files, folder = file.Find( "src/client/*", "LUA" )
     for _, f in pairs( files ) do 
-        AddCSLuaFile("src/client/"..f)
+        if (SERVER) then  AddCSLuaFile("src/client/"..f) end
         if (CLIENT) then include("src/client/"..f) end
     end
     --[[ CLIENT2 ]]--
     local files, folder = file.Find( "src/client/design/*", "LUA" )
     for _, f in pairs( files ) do 
-        AddCSLuaFile("src/client/design/"..f)
+        if (SERVER) then  AddCSLuaFile("src/client/design/"..f) end
         if (CLIENT) then include("src/client/design/"..f) end
     end
     --[[ SERVER ]]

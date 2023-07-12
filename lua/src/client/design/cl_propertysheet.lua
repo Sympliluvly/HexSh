@@ -49,20 +49,21 @@ function PANEL:AddSheet(title, pnl, icon, tooltip)
         end
     end
     sheet:Dock(LEFT)
-    sheet:SetWide(90)
+    sheet:SetWide(150)
     local counttitle = string.len(title)
     if (counttitle>12) then 
-        sheet:SetWide(129)
+        sheet:SetWide(139)
     end
     if (counttitle>14) then 
-        sheet:SetWide(150)
+        sheet:SetWide(170)
     end
     sheet:DockMargin(0,0,3,0)
     sheet:SetText("")
     sheet.Paint = function(s,w,h)
         if s.Lerp then s.Lerp:DoLerp() end 
-        draw.RoundedBox(7.5, 0, 0, w, h, s.Lerp:GetValue() > 1 && math.colorAlpha(HexSh.adminUI.Color.purple, s.Lerp:GetValue()) || HexSh.adminUI.Color.bgGray)
 
+        draw.RoundedBox(7.5, 0, 0, w, h, (self.Cur == s.Panel && HexSh.adminUI.Color.purple) || s.Lerp:GetValue() > 1 && math.colorAlpha(HexSh.adminUI.Color.purple, s.Lerp:GetValue()) || HexSh.adminUI.Color.bgGray)
+        
         if icon then  
             surface.SetDrawColor(white)
             surface.SetMaterial(icon)
@@ -71,6 +72,7 @@ function PANEL:AddSheet(title, pnl, icon, tooltip)
 
         draw.SimpleText(title, "HexSh.admin.sheet", icon && 25 || w/2, h/2, white, icon && TEXT_ALIGN_LEFT || TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
+
 
     pnl:SetVisible(false)
     pnl:SetParent(self.Content)

@@ -14,6 +14,7 @@ HexSh.adminUI.Color = {
     bgButton = Color(45,45,45), -- buttonhovere
     bghovergray = Color(46,48,52,250),
 }
+HEXAGON.Col = HexSh.adminUI.Color
 
 HexSh.adminUI.Items = {}
 HexSh.adminUI.Items.S =  {}
