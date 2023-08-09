@@ -155,26 +155,36 @@ local function loaddlc()
                 HexSh.Srcs[rep] = {}
                 
                 -- Load Importants
-                if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
-                    AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
-                    include("hexsh/"..v.."/sh_iconfig.lua")
-                end
-                if (file.Exists("hexsh/"..v.."/sh_config.lua", "LUA")) then 
-                    AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
-                    include("hexsh/"..v.."/sh_config.lua")
-                end
-                if (file.Exists("hexsh/"..v.."/language/eng.lua","LUA")) then 
-                    local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
-                    for _, f in pairs( ffiles ) do 
-                        AddCSLuaFile("hexsh/"..v.."/language//"..f)
-                        include("hexsh/"..v.."/language/"..f)
+                local function de()
+                    if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
+                        AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
+                        include("hexsh/"..v.."/sh_iconfig.lua")
                     end
-                end
+                    if (file.Exists("hexsh/"..v.."/sh_config.lua", "LUA")) then 
+                        AddCSLuaFile("hexsh/"..v.."/sh_config.lua")
+                        include("hexsh/"..v.."/sh_config.lua")
+                    end
+                    if (file.Exists("hexsh/"..v.."/language/eng.lua","LUA")) then 
+                        local ffiles, ffolder = file.Find( "hexsh/"..v.."/language/*", "LUA" )
+                        for _, f in pairs( ffiles ) do 
+                            AddCSLuaFile("hexsh/"..v.."/language//"..f)
+                            include("hexsh/"..v.."/language/"..f)
+                        end
+                    end
 
-                -- load Script
-                AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
-                include("hexsh/"..v.."/sh_init.lua")
+                    -- load Script
+                    AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
+                    include("hexsh/"..v.."/sh_init.lua")
+                end
+                de()
                 MsgC(white, [[|-  ]], pur, string.upper(v), white, [[ Successfully]], white, [[ loaded]],"\n")
+                
+                
+                hook.Add("InitPostEntity", "HexSh.Psrc"..v, function()
+                    de()
+					hook.Remove("InitPostEntity", "HexSh.Psrc"..v)
+                end)
+                
                 hook.Run("HexSH.SrcLoaded",v)
 
               --[[  -- load Script submodules
