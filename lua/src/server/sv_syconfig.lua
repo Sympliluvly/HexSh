@@ -52,9 +52,6 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    print(ply:GetUserGroup())
-    PrintTable(HexSh:getIConfig("src_sh").Ranks)
-    print(HexSh:getIConfig("src_sh").Ranks[ply:GetUserGroup()])
     if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
 
     net.Start("HexSh::OpenConfigMenu")

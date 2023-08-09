@@ -16,6 +16,7 @@ end
 function PANEL:Init()
     self.Data = {}
 end
+
 function PANEL:OpenMenu(pControlOpener)
 
 	if (pControlOpener && pControlOpener == self.TextEntry) then
@@ -32,11 +33,14 @@ function PANEL:OpenMenu(pControlOpener)
 
 	self.Menu = DermaMenu(false, self)
 
-	function self.Menu:AddOption(strText, funcFunction)
+	function self.Menu:AddOption(strText, funcFunction, tooltip)
 
         local pnl = vgui.Create("DMenuOption", self)
         pnl:SetMenu(self)
         pnl:SetIsCheckable(true)
+		if (tooltip && isstring(tooltip)) then 
+			pnl:SetToolTip(tooltip)
+		end
 		if (funcFunction) then pnl.DoClick = funcFunction end
 
 
@@ -53,7 +57,7 @@ function PANEL:OpenMenu(pControlOpener)
     end
 
 	for k, v in pairs(self.Choices) do
-		local option = self.Menu:AddOption( v, function() self:ChooseOption(v, k) end )
+		local option = self.Menu:AddOption( v, function() self:ChooseOption(v, k) end)
 
 		function option:PerformLayout(w, h)
 			self:SetTall(40)
@@ -113,23 +117,26 @@ function PANEL:OpenMenu(pControlOpener)
 
 end
 
-function PANEL:ChooseOption( value, index )
+function PANEL:AddChoice( value, data, select, icon )
 
-	if ( self.Menu ) then
-		self.Menu:Remove()
-		self.Menu = nil
+	local i = table.insert( self.Choices, value )
+
+	if ( data ) then
+		self.Data[ i ] = data
+	end
+	
+	if ( icon ) then
+		self.ChoiceIcons[ i ] = icon
 	end
 
-	self:SetText( value )
+	if ( select ) then
 
-	-- This should really be the here, but it is too late now and convar changes are handled differently by different child elements
-	--self:ConVarChanged( self.Data[ index ] )
+		self:ChooseOption( value, i )
 
-	self.selected = index
-	self:OnSelect( index, value, self.Data[ index ] )
+	end
 
+	return i
 end
-
 
 function PANEL:Paint(w,h)
     draw.RoundedBox(7.5,0,0,w,h,bgButton)
