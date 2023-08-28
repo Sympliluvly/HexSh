@@ -10,3 +10,7 @@ end)
 
 net.Start("HexSh::LoadConfig")
 net.SendToServer()
+
+net.Receive("HexSh::CommunicateLoad", function()
+    hook.Run("HexSh::CommunicateLoad",net.ReadTable())    
+end)

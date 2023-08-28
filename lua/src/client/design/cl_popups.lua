@@ -2,7 +2,7 @@
 local white = Color(255,255,255)
 -- ( FONTS )
 
-function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
+--[[function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
     if (!title) then title = "" end
 
     local bg = vgui.Create("EditablePanel")
@@ -193,7 +193,8 @@ function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
     end
 
     return pop 
-end
+end]]
+
 
 
     --[[local bg = vgui.Create("EditablePanel")
@@ -248,3 +249,108 @@ end
     close:SetPos((HexSh:toDecimal(100)*pop:GetWide())-close:GetWide(),0)
     pop.Text:SetPos(10,HexSh:toDecimal(20)*pop:GetTall())
     pop:Center() ]]
+
+local ac = HexSh.adminUI.Color
+function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
+    local Window = vgui.Create( "EditablePanel" )
+        Window:SetSize( 340, 450 )
+        Window:Center()
+        Window:MakePopup()
+        Window:SetAlpha(0)
+        Window:AlphaTo(255,0.3,0,nil)
+        ----------------- Window:DoModal()
+        Window.Paint = function(self,w,h)
+            draw.RoundedBoxEx(16,0,0,w,h,ac.purple,true,true,true,true)
+            draw.RoundedBox(16,2,2,w-4,h-4,Color(23,22,22,255))
+        end
+    -->
+
+    local top = vgui.Create("DPanel", Window)
+        top:Dock(TOP)
+        top:SetTall(ScrH()*0.05)
+        top.Paint = function(self,w,h)
+            draw.RoundedBoxEx(16,0,0,w,h,ac.purple,true,true,false,false)
+            draw.SimpleText("Erstellung", "DermaLarge", self:GetWide()/2, self:GetTall()/2, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        end
+    -->
+
+    local scroll = vgui.Create("HexSh.UI.Scroll",Window)
+        scroll:Dock(FILL)
+        scroll:DockMargin(5,5,5,5)
+    -->
+
+    local close = vgui.Create("HexSh.UI.Button", Window)
+        close:Dock(BOTTOM)
+        close:DockMargin(60,0,60,10)
+        close:SetText( HexSh:L("src_sh", "Close") )
+        close:SetTextColor( Color(255,255,255))
+        close:SetTall(30)
+        close.DoClick = function()
+            Window:AlphaTo(0,0.3,0,function()
+                Window:Remove()
+            end)
+        end
+    -->
+
+    local enter = vgui.Create("HexSh.UI.Button", Window)
+        enter:Dock(BOTTOM)
+        enter:DockMargin(60,0,60,10)
+        enter:SetText( HexSh:L("src_sh", "Save") )
+        enter:SetTextColor( Color(255,255,255))
+        enter:SetTall(30)
+        enter.DoClick = function()
+            Window:AlphaTo(0,0.3,0,function()
+                Window:Remove()
+            end)
+        end
+    -->
+
+    Window.field = function(title, tooltip, var, kind )
+        local p = vgui.Create("DPanel",scroll)
+        p:Dock(TOP)
+        p:DockMargin(5,2,5,3)
+        p:SetTall( 45 )
+        p:SetTooltip(tooltip)
+        p.Paint = function( self,w,h )
+            draw.RoundedBoxEx(7.5,0,0,101,h,HexSh.adminUI.Color.purple,true,true,true,true)
+            draw.RoundedBoxEx(7.5,5,0,w-5,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
+        end
+
+        local t = vgui.Create("DLabel",p)
+        t:SetText(title)
+        t:SetTooltip("")
+        t:SetFont("HexSh.X")
+        t:SetTextColor( white )
+        t:Dock(LEFT)
+        t:DockMargin(10,0,0,0)
+        t:SizeToContents()
+
+        if (kind=="text") then 
+            local e = vgui.Create("HexSh.UI.TextEntry",p)
+            e:Dock(RIGHT)
+            e:DockMargin(0,5,5,5)
+            e:SetText(var)
+            e:SetPlaceholderText(title)
+            e:SetFont("HexSh.X")
+            e:SetWide( 130 )
+            e.OnEnter = function( self )
+
+   
+            end
+        end
+        if (kind=="switch") then 
+            local e = vgui.Create("HexSh.Switch",p)
+            e:Dock(RIGHT)
+            e:DockMargin(0,12,5,5)
+            e:SetText("")
+            e:SetChecked(var)
+            e.OnChange = function( self )
+
+            end
+        end
+
+        return p 
+    end
+
+    return Window
+end

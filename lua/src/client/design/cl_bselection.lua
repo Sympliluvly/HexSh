@@ -40,8 +40,6 @@ function PANEL:Init()
         end
         self.EditLayer = vgui.Create("DPanel", parent)
         self.EditLayer:SetAlpha(0)
-        self.EditLayer:SetSize(toDecimal(67)* self:GetParent():GetWide(),toDecimal(80)*self:GetParent():GetTall())
-        self.EditLayer:SetPos((toDecimal(99) * self:GetParent():GetWide()) - self.EditLayer:GetWide(), (toDecimal(90) * self:GetParent():GetTall()) - self.EditLayer:GetTall())
         self.EditLayer:AlphaTo(255,0.3,0)
         self.EditLayer.Paint = function(s,w,h)
             draw.RoundedBox(2.5,0,0,w,h,HexSh.adminUI.Color.purple)
@@ -55,7 +53,7 @@ function PANEL:Init()
     self.EditLayer.PaintOver = function(s,w,h)
         surface.SetDrawColor( white )
         surface.SetMaterial(HexSh:getImgurImage("wkm6FEZ"))
-        surface.DrawTexturedRectRotated( toDecimal(50)*s:GetWide(), toDecimal(47)*s:GetTall(), 500, 500, CurTime() * 25 % 360 )
+        surface.DrawTexturedRectRotated( toDecimal(50)*s:GetWide(), toDecimal(47)*s:GetTall(), 300, 300, CurTime() * 25 % 360 )
     end
 
     local ScrollBar = self:GetVBar();
@@ -82,6 +80,28 @@ function PANEL:Init()
 
     -- buttons
     self:firstButtons()
+end
+function PANEL:SetPage(...)
+    local args = {...}
+    if table.Count(args) == 2 then 
+        local category = args[1]
+        local sub = args[2]
+        self:addEditLayer()
+        HexSh.adminUI.Items.S[category].Btns[sub].f(self.EditLayer)
+
+        self:Clear()
+        self:AddBackButton()
+        for k,v in pairs(HexSh.adminUI.Items.S[category].Btns) do 
+            self:AddButton(v.title,v.icon,v.f)
+        end
+
+    elseif  table.Count(args) == 1 then 
+        local name = args[1]
+        self:addEditLayer()
+        HexSh.adminUI.Items[name].f(self.EditLayer)
+    else
+        return
+    end
 end
 
 function PANEL:firstButtons()
@@ -179,7 +199,7 @@ function PANEL:AddSubMenu(ix,t,i,f)
             draw.RoundedBox(100,0,y,6,hh,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue()))
         end
 
-        if i then 
+        if i then
             AddMat(s,i)
         end
 
@@ -190,23 +210,3 @@ end
  
 
 vgui.Register("HexSh.adminUI.BSelect", PANEL, "DScrollPanel")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -49,14 +49,7 @@ function PANEL:AddSheet(title, pnl, icon, tooltip)
         end
     end
     sheet:Dock(LEFT)
-    sheet:SetWide(150)
-    local counttitle = string.len(title)
-    if (counttitle>12) then 
-        sheet:SetWide(139)
-    end
-    if (counttitle>14) then 
-        sheet:SetWide(170)
-    end
+    sheet:SetWide(140)
     sheet:DockMargin(0,0,3,0)
     sheet:SetText("")
     sheet.Paint = function(s,w,h)
@@ -70,7 +63,7 @@ function PANEL:AddSheet(title, pnl, icon, tooltip)
             surface.DrawTexturedRect(math.toDecimal(6.4)*90,(math.toDecimal(95)*s:GetTall())-25,15,15)
         end
 
-        draw.SimpleText(title, "HexSh.admin.sheet", icon && 25 || w/2, h/2, white, icon && TEXT_ALIGN_LEFT || TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(title, "DermaDefault", icon && 25 || w/2, h/2, white, icon && TEXT_ALIGN_LEFT || TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
 

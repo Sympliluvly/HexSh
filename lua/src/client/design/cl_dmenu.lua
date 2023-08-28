@@ -22,3 +22,34 @@ function PANEL:Paint(w,h)
 end
 
 vgui.Register("HexSH.UI.Menu", PANEL, "DMenu")
+
+
+
+
+
+local PANEL = {}
+
+function PANEL:Init()
+    local ScrollBar = self:GetVBar();
+
+    ScrollBar:SetHideButtons( true );
+    ScrollBar:SetSize(3,0)
+
+    function ScrollBar.btnGrip:Paint( w, h )  
+        draw.RoundedBox( 0, 0, 0, w, h, HexSh.adminUI.Color.purple ); 
+    end;
+    function ScrollBar.btnUp:Paint( w, h )       
+        return; 
+    end;
+    function ScrollBar.btnDown:Paint( w, h )       
+        return;
+    end;
+end 
+
+function PANEL:Paint()
+    draw.RoundedBox( 0, 0, 0, w, h, Color(77,14,95) ); 
+end
+
+vgui.Register("HexSh.UI.Scroll", PANEL, "DScrollPanel")
+
+-----------------

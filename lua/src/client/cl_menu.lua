@@ -11,118 +11,120 @@ local getAlpha = function(col, a)
     return Color(col["r"], col["g"], col["b"], a)
 end
 
+  
+hook.Add("OnContextMenuOpen", "HexShareds::ContextMenuModeOpen", function()
+    if (HC_Mode == "context" && IsValid(HexSh.adminUI.MainMenu)) then 
+        HexSh.adminUI.MainMenu:SetVisible(true)
+    end
+end)
+
+
+hook.Add("OnContextMenuClose", "HexShareds::ContextMenuModeClose", function()
+    if (HC_Mode == "context" && IsValid(HexSh.adminUI.MainMenu)) then 
+        HexSh.adminUI.MainMenu:SetVisible(false)
+    end
+end)
+
 
 net.Receive("HexSh::OpenConfigMenu", function()
+    local mode = net.ReadString()
     local scrw,scrh = ScrW(), ScrH()
 
-    if (!LocalPlayer().HCS_AdminMenuconfig) then 
+    HC_Mode = mode  
+
+    --[[if (!LocalPlayer().HCS_AdminMenuconfig) then 
         hook.Run("HexSh::GetAdminItems")
         
         LocalPlayer().HCS_AdminMenuconfig = true
-    end
-    
-
-    local frame = vgui.Create("EditablePanel")
-    frame:SetSize(toDecimal(40) * ScrW(), toDecimal(60) * ScrH())
-    frame:Center()
-    frame:MakePopup()
-    frame:SetAlpha(0)
-    frame:AlphaTo(255,0.14,0,nil)
-    HexSh.ConfigMenu = frame 
-
-    -- Header
-    frame.Rotate = false 
-    frame.Paint = function(s,w,h)
-        draw.RoundedBox(15,0,0,w,h,HexSh.adminUI.Color.bgGray)
-
-        surface.SetDrawColor(white)
-        surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
-        surface.DrawTexturedRectRotated( toDecimal(3.3) * frame:GetWide(),toDecimal(3.7) * frame:GetTall(),toDecimal(7) * frame:GetWide(), toDecimal(7) * frame:GetTall(), s.Rotate && CurTime() * 200 % 360 || 0  )
-
-        local Hxpos, Cxpos = toDecimal(6.9) * frame:GetWide()
-        draw.MultiColorText("HexUI.TitlesUltimateBigest", Hxpos, toDecimal(3) * frame:GetTall(), TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER, HexSh.adminUI.Color.purple, "H", white, "exagon ", HexSh.adminUI.Color.purple, "C", white, "ryptics")
-        
-    end 
+    end]]
 
 
+    local Frame = vgui.Create("DFrame")
+        Frame:SetSize(620,390)
+        Frame:SetMinHeight(390)
+        Frame:SetMinWidth(620)
+        Frame:Center()
+        Frame:MakePopup()
+        Frame:SetDraggable(true)
+        Frame:SetSizable(true)
+        Frame:ShowCloseButton(false)
+        Frame:SetTitle("")
+        function Frame:Paint(w,h)
+            draw.RoundedBox(16,0,0,w,h,bgDarkGray)
+            
+            surface.SetDrawColor(white)
+            surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
+            surface.DrawTexturedRect(0,0,36,30)
 
-    local function addAnim(pnl)
-        pnl.LerpAlpha = HexSh:Lerp(0,0,0.3)
-        pnl.OnCursorEntered = function(s)
-            s.LerpAlpha = HexSh:Lerp(0,255,0.3)
-            s.LerpAlpha:DoLerp()
+            draw.SimpleText("Hexagon Cryptics", "HexSh.X", 36, 30 / 2 - 10, white )
         end
-        pnl.OnCursorExited = function(s)
-            s.LerpAlpha = HexSh:Lerp(255,0,0.3)
-            s.LerpAlpha:DoLerp()
+    -->
+    local Selection = vgui.Create("HexSh.adminUI.BSelect",Frame)
+    Selection:SetPos(0,50)
+
+    local Close = vgui.Create("DButton",Frame)
+        Close:SetSize(36,30)
+        Close:SetText("X")
+        Close:SetTextColor(white)
+        Close.Lerp = HexSh:Lerp(0,0,0.3)
+        function Close:DoClick()
+            Frame:Remove()
         end
-    end
-    
-    frame.Close = vgui.Create("DButton",frame)
-    frame.Close:SetSize( toDecimal(5) * frame:GetWide(), toDecimal(7) * frame:GetTall() )
-    frame.Close:SetPos((toDecimal(100) *frame:GetWide()) - frame.Close:GetWide(), (toDecimal(7) * frame:GetTall()) - frame.Close:GetTall() )
-    frame.Close:SetText("")
-    frame.Close.DoClick = function()
-        frame:AlphaTo(0,0.14,0,function()
-            frame:Remove()
-        end)
-    end
-    addAnim(frame.Close)
-    frame.Close.Paint = function(s,w,h)
-        if s.LerpAlpha then s.LerpAlpha:DoLerp() end 
-
-        if (s.LerpAlpha:GetValue() > 0) then 
-            draw.RoundedBoxEx(15,0,0,w,h,getAlpha(bgLightGray,s.LerpAlpha:GetValue()),false,true,false,false)
+        function Close:OnCursorEntered()
+            self.Lerp = HexSh:Lerp(0,255,0.3)
+            self.Lerp:DoLerp()
         end
-        draw.SimpleText("X", "HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    end
-    
-    frame.Minimize = vgui.Create("DButton",frame)
-    frame.Minimize:SetSize( toDecimal(5) * frame:GetWide(), toDecimal(7) * frame:GetTall() )
-    frame.Minimize:SetPos((toDecimal(95.2) *frame:GetWide()) - frame.Minimize:GetWide(), (toDecimal(7) * frame:GetTall()) - frame.Minimize:GetTall() )
-    frame.Minimize:SetText("")
-    frame.Minimize.DoClick = function()
-        frame:AlphaTo(0,0.14,0,function()
-            frame:Remove()
-       end)
-    end
-    addAnim(frame.Minimize)
-    frame.Minimize.Paint = function(s,w,h)
-        if s.LerpAlpha then s.LerpAlpha:DoLerp() end 
-
-        if (s.LerpAlpha:GetValue() > 0) then 
-            draw.RoundedBoxEx(15,0,0,w,h,getAlpha(bgLightGray,s.LerpAlpha:GetValue()),false,false,false,false)
+        function Close:OnCursorExited()
+            self.Lerp = HexSh:Lerp(255,0,0.3)
+            self.Lerp:DoLerp()
         end
-        
-        draw.SimpleText("-", "HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        function Close:Paint(w,h)
+            if (self.Lerp) then self.Lerp:DoLerp() end
+            if (self.Lerp:GetValue() > 1) then      
+                draw.RoundedBoxEx(16,0,0,w,h,getAlpha(bghovergray,self.Lerp:GetValue()),false,true,false,false)
+            end
+        end
+    -->
+
+    function Frame:PerformLayout(w,h)
+        Close:SetPos(self:GetWide() - Close:GetWide(), 0 )
+        Selection:SetSize(190, self:GetTall())
+
+        Selection.EditLayer:SetSize(self:GetWide() - Selection:GetWide() -  25, self:GetTall() - 50)
+        Selection.EditLayer:SetPos(Selection:GetWide() + 10, 45)
     end
 
-    -- Footer
-    local footer = vgui.Create("DPanel", frame)
-    footer:Dock(BOTTOM)
-    footer:DockMargin(0,0,0,0)
-    footer:SetTall(toDecimal(9)*frame:GetTall())
-    footer.Paint = function(s,w,h)
-        draw.RoundedBoxEx(15,0,0,w,h,bgLightGray,false,false,true,true)
-    end
+    Frame.Selection = Selection
+    -->
 
-    -- Body
-    HexSh.adminUI.MainSelect = vgui.Create("HexSh.adminUI.BSelect", frame)
+    --[[local Minimum = vgui.Create("DButton",Frame)
+        Minimum:SetSize(36,30)
+        Minimum:SetText("X")
+        function Minimum:DoClick()
+        end
+        function Minimum:Paint(w,h)
+            self:SetPos(Frame:GetWide() - self:GetWide() - Close:GetWide(), 0 )         
+            draw.RoundedBox(0,0,0,w,h,white)
+        end
+    -->]]
+
+    HexSh.adminUI.MainMenu = Frame 
+    HexSh.adminUI.Selection = Selection
 end)
 
 list.Set( "DesktopWindows", "HexConfig", {
-    
 	icon = "data/hexsh/cache/img/BmestJw.png",
 	title = "HexConfig",
 	width = 100,
 	height = 100,
-	onewindow = true,
+	onewindow = false,
 	init = function( icon, window )
 		window:Close()
 
         net.Start("HexSh::OpenConfigMenu")
+            net.WriteString("context")
         net.SendToServer()
 	end
 
 	}
-)
+) 

@@ -3,7 +3,7 @@
 surface.CreateFont( "HexSh.X", {
     font = "Montserrat", 
     extended = false,
-    size = 30,
+    size = 20,
     weight = 1000,
 } )
 surface.CreateFont( "HexSh.Title", {

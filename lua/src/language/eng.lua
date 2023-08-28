@@ -26,4 +26,6 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["MYSQLPort"] = "Port",
     ["MYSQLPortTool"] = "The virtual gateway from your Database",
     ["Save"] = "Save",
+    ["Close"] = "Close",
+    ["logs"] = "Logs",
 }

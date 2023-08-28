@@ -51,14 +51,14 @@ function HexSh.adminUI.AddEditField(parent, title, element, var, tooltip, numeri
     local p = vgui.Create("DPanel",parent)
     p:Dock(TOP)
     p:DockMargin(5,2,5,3)
-    p:SetTall( toDecimal(12) * parent:GetTall() )
+    p:SetTall( 50 )
     p.Paint = function( self,w,h )
         draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray2,true,true,true,true)
     end
 
     p.t = vgui.Create("DLabel",p)
     p.t:SetText(title)
-    p.t:SetFont("DermaLarge")
+    p.t:SetFont("HexSh.X")
     p.t:SetTextColor( white )
     p.t:Dock(LEFT)
     p.t:DockMargin(5,0,0,0)
@@ -70,7 +70,7 @@ function HexSh.adminUI.AddEditField(parent, title, element, var, tooltip, numeri
         p.entry:DockMargin(0,5,5,5)
         p.entry:SetText(var)
         p.entry.curVar = var
-        p.entry:SetFont("HexSh.UI.20")
+        p.entry:SetFont("HexSh.X")
         p.entry:SetTooltip(tooltip)
         p.entry:SetWide( 200 )
         if (enabled == false) then p.entry:SetDisabled(true) end
@@ -83,7 +83,7 @@ function HexSh.adminUI.AddEditField(parent, title, element, var, tooltip, numeri
     if (element == "switch") then 
         p.switch = vgui.Create( "HexSh.Switch",p );
         p.switch:Dock( RIGHT );
-        p.switch:DockMargin( 9, 6, 10, 0 );
+        p.switch:DockMargin( 9, 15, 10, 0 );
         p.switch:SetText( "dd" );
         p.switch:SetWide( 40 )
         p.switch:SetTooltip(tooltip)
@@ -113,6 +113,10 @@ hook.Add("HexSh::GetAdminItems", "", function()
         size = 50,
         weight = 1000,
     } )
+
+    HexSh.adminUI:AddNMenu("logs", HexSh:L("src_sh", "logs"), HexSh:getImgurImage("EkzBK5Z"), function(parent)
+    end)
+    
     HexSh.adminUI:AddNMenu("modules", HexSh:L("src_sh", "Modules"), HexSh:getImgurImage("RzhmHQH"), function(parent)
 
         parent.PaintOver = function(s,w,h)
@@ -121,7 +125,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
 
         local scroll = vgui.Create("DScrollPanel", parent)
         scroll:Dock(FILL)
-        scroll:DockMargin(0,toDecimal(10)*parent:GetTall(),2,10)
+        scroll:DockMargin(0,50,2,10)
         local ScrollBar = scroll:GetVBar();
 
         ScrollBar:SetHideButtons( true );
@@ -142,11 +146,12 @@ hook.Add("HexSh::GetAdminItems", "", function()
         for k,v in pairs(HexSh.Srcs) do 
             local frame = vgui.Create("DPanel",scroll)
             frame:Dock(TOP)
-            frame:DockMargin(4.5,4.5,4.5,4.5)
-            frame:SetTall(50)
+            frame:DockMargin(7.5,4.5,7.5,4.5)
+            frame:SetTall(35)
             frame.Paint = function(s,w,h)
-                draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
-                draw.SimpleText(k,"HexSh.admin.FieldText", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                draw.RoundedBoxEx(7.5,0,5,w,h-5,HexSh.adminUI.Color.purple,true,true,true,true)
+                draw.RoundedBoxEx(7.5,0,0,w,h-2,HexSh.adminUI.Color.bgGray,true,true,true,true)
+                draw.SimpleText(string.upper(string.Split(k,"src_")[2]),"HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
         end
     end)
@@ -158,7 +163,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
         local ScrollBar = scroll:GetVBar();
 
         ScrollBar:SetHideButtons( true );
-        ScrollBar:SetSize(10,0)
+        ScrollBar:SetSize(2,0)
         function ScrollBar.btnGrip:Paint( w, h )  
             draw.RoundedBox( 0, 0, 0, w, h, HexSh.adminUI.Color.purple ); 
         end;
@@ -176,118 +181,120 @@ hook.Add("HexSh::GetAdminItems", "", function()
             local p = vgui.Create("DPanel",scroll)
             p:Dock(TOP)
             p:DockMargin(5,2,5,3)
-            p:SetTall( toDecimal(9) * parent:GetTall() )
+            p:SetTall( 50 )
             p.Paint = function( self,w,h )
                 draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
-                draw.SimpleText(title, "DermaLarge", 5, toDecimal(9) * parent:GetTall() / 2 - 20, white )
+                draw.SimpleText(title, "HexSh.X", 5, h/2, white, TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER )
             end
-
 
             return p 
         end
+
         local write = function()
             net.Start("HexSH::WriteConfig")
               HexSh:WriteCompressedTable(HexSh.Config.IConfig)
             net.SendToServer()
         end
+
         local cfg = HexSh.Config.IConfig["src_sh"]
 
         local ChangeLang = field(HexSh:L("src_sh","changeLang"))
-        ChangeLang.Change = vgui.Create("HexSh.UI.DropDown",ChangeLang)
-        ChangeLang.Change:Dock(RIGHT)
-        ChangeLang.Change:DockMargin(0,5,5,5)
-        ChangeLang.Change:SetValue(HexSh.Config.IConfig["src_sh"].Language)
-        ChangeLang.Change:SetFont("DermaLarge")
-        ChangeLang.Change:SetWide( toDecimal(40) * parent:GetWide() )
-        for k,v in pairs(HexSh._Languages) do 
-            ChangeLang.Change:AddChoice(k,k)
-        end
-        ChangeLang.Change.OnSelect = function(self, index, value)
-            cfg.Language = value 
-            write()
-            hook.Run("HexSh::GetAdminItems")
-            HexSh.ConfigMenu:Remove()
-            net.Start("HexSh::OpenConfigMenu")
-            net.SendToServer()
-        end
-
-
-
-        local Ranks = field(HexSh:L("src_sh", "Access"))
-        Ranks:SetTall(toDecimal(70) * parent:GetTall())
-
-        local li = vgui.Create("HexSh.UI.List", Ranks)
-        li:Dock(RIGHT)
-        li:DockMargin(3,3,7,3)
-        li:SetWide(toDecimal(70) * Ranks:GetTall())
-        li:AddColumn(HexSh:L("src_sh","Ranks"),1)
-
-        local function GetRanks(tb) 
-            for k,v in pairs(tb) do
-                local a = li:AddLine( k )
-                a.title = k
-            end 
-        end 
-        GetRanks(cfg.Ranks) 
-        
-        local lilo 
-        li.OnRowSelected = function( panel, rowIndex, row )
-            lilo = row.title
-        end
-
-        local btnp = vgui.Create("DPanel",Ranks)
-        btnp:SetSize(toDecimal(40) * parent:GetWide(),toDecimal(50) * parent:GetTall())
-        btnp:SetPos((toDecimal(42) * parent:GetWide())-btnp:GetWide(), (toDecimal(60) * parent:GetTall())-btnp:GetTall())
-        btnp.Paint = nil
-
-        btnp.add = vgui.Create("HexSh.UI.Button", btnp)
-        btnp.add:Dock(TOP)
-        btnp.add:SetTall(60)
-        btnp.add:SetText(HexSh:L("src_sh", "AddRank"))
-        btnp.add:SetFont("HexSh.UI.22")
-        btnp.add.DoClick = function()
-            Derma_StringRequest(HexSh:L("src_sh", "AddRank"),"","...", function(txt)
-                local a = li:AddLine( txt )
-                a.title = txt
-
-                cfg.Ranks[txt] = true
+            ChangeLang.Change = vgui.Create("HexSh.UI.DropDown",ChangeLang)
+            ChangeLang.Change:Dock(RIGHT)
+            ChangeLang.Change:DockMargin(0,5,5,5)
+            ChangeLang.Change:SetValue(HexSh.Config.IConfig["src_sh"].Language)
+            ChangeLang.Change:SetFont("HexSh.X")
+            ChangeLang.Change:SetWide( 150 )
+            for k,v in pairs(HexSh._Languages) do 
+                ChangeLang.Change:AddChoice(k,k)
+            end
+            ChangeLang.Change.OnSelect = function(self, index, value)
+                cfg.Language = value 
                 write()
-            end, nil)
-        end
-
-        btnp.delete = vgui.Create("HexSh.UI.Button", btnp)
-        btnp.delete:Dock(TOP)
-        btnp.delete:SetTall(60)
-        btnp.delete:DockMargin(0,3,0,0)
-        btnp.delete:SetText(HexSh:L("src_sh", "DeleteRank"))
-        btnp.delete:SetFont("HexSh.UI.22")
-        btnp.delete:SetTooltip(HexSh:L("src_sh", "DeleteRankTootlip"))
-        btnp.delete.DoClick = function()
-            if (!lilo) then 
-                Derma_Message(HexSh:L("src_sh", "DeleteRankTootlip"),"","->")
-                return 
+                hook.Run("HexSh::GetAdminItems")
+                HexSh.adminUI.MainMenu:Remove()
+                net.Start("HexSh::OpenConfigMenu")
+                net.SendToServer()
             end
-            if (lilo=="superadmin") then 
-                Derma_Message(HexSh:L("src_sh", "trydeleteSuperadmin"),"","->")
-                return 
-            end
-            li:Clear()
-            cfg.Ranks[lilo] = nil
-            write()
+        -->
 
-            timer.Simple(0.1, function()
-                GetRanks(cfg.Ranks) 
-            end)
-        end
+
+        local Ranks = field("")
+            Ranks:SetTall(400)
+
+            local li = vgui.Create("HexSh.UI.List", Ranks)
+            li:Dock(RIGHT)
+            li:DockMargin(3,3,7,3)
+            li:AddColumn(HexSh:L("src_sh","Ranks"),1)
+
+            local function GetRanks(tb) 
+                for k,v in pairs(tb) do
+                    local a = li:AddLine( k )
+                    a.title = k
+                end 
+            end 
+            GetRanks(cfg.Ranks) 
+            
+            local lilo 
+            li.OnRowSelected = function( panel, rowIndex, row )
+                lilo = row.title
+            end
+
+            local btnp = vgui.Create("DPanel",Ranks)
+            btnp.Paint = nil
+
+            btnp.add = vgui.Create("HexSh.UI.Button", btnp)
+            btnp.add:Dock(TOP)
+            btnp.add:SetTall(60)
+            btnp.add:SetText(HexSh:L("src_sh", "AddRank"))
+            btnp.add:SetFont("HexSh.X")
+            btnp.add.DoClick = function()
+                
+                Derma_StringRequest(HexSh:L("src_sh", "AddRank"),"","...", function(txt)
+                    local a = li:AddLine( txt )
+                    a.title = txt
+
+                    cfg.Ranks[txt] = true
+                    write()
+                end, nil)
+            end
+
+            btnp.delete = vgui.Create("HexSh.UI.Button", btnp)
+            btnp.delete:Dock(TOP)
+            btnp.delete:SetTall(60)
+            btnp.delete:DockMargin(0,3,0,0)
+            btnp.delete:SetText(HexSh:L("src_sh", "DeleteRank"))
+            btnp.delete:SetFont("HexSh.X")
+            btnp.delete:SetTooltip(HexSh:L("src_sh", "DeleteRankTootlip"))
+            btnp.delete.DoClick = function()
+                if (!lilo) then 
+                    Derma_Message(HexSh:L("src_sh", "DeleteRankTootlip"),"","->")
+                    return 
+                end
+                if (lilo=="superadmin") then 
+                    Derma_Message(HexSh:L("src_sh", "trydeleteSuperadmin"),"","->")
+                    return 
+                end
+                li:Clear()
+                cfg.Ranks[lilo] = nil
+                write()
+
+                timer.Simple(0.1, function()
+                    GetRanks(cfg.Ranks) 
+                end)
+            end
+        -->
 
         net.Start("HexSh::SQLGET")
         net.SendToServer()
          
+        local sqqql = false 
         net.Receive("HexSh::SQLGET", function()
+            sqqql = true
             local access = net.ReadBool()
             if (!access) then 
                 local MySQL = field(HexSh:L("src_sh", "notMYSQL"))
-                MySQL:SetTall(toDecimal(8) * parent:GetTall())
+                MySQL:SetTall(100)
                 return 
             end
             local mysql = net.ReadBool()
@@ -300,7 +307,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
 
 
             local MySQL = field(HexSh:L("src_sh", "MYSQL"))
-            MySQL:SetTall(toDecimal(75) * parent:GetTall())
+            MySQL:SetTall(430)
             
             local utils = {}
             local function SetDisabledElements(bool)
@@ -330,7 +337,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 Save:SetTall(30)
                 Save:DockMargin(5,5,5,5)
                 Save:SetText(HexSh:L("src_sh", "Save"))
-                Save:SetFont("HexSh.UI.22")
+                Save:SetFont("HexSh.X")
                 Save.DoClick = function( s )
                     net.Start("HexsSh::SQLWRITE")
                         net.WriteBool(enableMySQL.switch:GetChecked())
@@ -354,8 +361,22 @@ hook.Add("HexSh::GetAdminItems", "", function()
             end 
 
         end)
+
+
+
+        function HexSh.adminUI.MainMenu.Selection.EditLayer:PerformLayout(w,h)
+            ChangeLang.Change:SetWide( w/2.3 )
+            btnp:SetSize(w/3,200)
+            btnp:SetPos(20, 50)
+            li:SetWide(w/1.8)
+            if (sqqql) then 
+
+
+            end
+        end
         
     end)
+
 end)
 
 

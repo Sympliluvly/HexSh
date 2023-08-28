@@ -25,6 +25,11 @@ function PANEL:Init()
     self:SetFont("HexSh.Entry.Text")
 
     self.Lerp = HexSh:Lerp(0,0,0.3)
+    self.bg = bgLightGray
+end
+
+function PANEL:SetBackgroundColor(clr)
+    self.bg = clr
 end
 
 function PANEL:OnGetFocus()
@@ -41,10 +46,10 @@ end
 
 function PANEL:Paint(w,h)
     if (self:GetDisabled() == true) then 
-        draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
+        draw.RoundedBox(7.5,0,0,w,h,self.bg)
         draw.RoundedBox(7.5,0,0,w,h,deactivatered)
     else 
-        draw.RoundedBox(7.5,0,0,w,h,bgLightGray)
+        draw.RoundedBox(7.5,0,0,w,h,self.bg)
     end
     self:DrawTextEntryText(Color(255,255,255), Color(255, 30, 255),Color(255, 30, 255) );
     self:SetTextColor(white)
