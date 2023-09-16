@@ -39,6 +39,13 @@ net.Receive("HexSh::OpenConfigMenu", function()
     end]]
 
 
+    if HexSh.adminUI.Minimized then 
+        HexSh.adminUI.MainMenu:SetVisible(true)
+        HexSh.adminUI.Minimized = false
+        return
+    end
+
+    HexSh.adminUI.Minimized = false
     local Frame = vgui.Create("DFrame")
         Frame:SetSize(620,390)
         Frame:SetMinHeight(390)
@@ -85,10 +92,40 @@ net.Receive("HexSh::OpenConfigMenu", function()
             end
         end
     -->
+    local Minim = vgui.Create("DButton",Frame)
+        Minim:SetSize(36,30)
+        Minim:SetText("-")
+        Minim:SetTextColor(white)
+        Minim:SetTooltip(HexSh:L("src_datapad", "Minim_ToolTip"))
+        Minim.Lerp = HexSh:Lerp(0,0,0.3)
+        function Minim:DoClick()
+            HexSh.adminUI.Minimized = true
+            Frame:SetVisible(false)
+        end
+        function Minim:OnCursorEntered()
+            self.Lerp = HexSh:Lerp(0,255,0.3)
+            self.Lerp:DoLerp()
+        end
+        function Minim:OnCursorExited()
+            self.Lerp = HexSh:Lerp(255,0,0.3)
+            self.Lerp:DoLerp()
+        end
+        function Minim:Paint(w,h)
+            if (self.Lerp) then self.Lerp:DoLerp() end
+            if (self.Lerp:GetValue() > 1) then      
+                draw.RoundedBoxEx(16,0,0,w,h,getAlpha(bghovergray,self.Lerp:GetValue()),false,false,false,false)
+            end
+        end
+    -->
 
     function Frame:PerformLayout(w,h)
         Close:SetPos(self:GetWide() - Close:GetWide(), 0 )
-        Selection:SetSize(190, self:GetTall())
+        Minim:SetPos(self:GetWide() - Close:GetWide() - Minim:GetWide(), 0)
+        if Selection.isBig then 
+            Selection:SetSize(190, self:GetTall())
+        else
+            Selection:SetSize(29, self:GetTall())
+        end
 
         Selection.EditLayer:SetSize(self:GetWide() - Selection:GetWide() -  25, self:GetTall() - 50)
         Selection.EditLayer:SetPos(Selection:GetWide() + 10, 45)

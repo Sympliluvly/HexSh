@@ -14,3 +14,11 @@ net.SendToServer()
 net.Receive("HexSh::CommunicateLoad", function()
     hook.Run("HexSh::CommunicateLoad",net.ReadTable())    
 end)
+
+
+--command
+concommand.Add("hexmenu", function()
+    net.Start("HexSh::OpenConfigMenu")
+        net.WriteString("context")
+    net.SendToServer()
+end)

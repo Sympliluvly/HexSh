@@ -1,5 +1,17 @@
 -- ( WHITE )
+
+local black = Color(0,0,0,255)
 local white = Color(255,255,255)
+ --bg
+local bgButton = Color(45,45,45) -- buttonhovere
+local bgDarkGray = Color(33,31,31)
+local bgLightGray = Color(49,47,50)
+local bghovergray = Color(46,48,52,250)
+local toDecimal = function( x ) return ( ( x <= 100 ) && x || 100 ) * 0.01 end;
+local getAlpha = function(col, a)
+    return Color(col["r"], col["g"], col["b"], a)
+end
+
 -- ( FONTS )
 
 --[[function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
@@ -353,4 +365,63 @@ function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
     end
 
     return Window
+end
+
+
+function HexSh.UI.PopUp(...)
+    local args = {...}
+
+
+    local window = vgui.Create("DFrame")
+    window:SetSize(400,500)
+    window:Center()    
+    window:SetBackgroundBlur(true)            
+    window:SetDraggable(false)
+    window:SetSizable(false)
+    window:ShowCloseButton(false)
+    window:SetTitle("")
+    window:MakePopup()
+    window:DoModal()
+    function window:Paint(w,h)
+        draw.RoundedBox(16,0,0,w,h,HexSh.adminUI.Color.purple)
+        draw.RoundedBox(16,2,2,w-4,h-4,bgDarkGray)
+        
+        surface.SetDrawColor(white)
+        surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
+        surface.DrawTexturedRect(2,2,36,30)
+
+        draw.SimpleText(args[1], "HexSh.X", 36, 30 / 2 - 10, white )
+    end
+
+    local Close = vgui.Create("DButton",window)
+        Close:SetSize(36,30)
+        Close:SetText("X")
+        Close:SetTextColor(white)
+        Close.Lerp = HexSh:Lerp(0,0,0.3)
+        function Close:DoClick()
+            window:Remove()
+        end
+        function Close:OnCursorEntered()
+            self.Lerp = HexSh:Lerp(0,255,0.3)
+            self.Lerp:DoLerp()
+        end
+        function Close:OnCursorExited()
+            self.Lerp = HexSh:Lerp(255,0,0.3)
+            self.Lerp:DoLerp()
+        end
+        function Close:Paint(w,h)
+            if (self.Lerp) then self.Lerp:DoLerp() end
+            if (self.Lerp:GetValue() > 1) then      
+                draw.RoundedBoxEx(16,0,0,w,h,getAlpha(bghovergray,self.Lerp:GetValue()),false,true,false,false)
+            end
+        end
+    -->
+
+    function window:PerformLayout(w,h)
+        Close:SetPos(self:GetWide() - Close:GetWide() - 2, 2 )
+    end
+
+
+
+    return window
 end
