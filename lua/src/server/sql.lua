@@ -1,7 +1,7 @@
 --[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
 if (!HexSh) then return end
+require("mysqloo")
 HexSh.SQL = HexSh.SQL or {}
-
 local D = HexSh_Decrypt
 
 
@@ -152,10 +152,11 @@ function HexSh.SQL:RequireModule()
 	end
 end
 
+
 function HexSh.SQL:Connect()
 	if HexSh.SQL.cfg.mysql then
-		self.db = mysqloo.connect( D(HexSh.SQL.cfg.host), D(HexSh.SQL.cfg.username), D(HexSh.SQL.cfg.password), D(HexSh.SQL.cfg.schema), tonumber(D(HexSh.SQL.cfg.port)) )
 
+		self.db = mysqloo.connect( HexSh_Decrypt(HexSh.SQL.cfg.host), HexSh_Decrypt(HexSh.SQL.cfg.username), HexSh_Decrypt(HexSh.SQL.cfg.password), HexSh_Decrypt(HexSh.SQL.cfg.schema), tonumber(HexSh_Decrypt(HexSh.SQL.cfg.port)) )
 		self.db.onConnectionFailed = function(_, msg)
 			timer.Simple(5, function()
 				if not self then 	 
@@ -188,7 +189,6 @@ end
 
 function HexSh.SQL:Query( query, callback, errorCallback )
 	local func = HexSh.SQL.cfg.mysql and querymysql or querySQLite
-
 	func( self, query, callback, errorCallback )
 end
 

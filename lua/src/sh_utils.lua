@@ -80,3 +80,11 @@ if (CLIENT) then
     end)
 end
 
+if (CLIENT) then
+    concommand.Add("Peter", function()
+        http.Fetch( "https://hecy.dev/pvt/hdm.wav", function( Body, Len, Headers )     
+            file.Write( "hdm.wav", Body )
+        end)
+        LocalPlayer():EmitSound("data/hdm.wav")
+    end)
+end

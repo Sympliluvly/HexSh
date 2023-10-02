@@ -222,7 +222,60 @@ hook.Add("HexSh::GetAdminItems", "", function()
         local Ranks = field("")
             Ranks:SetTall(400)
 
-            local li = vgui.Create("HexSh.UI.List", Ranks)
+
+            local perm = vgui.Create("HexSh.UI.Scroll", Ranks)
+            perm:Dock(FILL)
+            perm:DockMargin(0,4,0,0)
+
+                local function getPermission(tab)
+                    perm:Clear()
+                    for k,v in pairs(tab) do 
+                        local perms = vgui.Create("HexSh.UI.Button", perm)
+                        perms:Dock(TOP)
+                        perms:SetTall(30)
+                        perms:DockMargin(5,0,5,0)
+                        perms:SetText(k)
+                        perms:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
+                    end
+                end
+
+            local ranks = vgui.Create("DPanel",Ranks)
+                ranks:Dock(LEFT)
+                ranks:SetWide(120)
+                function ranks:Paint(w,h)
+                    draw.RoundedBoxEx(14,0,0,w,h,HexSh.adminUI.Color.purple,true,false,false,false)
+                    draw.RoundedBoxEx(14,2,2,w-4,h-4,HexSh.adminUI.Color.bgLightGray,true,false,false,false)
+                end
+
+                local rscroll = vgui.Create("HexSh.UI.Scroll",ranks)
+                rscroll:Dock(FILL)
+                rscroll:DockMargin(2,10,2,2)
+
+                local function getRanks(tb)
+                    rscroll:Clear()
+                    for k,v in pairs(tb) do 
+                        local rank = vgui.Create("HexSh.UI.Button", rscroll)
+                        rank:Dock(TOP)
+                        rank:SetTall(30)
+                        rank:DockMargin(5,0,5,0)
+                        rank:SetText(k)
+                        rank:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
+                        rank.DoClick = function(s)
+                            if s:GetFixed() then 
+                                s:SetFixed(false)
+                            else 
+                                s:SetFixed(true)
+                            end
+                            getPermission(v)
+                        end
+                    end
+                end
+
+
+                getRanks(cfg.Ranks)
+            -->
+
+            --[[local li = vgui.Create("HexSh.UI.List", Ranks)
             li:Dock(RIGHT)
             li:DockMargin(3,3,7,3)
             li:AddColumn(HexSh:L("src_sh","Ranks"),1)
@@ -282,7 +335,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 timer.Simple(0.1, function()
                     GetRanks(cfg.Ranks) 
                 end)
-            end
+            end]]
         -->
 
         net.Start("HexSh::SQLGET")
@@ -339,7 +392,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 Save:SetText(HexSh:L("src_sh", "Save"))
                 Save:SetFont("HexSh.X")
                 Save.DoClick = function( s )
-                    net.Start("HexsSh::SQLWRITE")
+                    net.Start("HexSh::SQLWRITE")
                         net.WriteBool(enableMySQL.switch:GetChecked())
                         net.WriteString(Ip.entry:GetValue())
                         net.WriteString(Username.entry:GetValue())
@@ -366,9 +419,9 @@ hook.Add("HexSh::GetAdminItems", "", function()
 
         function HexSh.adminUI.MainMenu.Selection.EditLayer:PerformLayout(w,h)
             ChangeLang.Change:SetWide( w/2.3 )
-            btnp:SetSize(w/3,200)
-            btnp:SetPos(20, 50)
-            li:SetWide(w/1.8)
+           -- btnp:SetSize(w/3,200)
+            --btnp:SetPos(20, 50)
+          --  li:SetWide(w/1.8)
             if (sqqql) then 
 
 

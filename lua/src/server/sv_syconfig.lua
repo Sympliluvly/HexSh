@@ -106,6 +106,6 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
             net.WriteTable(c)
         net.Send(ply)
     end
-    ply.hexshinit = true 
+    ply.hexshinit = false 
 end)
 

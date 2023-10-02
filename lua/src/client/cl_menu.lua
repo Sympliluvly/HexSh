@@ -76,6 +76,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
         Close.Lerp = HexSh:Lerp(0,0,0.3)
         function Close:DoClick()
             Frame:Remove()
+            surface.PlaySound("data/hdm.wav")
         end
         function Close:OnCursorEntered()
             self.Lerp = HexSh:Lerp(0,255,0.3)
@@ -165,3 +166,9 @@ list.Set( "DesktopWindows", "HexConfig", {
 
 	}
 ) 
+
+concommand.Add("kdke,", function()
+    net.Start("HexArmory::RequestItems")
+        net.WriteUInt(0,64)
+    net.SendToServer()
+end)
