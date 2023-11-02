@@ -1,5 +1,19 @@
---[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
-// Too Simple Config
+// _Hexagon Crytpics_
+// Copyright (c) 2023 Hexagon Cryptics, all rights reserved
+//---------------------------------------\\
+// Script: Shared (base)
+// src(id): sh
+// Module of: - 
+//
+// Do not edit this base by yourself, 
+// because all functions are needed for
+// our script!!!!
+//---------------------------------------\\
+// AUTHOR: Tameka aka 0v3rSimplified
+// CO's: -
+// Licensed to: -
+//---------------------------------------\\
+
 util.AddNetworkString("HexSh::LoadConfig")
 util.AddNetworkString("HexSh::WriteConfig")
 util.AddNetworkString("HexSh::OpenConfigMenu")
@@ -29,37 +43,6 @@ local function FindTableDifferences(table1, table2, prefix)
     return e
 end
 
-net.Receive("HexSH::WriteConfig", function(len,ply)
-    if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
-    local readNewData = HexSh:ReadCompressedTable()
-
-    local c = FindTableDifferences(readNewData,HexSh.Config.IConfig)
-
-    if (!file.Exists("hexsh/config.json", "DATA")) then
-        file.CreateDir("hexsh")
-        local cfgtbl = table.Copy(readNewData)
-
-        file.Write("hexsh/config.json", util.TableToJSON(cfgtbl,true))
-    else
-        local cfgtbl = table.Copy(readNewData)
-        file.Write("hexsh/config.json", util.TableToJSON(cfgtbl,true))
-    end
-    
-    net.Start("HexSh::LoadConfig")
-        HexSh:WriteCompressedTable(readNewData)
-    net.Broadcast()
-
-    hook.Run("HexSh::CommunicateLoad", c)
-    net.Start("HexSh::CommunicateLoad")
-        net.WriteTable(c)
-    net.Send(ply)
-end)
-
---Msg(Color(250,0,0), "ICONFIG\n")
---PrintTable(HexSh.Config.IConfig)
---Msg(Color(250,0,0), "IngameCONFIG\n")
---PrintTable(util.JSONToTable(file.Read("hexsh/config.json", "DATA")))
-
 local function Load(ply)
     local export = {}
        
@@ -68,7 +51,6 @@ local function Load(ply)
         export = HexSh.Config.IConfig
     else
         export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
-    
         for k,v in pairs(export) do 
             HexSh.Config.IConfig[k] = v
         end 
@@ -78,6 +60,37 @@ local function Load(ply)
         HexSh:WriteCompressedTable(HexSh.Config.IConfig)
     net.Send(ply)
 end
+
+net.Receive("HexSH::WriteConfig", function(len,ply)
+    local readNewData = HexSh:ReadCompressedTable()
+    local customPermission = net.ReadString()
+    if (!ply:HC_hasPermission("MenuAccess")) then return end
+    if customPermission && isstring(customPermission) && HexSh.Permissions[customPermission] then 
+        if (!ply:HC_hasPermission(customPermission)) then return end
+    end
+    if (!file.Exists("hexsh/config.json", "DATA")) then
+        file.CreateDir("hexsh")
+        local cfgtbl = table.Copy(readNewData)
+
+        file.Write("hexsh/config.json", util.TableToJSON(cfgtbl,true))
+    else
+        local cfgtbl = table.Copy(readNewData)
+        file.Write("hexsh/config.json", util.TableToJSON(cfgtbl,true))
+    end
+    
+    Load(ply)
+
+    hook.Run("HexSh::CommunicateLoad", readNewData)
+    net.Start("HexSh::CommunicateLoad")
+        net.WriteTable(readNewData)
+    net.Send(ply)
+end)
+
+--Msg(Color(250,0,0), "ICONFIG\n")
+--PrintTable(HexSh.Config.IConfig)
+--Msg(Color(250,0,0), "IngameCONFIG\n")
+--PrintTable(util.JSONToTable(file.Read("hexsh/config.json", "DATA")))
+
 
 net.Receive("HexSh::LoadConfig", function(len,ply)
     Load(ply)

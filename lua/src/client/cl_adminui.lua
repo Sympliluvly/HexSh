@@ -1,4 +1,19 @@
---[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
+// _Hexagon Crytpics_
+// Copyright (c) 2023 Hexagon Cryptics, all rights reserved
+//---------------------------------------\\
+// Script: Shared (base)
+// src(id): sh
+// Module of: - 
+//
+// Do not edit this base by yourself, 
+// because all functions are needed for
+// our script!!!!
+//---------------------------------------\\
+// AUTHOR: Tameka aka 0v3rSimplified
+// CO's: -
+// Licensed to: -
+//---------------------------------------\\
+
 HexSh.adminUI = HexSh.adminUI || {}
 
 include("cl_imgurintegration.lua")
@@ -219,26 +234,63 @@ hook.Add("HexSh::GetAdminItems", "", function()
         -->
 
 
-        local Ranks = field("")
+        LocalPlayer():SvPtCl("RankManagement",
+        function()
+            local Ranks = field("")
             Ranks:SetTall(400)
-
+            function Ranks:PaintOver(w,h)
+                draw.SimpleText("Permission","HexSh.UI.25",130,2,white,TEXT_ALIGN_LEFT)
+            end
 
             local perm = vgui.Create("HexSh.UI.Scroll", Ranks)
-            perm:Dock(FILL)
-            perm:DockMargin(0,4,0,0)
+                perm:Dock(FILL)
+                perm:DockMargin(0,29,0,0)
 
                 local function getPermission(tab)
                     perm:Clear()
-                    for k,v in pairs(tab) do 
-                        local perms = vgui.Create("HexSh.UI.Button", perm)
-                        perms:Dock(TOP)
-                        perms:SetTall(30)
-                        perms:DockMargin(5,0,5,0)
-                        perms:SetText(k)
-                        perms:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
+                    for k,v in pairs(HexSh.Permissions) do 
+                        local perms = vgui.Create("DButton", perm)
+                            perms:Dock(TOP)
+                            perms:SetTall(30)
+                            perms:DockMargin(5,0,5,0)
+                            perms:SetText("")
+                            perms.have = false
+                            if cfg.Ranks[tab][k] then 
+                                perms.have = true
+                            end
+                            function perms:Paint(w,h)
+                                draw.RoundedBox(0,0,0,w,h,self:IsHovered() && HexSh.adminUI.Color.purple || HexSh.adminUI.Color.bgLightGray)
+                                draw.RoundedBox(0,10,2.5,25,25,white)
+                                if self.have == true || tab == "superadmin" then 
+                                    surface.SetDrawColor(white)
+                                    surface.SetMaterial(HexSh:getImgurImage('Kttbjxw'))
+                                    surface.DrawTexturedRect(11,2.5,23,23)
+                                end
+                                
+                                draw.SimpleText(v,"HexSh.UI.20",45,h/2,white,TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
+                            end
+                            function perms:DoClick()
+                                if tab == "superadmin" then 
+                                    return 
+                                end
+
+                                if self.have == true then 
+                                    self.have = false
+                                else
+                                    self.have = true 
+                                end
+
+                                HexSh.Config.IConfig["src_sh"].Ranks[tab][k] = self.have == true && true || nil
+                                net.Start("HexSH::WriteConfig")
+                                    HexSh:WriteCompressedTable(HexSh.Config.IConfig)
+                                    net.WriteString("RankManagement")
+                                net.SendToServer()
+                                
+                            end
+                        -->
                     end
                 end
-
+            -->
             local ranks = vgui.Create("DPanel",Ranks)
                 ranks:Dock(LEFT)
                 ranks:SetWide(120)
@@ -251,92 +303,82 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 rscroll:Dock(FILL)
                 rscroll:DockMargin(2,10,2,2)
 
+                local rank_add = vgui.Create("HexSh.UI.Button",ranks)
+                rank_add:Dock(BOTTOM)
+                rank_add:SetText("Add")
+                rank_add:SetRounding(0)
+                rank_add:DockMargin(2,4,2,2)
+                rank_add:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
+
+                local cache_rank = cfg.Ranks
+                local cache_rank_derma = {}
                 local function getRanks(tb)
+                    local current = nil
                     rscroll:Clear()
                     for k,v in pairs(tb) do 
                         local rank = vgui.Create("HexSh.UI.Button", rscroll)
+                        cache_rank_derma[k] = rank
                         rank:Dock(TOP)
                         rank:SetTall(30)
-                        rank:DockMargin(5,0,5,0)
+                        rank:DockMargin(5,5,5,0)
                         rank:SetText(k)
                         rank:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
                         rank.DoClick = function(s)
+                            if current then 
+                                current:SetFixed(false)
+                            end
+                            current = s
                             if s:GetFixed() then 
                                 s:SetFixed(false)
                             else 
                                 s:SetFixed(true)
                             end
-                            getPermission(v)
+                            getPermission(k)
+                        end
+                        rank.DoRightClick = function(s)
+                            local Menu = DermaMenu()
+
+                            Menu:AddOption( "Delete", function()
+                                if current == s then current = nil end
+                                cache_rank_derma[k]:Remove()
+                                cache_rank[k] = nil
+                                HexSh.Config.IConfig["src_sh"].Ranks[k] = nil
+                                net.Start("HexSH::WriteConfig")
+                                    HexSh:WriteCompressedTable(HexSh.Config.IConfig)
+                                    net.WriteString("RankManagement")
+                                net.SendToServer()
+                            end)
+
+                            Menu:Open()
                         end
                     end
                 end
 
-
-                getRanks(cfg.Ranks)
-            -->
-
-            --[[local li = vgui.Create("HexSh.UI.List", Ranks)
-            li:Dock(RIGHT)
-            li:DockMargin(3,3,7,3)
-            li:AddColumn(HexSh:L("src_sh","Ranks"),1)
-
-            local function GetRanks(tb) 
-                for k,v in pairs(tb) do
-                    local a = li:AddLine( k )
-                    a.title = k
-                end 
-            end 
-            GetRanks(cfg.Ranks) 
-            
-            local lilo 
-            li.OnRowSelected = function( panel, rowIndex, row )
-                lilo = row.title
-            end
-
-            local btnp = vgui.Create("DPanel",Ranks)
-            btnp.Paint = nil
-
-            btnp.add = vgui.Create("HexSh.UI.Button", btnp)
-            btnp.add:Dock(TOP)
-            btnp.add:SetTall(60)
-            btnp.add:SetText(HexSh:L("src_sh", "AddRank"))
-            btnp.add:SetFont("HexSh.X")
-            btnp.add.DoClick = function()
-                
-                Derma_StringRequest(HexSh:L("src_sh", "AddRank"),"","...", function(txt)
-                    local a = li:AddLine( txt )
-                    a.title = txt
-
-                    cfg.Ranks[txt] = true
-                    write()
-                end, nil)
-            end
-
-            btnp.delete = vgui.Create("HexSh.UI.Button", btnp)
-            btnp.delete:Dock(TOP)
-            btnp.delete:SetTall(60)
-            btnp.delete:DockMargin(0,3,0,0)
-            btnp.delete:SetText(HexSh:L("src_sh", "DeleteRank"))
-            btnp.delete:SetFont("HexSh.X")
-            btnp.delete:SetTooltip(HexSh:L("src_sh", "DeleteRankTootlip"))
-            btnp.delete.DoClick = function()
-                if (!lilo) then 
-                    Derma_Message(HexSh:L("src_sh", "DeleteRankTootlip"),"","->")
-                    return 
+                function rank_add:DoClick()
+                    Derma_StringRequest(
+                        "AddRank", 
+                        "RankName",
+                        "",
+                        function(text)  
+                            HexSh.Config.IConfig["src_sh"].Ranks[text] = {}
+                            cache_rank[text] = {}
+                            net.Start("HexSH::WriteConfig")
+                                HexSh:WriteCompressedTable(HexSh.Config.IConfig)
+                                net.WriteString("RankManagement")
+                            net.SendToServer()
+                            getRanks(cache_rank)
+                        end,
+                        function(text) print("Cancelled input") end
+                    )
                 end
-                if (lilo=="superadmin") then 
-                    Derma_Message(HexSh:L("src_sh", "trydeleteSuperadmin"),"","->")
-                    return 
-                end
-                li:Clear()
-                cfg.Ranks[lilo] = nil
-                write()
+                getRanks(cache_rank)
+            -->            
+        end,
+        function()
+            local Ranks = field(HexSh:L("src_sh", "notRanks"))
+            Ranks:SetTall(100)
+        end)
 
-                timer.Simple(0.1, function()
-                    GetRanks(cfg.Ranks) 
-                end)
-            end]]
-        -->
 
         net.Start("HexSh::SQLGET")
         net.SendToServer()
