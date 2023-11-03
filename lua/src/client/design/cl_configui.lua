@@ -1,5 +1,18 @@
---[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
-
+// _Hexagon Crytpics_
+// Copyright (c) 2023 Hexagon Cryptics, all rights reserved
+//---------------------------------------\\
+// Script: Shared (base)
+// src(id): sh
+// Module of: - 
+//
+// Do not edit this base by yourself, 
+// because all functions are needed for
+// our script!!!!
+//---------------------------------------\\
+// AUTHOR: Tameka aka 0v3rSimplified
+// CO's: -
+// Licensed to: -
+//---------------------------------------\\
 local black = Color(0,0,0,255)
 local white = Color(255,255,255)
  --bg

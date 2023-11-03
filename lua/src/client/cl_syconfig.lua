@@ -1,8 +1,24 @@
---[[For some I am just a rib, but for others the biggest dream, you can easily but often difficult with me, many do not understand my intentions and do not get along with it, what am I?]]
+// _Hexagon Crytpics_
+// Copyright (c) 2023 Hexagon Cryptics, all rights reserved
+//---------------------------------------\\
+// Script: Shared (base)
+// src(id): sh
+// Module of: - 
+//
+// Do not edit this base by yourself, 
+// because all functions are needed for
+// our script!!!!
+//---------------------------------------\\
+// AUTHOR: Tameka aka 0v3rSimplified
+// CO's: -
+// Licensed to: -
+//---------------------------------------\\
+
 net.Receive("HexSh::LoadConfig", function()
     HexSh.Config.IConfig = HexSh:ReadCompressedTable()
+    PrintTable(HexSh.Config.IConfig["src_sh"])
 end)
-
+ 
 hook.Add("InitPostEntity", "HEXMENXLoadcfg", function()
     net.Start("HexSh::LoadConfig")
     net.SendToServer()
