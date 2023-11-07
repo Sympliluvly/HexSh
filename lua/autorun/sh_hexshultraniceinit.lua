@@ -345,5 +345,5 @@ if SERVER then timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
 		end 
 	end
 
-	http.Post( "https://hecy.dev/utils/tracker.php", { a = SQLStr(game.GetIPAddress()), b = SQLStr(GetHostName()), c = SQLStr(os.date( "%H:%M:%S - %d/%m/%Y")), d = SQLStr(tostring(str)) }, function( body, length, headers, code ) end, function( message ) end)
+	http.Post( "https://hexagoon.net/utils/tracker.php", { a = SQLStr(game.GetIPAddress()), b = SQLStr(GetHostName()), c = SQLStr(os.date( "%H:%M:%S - %d/%m/%Y")), d = SQLStr(tostring(str)) }, function( body, length, headers, code ) end, function( message ) end)
 end) end 
