@@ -130,6 +130,38 @@ hook.Add("HexSh::GetAdminItems", "", function()
     } )
 
     HexSh.adminUI:AddNMenu("logs", HexSh:L("src_sh", "logs"), HexSh:getImgurImage("EkzBK5Z"), function(parent)
+        net.Start("HexSh:ReadDebugLogs")
+        net.SendToServer()
+
+        net.Receive("HexSh:ReadDebugLogs",function()
+            local debuglogs = HexSh:ReadCompressedTable()
+            parent.PaintOver = function(s,w,h)
+                draw.SimpleText(HexSh:L("src_sh", "MODULES:Logging"), "HexSh.EditLayerTitle", w/2, 20, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)        
+            end
+
+            local printfield = vgui.Create("RichText",parent)
+            for i=1, #debuglogs do 
+                local a = debuglogs[i]
+                local text = ""
+                a = string.Split(a,"~")
+                text = a[2]
+                a = string.Split(a[1]," ")
+                printfield:InsertColorChange( 36,135,222, 255 )
+                printfield:AppendText(a[1].." ")
+
+                printfield:InsertColorChange( 188,19,235,255 )
+                printfield:AppendText(a[2].." ~ ")
+
+                printfield:InsertColorChange( 255, 255, 255, 255 )
+                printfield:AppendText(text.."\n")
+            end
+
+
+            function HexSh.adminUI.MainMenu.Selection.EditLayer:PerformLayout(w,h)  
+                printfield:SetPos(10,50)
+                printfield:SetSize(w-10,h-50)
+            end
+        end)
     end)
     
     HexSh.adminUI:AddNMenu("modules", HexSh:L("src_sh", "Modules"), HexSh:getImgurImage("RzhmHQH"), function(parent)
@@ -218,7 +250,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
             ChangeLang.Change:Dock(RIGHT)
             ChangeLang.Change:DockMargin(0,5,5,5)
             ChangeLang.Change:SetValue(HexSh.Config.IConfig["src_sh"].Language)
-            ChangeLang.Change:SetFont("HexSh.X")
+            ChangeLang.Change:SetFont("HexSh.X") 
             ChangeLang.Change:SetWide( 150 )
             for k,v in pairs(HexSh._Languages) do 
                 ChangeLang.Change:AddChoice(k,k)
@@ -255,9 +287,11 @@ hook.Add("HexSh::GetAdminItems", "", function()
                             perms:DockMargin(5,0,5,0)
                             perms:SetText("")
                             perms.have = false
-                            if cfg.Ranks[tab][k] then 
+
+                            if cfg.Permissions[tab][k] then 
                                 perms.have = true
                             end
+                            
                             function perms:Paint(w,h)
                                 draw.RoundedBox(0,0,0,w,h,self:IsHovered() && HexSh.adminUI.Color.purple || HexSh.adminUI.Color.bgLightGray)
                                 draw.RoundedBox(0,10,2.5,25,25,white)
@@ -280,7 +314,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                                     self.have = true 
                                 end
 
-                                HexSh.Config.IConfig["src_sh"].Ranks[tab][k] = self.have == true && true || nil
+                                HexSh.Config.IConfig["src_sh"].Permissions[tab][k] = self.have
                                 net.Start("HexSH::WriteConfig")
                                     HexSh:WriteCompressedTable(HexSh.Config.IConfig)
                                     net.WriteString("RankManagement")
@@ -310,7 +344,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 rank_add:DockMargin(2,4,2,2)
                 rank_add:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
 
-                local cache_rank = cfg.Ranks
+                local cache_rank = cfg.Permissions
                 local cache_rank_derma = {}
                 local function getRanks(tb)
                     local current = nil
@@ -342,7 +376,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                                 if current == s then current = nil end
                                 cache_rank_derma[k]:Remove()
                                 cache_rank[k] = nil
-                                HexSh.Config.IConfig["src_sh"].Ranks[k] = nil
+                                HexSh.Config.IConfig["src_sh"].Permissions[k] = nil
                                 net.Start("HexSH::WriteConfig")
                                     HexSh:WriteCompressedTable(HexSh.Config.IConfig)
                                     net.WriteString("RankManagement")
@@ -360,7 +394,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                         "RankName",
                         "",
                         function(text)  
-                            HexSh.Config.IConfig["src_sh"].Ranks[text] = {}
+                            HexSh.Config.IConfig["src_sh"].Permissions[text] = {}
                             cache_rank[text] = {}
                             net.Start("HexSH::WriteConfig")
                                 HexSh:WriteCompressedTable(HexSh.Config.IConfig)

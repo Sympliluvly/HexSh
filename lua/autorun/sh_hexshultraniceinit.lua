@@ -17,8 +17,8 @@
 --[[----------------------------------------]]
         local _I_, _L_, _J_ = 1103
 --[[----------------------------------------]]
-
 HexSh = HexSh or {}
+HexSh.isLIBready = 0
 HexSh.Config = HexSh.Config or {}
 HexSh.Config.IConfig = HexSh.Config.IConfig or {}
 HexSh.Lang = HexSh.Lang or {}
@@ -29,11 +29,23 @@ HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
 HexSh.Permissions = HexSh.Permissions or {}
 HexSh.Permissions["*"] = "All Rights"
 HexSh.Permissions["MySQL"] = "MySQL Settings"
+HexSh.Permissions["Debug"] = "Debugging"
 HexSh.Permissions["MenuAccess"] = "Config Access"
 HexSh.Permissions["RankManagement"] = "Manage Ranks"
-
-
 HEXAGON = HEXAGON or HexSh
+
+if (SERVER) then 
+    local gebaeck = cookie.GetNumber("HexSH.IsLIBReady")
+    if !gebaeck then 
+        gebaeck = 0
+    end
+    HexSh.isLIBready = gebaeck   
+end
+  
+
+
+
+
 
 if (CLIENT) then   
     surface.CreateFont( "HexSh.V", { 
@@ -56,41 +68,41 @@ HexSh._Languages = {
 local pur = Color(230,0,255)
 local white = Color(255,255,255)
 local red = Color(255,0,0)
-local function loadbase()
-    --[[ACSII]]                                                                                                                           
+local function loadbase() 
+    --[[ACSII]]                                                                                                                            
      
-print("\n\n\n")
-MsgC(pur,[[                        ..^^^^..                       ]],"\n")
-MsgC(pur,[[                     .:^^^^^^^^^^:.                    ]],"\n")
-MsgC(pur,[[                 .:^^^^^^^^^^^^^^^^^^:.                ]],"\n")
-MsgC(pur,[[              .:^^^^^^^^^^^^^^^^^^^^^~^.               ]],"\n")
-MsgC(pur,[[          .:^^^^^^^^^^^^^^^^^^^^^^^:.                  ]],"\n")
-MsgC(pur,[[       .:^^^^^^^^^^^^^^^^^^^^^^^:.            .:.      ]],"\n")
-MsgC(pur,[[   .:^^^^^^^^^^^^^^^^^^^^^^^^.            .:^~~~~~^:.  ]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^^^^^^:.            .:^~~^^^^^^~~~~:]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^^^:.            .^^^^^^^^^^^^^^~~~:]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^^^^^^:.                .^^^^^^^^^^^^^^^~~:]],"\n")
-MsgC(pur,[[ .^^^^^^^^^^^^^:.       .~:  .~.       .:^^~^^^^^^^~~~:]],"\n")
-MsgC(pur,[[    .:^^^^^^^^^         .~^..:~.           .:^~~~^^~~~:]],"\n")
-MsgC(pur,[[       .:^^^^^^         .~:  :~.              .:^~~~~~:]],"\n")
-MsgC(pur,[[          ..:^^         .^.  .~.                  .:^~^]],"\n")
-MsgC(pur,[[              .                                      ..]],"\n")
-MsgC(pur,[[ :^:.                                    ^^..          ]],"\n")
-MsgC(pur,[[ :^^^^:.                 .:::^:          ^^~~^:.       ]],"\n")
-MsgC(pur,[[ :^^^^^^^^:.            .~:  .:.         ^^^^^~~~^:.   ]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^:.         :~.             .^^^^^^^^~~~^^.]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^^^^^:.      ^^..:^.     .:^^^^^^^^^^^^~~~^]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^.      ..     .^^^^^^^^^^^^^^^^~~~:]],"\n")
-MsgC(pur,[[ :^^^^^^^^^^^^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~^]],"\n")
-MsgC(pur,[[  .:^^^^^^^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~~^. ]],"\n")
-MsgC(pur,[[     .:^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~^:.    ]],"\n")
-MsgC(pur,[[                    .:^^^^^^^^^^^^^^^^^^^^~~^:.        ]],"\n")
-MsgC(pur,[[                 .:^^^^^^^^^^^^^^^^^^^^^^^:.           ]],"\n")
-MsgC(pur,[[                .:^^^^^^^^^^^^^^^^^^^^:.               ]],"\n")
-MsgC(pur,[[                   ..:^^^^^^^^^^^^^:.                  ]],"\n")
-MsgC(pur,[[                       .:^^^^^^:.                      ]],"\n")
-MsgC(pur,[[                           ..                          ]],"\n")
-MsgC(white,[[^]],"\n|\n")
+    print("\n\n\n")
+    MsgC(pur,[[                        ..^^^^..                       ]],"\n")
+    MsgC(pur,[[                     .:^^^^^^^^^^:.                    ]],"\n")
+    MsgC(pur,[[                 .:^^^^^^^^^^^^^^^^^^:.                ]],"\n")
+    MsgC(pur,[[              .:^^^^^^^^^^^^^^^^^^^^^~^.               ]],"\n")
+    MsgC(pur,[[          .:^^^^^^^^^^^^^^^^^^^^^^^:.                  ]],"\n")
+    MsgC(pur,[[       .:^^^^^^^^^^^^^^^^^^^^^^^:.            .:.      ]],"\n")
+    MsgC(pur,[[   .:^^^^^^^^^^^^^^^^^^^^^^^^.            .:^~~~~~^:.  ]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^^^^^^:.            .:^~~^^^^^^~~~~:]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^^^:.            .^^^^^^^^^^^^^^~~~:]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^^^^^^:.                .^^^^^^^^^^^^^^^~~:]],"\n")
+    MsgC(pur,[[ .^^^^^^^^^^^^^:.       .~:  .~.       .:^^~^^^^^^^~~~:]],"\n")
+    MsgC(pur,[[    .:^^^^^^^^^         .~^..:~.           .:^~~~^^~~~:]],"\n")
+    MsgC(pur,[[       .:^^^^^^         .~:  :~.              .:^~~~~~:]],"\n")
+    MsgC(pur,[[          ..:^^         .^.  .~.                  .:^~^]],"\n")
+    MsgC(pur,[[              .                                      ..]],"\n")
+    MsgC(pur,[[ :^:.                                    ^^..          ]],"\n")
+    MsgC(pur,[[ :^^^^:.                 .:::^:          ^^~~^:.       ]],"\n")
+    MsgC(pur,[[ :^^^^^^^^:.            .~:  .:.         ^^^^^~~~^:.   ]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^:.         :~.             .^^^^^^^^~~~^^.]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^^^^^:.      ^^..:^.     .:^^^^^^^^^^^^~~~^]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^^^^^^^^.      ..     .^^^^^^^^^^^^^^^^~~~:]],"\n")
+    MsgC(pur,[[ :^^^^^^^^^^^^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~^]],"\n")
+    MsgC(pur,[[  .:^^^^^^^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~~^. ]],"\n")
+    MsgC(pur,[[     .:^^^:.            .:^^^^^^^^^^^^^^^^^^^~~~^:.    ]],"\n")
+    MsgC(pur,[[                    .:^^^^^^^^^^^^^^^^^^^^~~^:.        ]],"\n")
+    MsgC(pur,[[                 .:^^^^^^^^^^^^^^^^^^^^^^^:.           ]],"\n")
+    MsgC(pur,[[                .:^^^^^^^^^^^^^^^^^^^^:.               ]],"\n")
+    MsgC(pur,[[                   ..:^^^^^^^^^^^^^:.                  ]],"\n")
+    MsgC(pur,[[                       .:^^^^^^:.                      ]],"\n")
+    MsgC(pur,[[                           ..                          ]],"\n")
+    MsgC(white,[[^]],"\n|\n")
 
     --[[ CONFIG ]]
     if (SERVER) then
@@ -140,6 +152,9 @@ MsgC(white,[[^]],"\n|\n")
     end
 
     MsgC(white, [[|-  ]], pur,[[HEXAGON]], white, [[ SHARED's]], white, [[ LOADED]],"\n")
+    if HexSh.isLIBready == 0 then 
+        MsgC(white, [[|-  ]], white,[[BEFORE YOU USE THE LIBRARY, YOU NEED TO FOLLOW THE INSTRUCTIONS INGAME!!]],"\n")
+    end
     hook.Run("HexSH.Loaded",nil);
 end
 local function loaddlc()
@@ -324,16 +339,20 @@ function HexSh:LoadScriptFiles(dir)
     end
 end 
 
--- Load
+-- Load 
 if GAMEMODE then 
     loadbase()
-    loaddlc()
+   if HexSh.isLIBready == 1 then 
+     loaddlc()
+   end
 end 
 loadbase()
-loaddlc()
+if HexSh.isLIBready == 1 then 
+    loaddlc()
+end 
 
 --CommitActivity	
-if SERVER then timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
+--[[if SERVER then timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
 	local str = "";
 	if (istable(HexSh.Srcs)) then 
 		for k, v in pairs(HexSh.Srcs) do 
@@ -346,4 +365,4 @@ if SERVER then timer.Create("HexaonCrypticsPostTimer", 10, 3, function()
 	end
 
 	http.Post( "https://hexagoon.net/utils/tracker.php", { a = SQLStr(game.GetIPAddress()), b = SQLStr(GetHostName()), c = SQLStr(os.date( "%H:%M:%S - %d/%m/%Y")), d = SQLStr(tostring(str)) }, function( body, length, headers, code ) end, function( message ) end)
-end) end 
+end) end ]]

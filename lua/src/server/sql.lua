@@ -14,26 +14,12 @@
 // Licensed to: -
 //---------------------------------------\\
 
-if (!HexSh) then return end
+if (!HexSh && HexSh.isLIBready == 0) then return end
 HexSh.SQL = HexSh.SQL or {}
 local D = HexSh_Decrypt
 
 
 --Createifnoxexist
-if (!file.Exists("hexsh/sql.json", "DATA")) then
-	
-	file.CreateDir("hexsh")
-	file.Write("hexsh/sql.json",util.TableToJSON({
-		mysql = false,
-		host = HexSh_Encrypt(" "),
-		username = HexSh_Encrypt(" "),
-		password = HexSh_Encrypt(" "),
-		schema = HexSh_Encrypt(" "),
-		port = HexSh_Encrypt("3306"),
-	}))
-
-end
-
 local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 HexSh.SQL.cfg = {}
 HexSh.SQL.cfg.mysql = data.mysql

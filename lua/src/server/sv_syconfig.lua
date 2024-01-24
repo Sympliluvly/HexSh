@@ -97,9 +97,13 @@ net.Receive("HexSh::LoadConfig", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
+    if !ply:HC_hasPermission("MenuAccess") then 
+        HexSh:Notify(ply,"error","You aren't accessed to this!s")
+        return 
+    end 
 
     net.Start("HexSh::OpenConfigMenu")
+        net.WriteUInt(HexSh.isLIBready,2)
     net.Send(ply)
 end)
 
@@ -121,4 +125,7 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     end
     ply.hexshinit = false 
 end)
+
+
+
 

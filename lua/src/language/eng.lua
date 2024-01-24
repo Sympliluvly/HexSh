@@ -46,4 +46,13 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["Save"] = "Save",
     ["Close"] = "Close",
     ["logs"] = "Logs",
+
+
+    -- 
+    ["Welcome:HEX"] = "Welcome to Hexagon Cryptics!",
+    ["Install:Setup"] = "Setup",
+    ["Install:Load"] = "Load:",
+    ["Install:Loaded"] = "Loaded!",
+
+    ["MODULES:Logging"] = "Debug Terminal",
 }
