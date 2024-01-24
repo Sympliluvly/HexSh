@@ -112,7 +112,6 @@ net.Receive("HexSh::OpenConfigMenu", function()
         Minim:SetSize(36,30)
         Minim:SetText("-")
         Minim:SetTextColor(white)
-        Minim:SetTooltip(HexSh:L("src_datapad", "Minim_ToolTip"))
         Minim.Lerp = HexSh:Lerp(0,0,0.3)
         function Minim:DoClick()
             HexSh.adminUI.Minimized = true

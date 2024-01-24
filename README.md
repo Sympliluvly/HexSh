@@ -1,3 +1,3 @@
 # HexSh 
 
-# newest v.0.2.0
+### i dont care, where are you from

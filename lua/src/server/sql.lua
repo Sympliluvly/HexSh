@@ -15,7 +15,6 @@
 //---------------------------------------\\
 
 if (!HexSh) then return end
-require("mysqloo")
 HexSh.SQL = HexSh.SQL or {}
 local D = HexSh_Decrypt
 
@@ -43,6 +42,10 @@ HexSh.SQL.cfg.username = data.username
 HexSh.SQL.cfg.password = data.password
 HexSh.SQL.cfg.schema = data.schema
 HexSh.SQL.cfg.port = data.port
+
+if HexSh.SQL.cfg.mysql then 
+	require("mysqloo")
+end
 
 
 --utils

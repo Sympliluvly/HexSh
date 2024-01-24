@@ -3,7 +3,7 @@
 //---------------------------------------\\
 // Script: Shared (base)
 // src(id): sh
-// Module of: - 
+// Module of: -  
 //
 // Do not edit this base by yourself, 
 // because all functions are needed for
