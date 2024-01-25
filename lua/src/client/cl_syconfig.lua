@@ -16,7 +16,6 @@
 
 net.Receive("HexSh::LoadConfig", function()
     HexSh.Config.IConfig = HexSh:ReadCompressedTable()
-    PrintTable(HexSh.Config.IConfig["src_sh"])
 end)
  
 hook.Add("InitPostEntity", "HEXMENXLoadcfg", function()
@@ -38,3 +37,5 @@ concommand.Add("hexmenu", function()
         net.WriteString("context")
     net.SendToServer()
 end)
+
+

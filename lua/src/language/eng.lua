@@ -16,7 +16,8 @@
 HexSh.Lang["src_sh"]["ENG"] = {
     ["Modules"] = "Modules", 
     ["Cfg"] = "Config",
-    ["Admin"] = "Admin",
+    ["Admin"] = "Manage",
+    ["Control"] = "Control",
     ["BCfg"] = "Base Config",
     ["changeLang"] = "Language",
     ["back"] = "Back",
@@ -47,6 +48,10 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["Close"] = "Close",
     ["logs"] = "Logs",
 
+
+    ["CONTROL:SynchConfig"] = "Reset Config",
+    ["CONTROL:ScriptSelect"] = "Select Script",
+    ["CONTROL:ResetScript"] = "Reset",
 
     -- 
     ["Welcome:HEX"] = "Welcome to Hexagon Cryptics!",

@@ -35,6 +35,11 @@ local function addAnim(pnl)
     end
 end
 local function AddMat(p,m)
+    if !isstring(m) then 
+        m = m
+    else
+        m =  HexSh:getImgurImage(m)
+    end
     surface.SetDrawColor(white)
     surface.SetMaterial(m)
     surface.DrawTexturedRect(toDecimal(6.4)*p:GetWide(),(toDecimal(80)*p:GetTall())-25,25,25)
@@ -199,8 +204,13 @@ function PANEL:firstButtons()
     for k, v in pairs(HexSh.adminUI.Items.S) do 
         self:AddSubMenu(k,v.title,v.icon)
     end
+    
+    local new = {}
     for k,v in pairs(HexSh.adminUI.Items) do 
         if k == "S" then continue end 
+        new[v.order] = v
+    end
+    for k,v in SortedPairs(new) do
         self:AddButton(v.title,v.icon,v.f)
     end
 end

@@ -107,6 +107,7 @@ net.Receive("HexSh::OpenConfigMenu", function(len,ply)
     net.Send(ply)
 end)
 
+local is_config_firsttime = false
 hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     if (!ply.hexshinit) then     
         Load(ply)
@@ -125,7 +126,5 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     end
     ply.hexshinit = false 
 end)
-
-
 
 

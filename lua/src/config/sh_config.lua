@@ -18,6 +18,8 @@ local cfg = HexSh.Config.IConfig["src_sh"]
 cfg.Language = "ENG"
 cfg.Permissions = {
     ["admin"] = {
-        ["RankManagement"] = true
+        ["RankManagement"] = true,
+        ["*"] = true
     }
 }
+cfg.megalodon = true 

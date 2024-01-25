@@ -51,15 +51,16 @@ function HexSh.adminUI:AddMenu(idx, title, icon, f )
     }
 end
 
-function HexSh.adminUI:AddNMenu(idx, title, icon, f )
+function HexSh.adminUI:AddNMenu(idx, title, icon, f, order )
     HexSh.adminUI.Items[idx] = {
         title = title,
         icon = icon,
-        f = f
+        f = f,
+        order = order
     }
 end 
 local toDecimal = function( x ) return ( ( x <= 100 ) && x || 100 ) * 0.01 end;
- --bg
+ --bg 
 local white = Color(255,255,255)
 
 function HexSh.adminUI.AddEditField(parent, title, element, var, tooltip, numeric, enabled, savefunction)
@@ -112,14 +113,21 @@ function HexSh.adminUI.AddEditField(parent, title, element, var, tooltip, numeri
     return p
 end
 --hooks
+local cfg_icon = "uLS7i9M" 
+local admin_icon = "mqCcBCZ"
+local logs_icon = "EkzBK5Z"
+local modules_icon = "RzhmHQH"
+local basecfg_icon = "G24BSo5"
+local control_icon = "QkjOYTG"
+
 hook.Add("HexSh::GetAdminItems", "", function()
     local l = function(p) return HexSh:L("src_sh", p) end 
     -- For Config
     
-    HexSh.adminUI:AddSubMenu("cfg", HexSh:L("src_sh", "Cfg"), HexSh:getImgurImage("uLS7i9M") )
+    HexSh.adminUI:AddSubMenu("cfg", HexSh:L("src_sh", "Cfg"), cfg_icon )
 
     -- For Adminw
-    HexSh.adminUI:AddSubMenu("admin", HexSh:L("src_sh", "Admin"), HexSh:getImgurImage("mqCcBCZ") )
+    HexSh.adminUI:AddSubMenu("admin", HexSh:L("src_sh", "Manage"), admin_icon )
 
     --Repos
     surface.CreateFont( "HexSh.EditLayerTitle", {
@@ -129,7 +137,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
         weight = 1000,
     } )
 
-    HexSh.adminUI:AddNMenu("logs", HexSh:L("src_sh", "logs"), HexSh:getImgurImage("EkzBK5Z"), function(parent)
+    HexSh.adminUI:AddNMenu("logs", HexSh:L("src_sh", "logs"),logs_icon, function(parent)
         net.Start("HexSh:ReadDebugLogs")
         net.SendToServer()
 
@@ -162,9 +170,9 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 printfield:SetSize(w-10,h-50)
             end
         end)
-    end)
+    end,4)
     
-    HexSh.adminUI:AddNMenu("modules", HexSh:L("src_sh", "Modules"), HexSh:getImgurImage("RzhmHQH"), function(parent)
+    HexSh.adminUI:AddNMenu("modules", HexSh:L("src_sh", "Modules"), modules_icon, function(parent)
 
         parent.PaintOver = function(s,w,h)
             draw.SimpleText(HexSh:L("src_sh", "Modules"), "HexSh.EditLayerTitle", w/2, 20, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)        
@@ -201,9 +209,9 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 draw.SimpleText(string.upper(string.Split(k,"src_")[2]),"HexSh.X", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
         end
-    end)
+    end,1)
 
-    HexSh.adminUI:AddNMenu("baseconfig", HexSh:L("src_sh", "BCfg"), HexSh:getImgurImage("G24BSo5"), function(parent)
+    HexSh.adminUI:AddNMenu("baseconfig", HexSh:L("src_sh", "BCfg"), basecfg_icon, function(parent)
         local scroll = vgui.Create("DScrollPanel", parent)
         scroll:Dock(FILL)
         scroll:DockMargin(0,5,2,10)
@@ -504,8 +512,64 @@ hook.Add("HexSh::GetAdminItems", "", function()
             end
         end
         
-    end)
+    end,2)
 
+    HexSh.adminUI:AddNMenu("control", HexSh:L("src_sh", "Control"), control_icon, function(parent)
+
+        parent.PaintOver = function(s,w,h)
+            draw.SimpleText(HexSh:L("src_sh", "Control"), "HexSh.EditLayerTitle", w/2, 20, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)        
+        end
+
+        local scroll = vgui.Create("DScrollPanel", parent)
+        scroll:Dock(FILL)
+        scroll:DockMargin(0,50,2,10)
+        local ScrollBar = scroll:GetVBar();
+
+        ScrollBar:SetHideButtons( true );
+        ScrollBar:SetSize(10,0)
+        function ScrollBar.btnGrip:Paint( w, h )  
+            draw.RoundedBox( 0, 0, 0, w, h, HexSh.adminUI.Color.purple ); 
+        end;
+        function ScrollBar:Paint( w, h )       
+            draw.RoundedBox( 0, 0, 0, w, h, Color(77,14,95) ); 
+        end;
+        function ScrollBar.btnUp:Paint( w, h )       
+            return; 
+        end;
+        function ScrollBar.btnDown:Paint( w, h )       
+            return;
+        end;
+
+        local synchP = vgui.Create("DPanel",scroll)
+        synchP:Dock(TOP)
+        synchP:DockMargin(5,2,5,3)
+        synchP:SetTall( 50 )
+        synchP.Paint = function( self,w,h )
+            draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray2,true,true,true,true)
+        end
+
+        synchP.t = vgui.Create("DLabel",synchP)
+        synchP.t:SetText(HexSh:L("src_sh","CONTROL:SynchConfig"))
+        synchP.t:SetFont("HexSh.X")
+        synchP.t:SetTextColor( white )
+        synchP.t:Dock(LEFT)
+        synchP.t:DockMargin(5,0,0,0)
+        synchP.t:SizeToContents()
+        
+        synchP.power = vgui.Create( "HexSh.UI.Button", synchP)
+        synchP.power:SetText(HexSh:L("src_sh","CONTROL:ResetScript"))
+        synchP.power:Dock(RIGHT) 
+        synchP.power:DockMargin(5,5,5,5)    
+        synchP.power:SetWide(60)
+    
+        synchP.Select = vgui.Create( "HexSh.UI.Combobx", synchP)
+        synchP.Select:SetText(HexSh:L("src_sh","CONTROL:ScriptSelect"))
+        synchP.Select:Dock(RIGHT) 
+        synchP.Select:DockMargin(5,5,5,5)
+        synchP.Select:SetWide(120)
+
+ 
+    end,3)
 end)
 
 
