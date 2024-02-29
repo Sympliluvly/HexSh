@@ -16,7 +16,8 @@
 HexSh.Lang["src_sh"]["ENG"] = {
     ["Modules"] = "Modules", 
     ["Cfg"] = "Config",
-    ["Admin"] = "Admin",
+    ["Admin"] = "Manage",
+    ["Control"] = "Control",
     ["BCfg"] = "Base Config",
     ["changeLang"] = "Language",
     ["back"] = "Back",
@@ -27,7 +28,10 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["DeleteRankTootlip"] = "Select the Rank and click on delete!",
     ["trydeleteSuperadmin"] = "You can't delete the superadmin Rank",
 
+    ["dashboard"] = "Dashboard",
+
     ["notRanks"] = "You dont have Permissions to edit Ranks",
+    ["SAM_Overtake"] = "SAM overtake",
 
     ["MYSQL"] = "MySQL Setup",
     ["notMYSQL"] = "MySQL is only visible for superadmins",
@@ -46,4 +50,18 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["Save"] = "Save",
     ["Close"] = "Close",
     ["logs"] = "Logs",
+
+
+    ["CONTROL:SynchConfig"] = "Reset Config",
+    ["CONTROL:ScriptSelect"] = "Select Script",
+    ["CONTROL:ResetScript"] = "Reset",
+
+    ["CONTROL:SourceEdit"] = "src_.json Edit",
+    -- 
+    ["Welcome:HEX"] = "Welcome to Hexagon Cryptics!",
+    ["Install:Setup"] = "Setup",
+    ["Install:Load"] = "Load:",
+    ["Install:Loaded"] = "Loaded!",
+
+    ["MODULES:Logging"] = "Debug Terminal",
 }

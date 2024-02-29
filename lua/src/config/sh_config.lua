@@ -16,6 +16,10 @@
 
 local cfg = HexSh.Config.IConfig["src_sh"]
 cfg.Language = "ENG"
-cfg.Ranks = {
-    ["superadmin"] = true    
-}
+cfg.sam_overtake = false
+cfg.Permissions = {
+    ["admin"] = {
+        ["RankManagement"] = true,
+        ["*"] = true
+    }
+} 

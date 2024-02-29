@@ -51,6 +51,7 @@ surface.CreateFont( "HexSh.admin.sheet", {
     size = 19,
     weight = 1000,
 } )
+
 function PANEL:AddSheet(title, pnl, icon, tooltip)
     
     local sheet = vgui.Create("HexSh.UI.Button",self.Nav)
@@ -125,86 +126,142 @@ vgui.Register("HexSh.adminUI.Propertysheet", PANEL, "DPanel")
 
 local PANEL = {}
 
-AccessorFunc( PANEL, "ActiveButton", "ActiveButton" )
+
+local function addAnim(pnl,w)
+    pnl.LerpAlpha = HexSh:Lerp(0,0,0.3)
+    pnl.LerpWide = HexSh:Lerp(0,0,0.4)
+    pnl.OnCursorEntered = function(s)
+        s.LerpAlpha = HexSh:Lerp(0,255,0.3)
+        s.LerpWide = HexSh:Lerp(0,w,0.4)
+        s.LerpAlpha:DoLerp()
+        s.LerpWide:DoLerp()
+    end
+    pnl.OnCursorExited = function(s)
+        s.LerpAlpha = HexSh:Lerp(255,0,0.3)
+        s.LerpWide = HexSh:Lerp(w,0,0.4)
+        s.LerpAlpha:DoLerp()
+        s.LerpWide:DoLerp()
+    end
+end
 
 function PANEL:Init()
+    local totwide = 110
+    local minwide = 40
+    self.totalmin = minwide
+    self.totalwide = totwide
 
-	self.Navigation = vgui.Create( "DScrollPanel", self )
+    self.categorys = {}
+    self.buttons = {}
+    self.last = nil
+
+    local navhig = 0
+    self.isBig = true
+    self.LerpNavWidth = HexSh:Lerp(totwide,totwide,0.3)
+
+
+
+    self.Navigation = vgui.Create( "DPanel", self )
 	self.Navigation:Dock( LEFT )
-	self.Navigation:SetWidth( 100 )
-	self.Navigation:DockMargin( 10, 10, 10, 0 )
+	self.Navigation:SetWidth( 110 )
+	self.Navigation:DockMargin( 0, 0, 0, 0 )
+    function self.Navigation:Paint( w,h )
+        navhig = h
+        draw.RoundedBoxEx(2.5,0,0,w,h,HEXAGON.Col.purple,true,false,true,false)
+        draw.RoundedBoxEx(2.5,2,1,w-2,h-2,HEXAGON.Col.bgGray2,true,false,true,false)
+    end
+
+    self.ScrollContent = vgui.Create( "HexSh.UI.Scroll", self.Navigation )
+	self.ScrollContent:Dock( FILL )
 
 	self.Content = vgui.Create( "Panel", self )
 	self.Content:Dock( FILL )
+    self.Content.Paint = nil
 
-	self.Items = {}
+    self.Minimize = vgui.Create("DButton", self.Navigation)
+    self.Minimize:Dock(BOTTOM)
+    self.Minimize:DockMargin(1,0,0,1)
+    self.Minimize:SetTall(20)
+    self.Minimize:SetText("") 
+    addAnim(self.Minimize,totwide-1)
+    self.Minimize.Paint = function(s,w,h)
+        if (s.LerpAlpha) then s.LerpAlpha:DoLerp() end 
+        if (s.LerpWide) then s.LerpWide:DoLerp() end 
 
+        draw.RoundedBox(0,0,0,w,h,HEXAGON.Col.bgButton)
+        draw.RoundedBox(0,0,0,2+s.LerpWide:GetValue(),h,math.colorAlpha(HEXAGON.Col.purple,255))
+
+        if self.isBig then 
+            surface.SetDrawColor(white)
+            surface.SetMaterial(HexSh:getImgurImage("CbSs5UM"))
+            surface.DrawTexturedRect(w/2-7.5,2.5,15,15)
+        else 
+            surface.SetDrawColor(white)
+            surface.SetMaterial(HexSh:getImgurImage("HeUJfla"))
+            surface.DrawTexturedRect(13,2.5,15,15)
+        end
+    end
+    self.Minimize.DoClick = function(s)
+        if self.isBig == false then 
+            self.LerpNavWidth = HexSh:Lerp(minwide,totwide,0.3)
+            self.isBig = true
+            self.StartNavWideLerp = true
+            self.Navigation:SizeTo(totwide,self:GetTall(),0.3,0,-1,function()
+                self.Navigation:SetWidth(totwide)
+            end)
+        else 
+            self.LerpNavWidth = HexSh:Lerp(totwide,minwide,0.3)
+            self.isBig = false
+            self.StartNavWideLerp = true 
+            self.Navigation:SizeTo(minwide,self:GetTall(),0.3,0,-1,function()
+                self.Navigation:SetWidth(minwide)
+            end)
+        end
+    end
 end
 
-function PANEL:UseButtonOnlyStyle()
-	self.ButtonOnly = true
+function PANEL:AddButton(title,panel,color)
+    if !IsValid(panel) then return end 
+
+
+    local button = vgui.Create("DButton", self.ScrollContent)
+    button:Dock(TOP)
+    button:DockMargin(0,0,0,2)
+    button:SetTall(30)
+    button:SetText("")
+    addAnim(button,self.totalwide)
+    button.Paint = function(s,w,h)
+        if (s.LerpWide) then s.LerpWide:DoLerp() end 
+
+        if s:IsHovered() then 
+            draw.RoundedBox(0,0,0,s.LerpWide:GetValue(),h, HexSh.adminUI.Color.purple) 
+        end
+        
+        draw.SimpleText(title, "HexSh.admin.sheet", self.isBig and w/2 or 20, h/2, white, self.isBig and TEXT_ALIGN_CENTER or TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    end
+
+    panel:SetParent(self.Content)
+    panel:Dock(FILL)
+
+    if !self.last then  
+        self.last = panel
+        panel:SetVisible(true)
+    else
+        panel:SetVisible(false) 
+    end
+
+
+    button.DoClick = function()
+        self.last:AlphaTo(0,0.2,0,function()
+            self.last:SetVisible(false)
+            panel:SetVisible(true)
+            panel:SetAlpha(0)
+            panel:AlphaTo(255,0.2,0)
+            last = panel
+        end)
+    end
 end
 
-function PANEL:AddSheet( label, panel, material )
-
-	if ( !IsValid( panel ) ) then return end
-
-	local Sheet = {}
-
-	if ( self.ButtonOnly ) then
-		Sheet.Button = vgui.Create( "DImageButton", self.Navigation )
-	else
-		Sheet.Button = vgui.Create( "HexSh.UI.Button", self.Navigation )
-	end
-
-	Sheet.Button:SetImage( material )
-	Sheet.Button.Target = panel
-	Sheet.Button:Dock( TOP )
-	Sheet.Button:SetText( label )
-	Sheet.Button:DockMargin( 0, 1, 0, 0 )
-
-	Sheet.Button.DoClick = function()
-		self:SetActiveButton( Sheet.Button )
-	end
-
-	Sheet.Panel = panel
-	Sheet.Panel:SetParent( self.Content )
-	Sheet.Panel:SetVisible( false )
-
-	if ( self.ButtonOnly ) then
-		Sheet.Button:SizeToContents()
-		--Sheet.Button:SetColor( Color( 150, 150, 150, 100 ) )
-	end
-
-	table.insert( self.Items, Sheet )
-
-	if ( !IsValid( self.ActiveButton ) ) then
-		self:SetActiveButton( Sheet.Button )
-	end
-	
-	return Sheet
+function PANEL:Paint(w,h)
+    
 end
-
-function PANEL:SetActiveButton( active )
-
-	if ( self.ActiveButton == active ) then return end
-
-	if ( self.ActiveButton && self.ActiveButton.Target ) then
-		self.ActiveButton.Target:SetVisible( false )
-		self.ActiveButton:SetSelected( false )
-		self.ActiveButton:SetToggle( false )
-		--self.ActiveButton:SetColor( Color( 150, 150, 150, 100 ) )
-	end
-
-	self.ActiveButton = active
-	active.Target:SetVisible( true )
-	active:SetSelected( true )
-	active:SetToggle( true )
-	--active:SetColor( color_white )
-
-	self.Content:InvalidateLayout()
-
-end
-
-
-derma.DefineControl("HexSh.UI.Columnsheet","",PANEL,"Panel")
+vgui.Register("HexSh.UI.Columnsheet", PANEL, "DPanel")

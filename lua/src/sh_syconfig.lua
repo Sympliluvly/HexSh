@@ -22,3 +22,10 @@ function HexSh:registerConfig( name, color, vguif )
 end
 
 HexSh:regPermission("DeineOma")
+
+
+
+
+
+
+

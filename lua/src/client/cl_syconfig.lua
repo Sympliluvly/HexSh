@@ -14,16 +14,34 @@
 // Licensed to: -
 //---------------------------------------\\
 
+function HexSh.Set(src,path,val,permission)
+    if !permission then 
+        permission = "MenuAccess"
+    end
+    net.Start("HexSh::Set")
+        net.WriteString(permission)
+        net.WriteString(src)
+        net.WriteString(path)
+        net.WriteType(val)
+    net.SendToServer()
+end
+
+
 net.Receive("HexSh::LoadConfig", function()
     HexSh.Config.IConfig = HexSh:ReadCompressedTable()
-    PrintTable(HexSh.Config.IConfig["src_sh"])
 end)
- 
+
+net.Receive("HexSh::LoadSingleConfig", function()
+    HexSh.Config.IConfig[net.ReadString()] = HexSh:ReadCompressedTable()
+    print(HexSh.Config.IConfig)
+
+end)
+
 hook.Add("InitPostEntity", "HEXMENXLoadcfg", function()
     net.Start("HexSh::LoadConfig")
     net.SendToServer()
 end)
-
+ 
 net.Start("HexSh::LoadConfig")
 net.SendToServer()
 
@@ -38,3 +56,5 @@ concommand.Add("hexmenu", function()
         net.WriteString("context")
     net.SendToServer()
 end)
+
+

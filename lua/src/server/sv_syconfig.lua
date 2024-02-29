@@ -14,98 +14,173 @@
 // Licensed to: -
 //---------------------------------------\\
 
+
+--[[-----------------------------------------------
+    network registers
+---------------------------------------------]]--
 util.AddNetworkString("HexSh::LoadConfig")
 util.AddNetworkString("HexSh::WriteConfig")
 util.AddNetworkString("HexSh::OpenConfigMenu")
 util.AddNetworkString("HexSh::CommunicateLoad")
 
-local function FindTableDifferences(table1, table2, prefix)
-    prefix = prefix or ""
-    local e = {}
+util.AddNetworkString("HexSh::Set")
+util.AddNetworkString("HexSh::LoadSingleConfig")
 
-    for key, value in pairs(table1) do
-        local fullKey = prefix .. '["' .. key .. '"]'
-        if type(value) == "table" then
-            if type(table2[key]) ~= "table" then
-                local a = string.Split(prefix,'"]["')[1]
-                local b = string.Split(a,'["')[2]
-                table.insert(e,b)
-            else
-                FindTableDifferences(value, table2[key], fullKey)
-            end
-        elseif value ~= table2[key] then
-            local a = string.Split(prefix,'["')[2]
-            local b = string.Split(a,'"]')[1]
-            table.insert(e,b)
-        end
-    end
-
-    return e
-end
-
+--[[-----------------------------------------------
+    Config loading functions
+---------------------------------------------]]--
 local function Load(ply)
     local export = {}
        
-    if (!file.Exists("hexsh/config.json", "DATA")) then
-        file.CreateDir("hexsh")
-        export = HexSh.Config.IConfig
-    else
-        export = util.JSONToTable(file.Read("hexsh/config.json", "DATA"))
-        for k,v in pairs(export) do 
-            HexSh.Config.IConfig[k] = v
-        end 
+    for k,v in pairs( table.GetKeys(HexSh.Config.IConfig)) do 
+        if (!file.Exists("hexsh/config/"..v..".json", "DATA")) then
+            export[v] = HexSh.Config.IConfig[v]
+        else
+            export[v] = util.JSONToTable(file.Read("hexsh/config/"..v..".json", "DATA"))
+            HexSh.Config.IConfig[v] = export[v]
+        end
     end
 
+
     net.Start("HexSh::LoadConfig")
-        HexSh:WriteCompressedTable(HexSh.Config.IConfig)
+        HexSh:WriteCompressedTable(export)
     net.Send(ply)
 end
 
-net.Receive("HexSH::WriteConfig", function(len,ply)
-    local readNewData = HexSh:ReadCompressedTable()
-    local customPermission = net.ReadString()
-    if (!ply:HC_hasPermission("MenuAccess")) then return end
-    if customPermission && isstring(customPermission) && HexSh.Permissions[customPermission] then 
-        if (!ply:HC_hasPermission(customPermission)) then return end
+function HexSh.loadConfig()
+    local export = {}
+       
+    for k,v in pairs( table.GetKeys(HexSh.Config.IConfig)) do 
+        if (!file.Exists("hexsh/config/"..v..".json", "DATA")) then
+            export[v] = HexSh.Config.IConfig[v]
+        else
+            export[v] = util.JSONToTable(file.Read("hexsh/config/"..v..".json", "DATA"))
+            HexSh.Config.IConfig[v] = export[v]
+        end
     end
-    if (!file.Exists("hexsh/config.json", "DATA")) then
-        file.CreateDir("hexsh")
-        local cfgtbl = table.Copy(readNewData)
 
-        file.Write("hexsh/config.json", util.TableToJSON(cfgtbl,true))
+    PrintTable(export)
+
+    net.Start("HexSh::LoadConfig")
+        HexSh:WriteCompressedTable(export)
+    net.Send(player.GetAll())
+end
+
+function HexSh.loadSingleConfig(src)
+    --if !HexSh.Srcs[src] then return end 
+
+    local export = {}
+       
+    if (!file.Exists("hexsh/config/"..src..".json", "DATA")) then
+        export = HexSh.Config.IConfig[src]
     else
-        local cfgtbl = table.Copy(readNewData)
-        file.Write("hexsh/config.json", util.TableToJSON(cfgtbl,true))
+        export = util.JSONToTable(file.Read("hexsh/config/"..src..".json", "DATA"))
+        HexSh.Config.IConfig[src] = export
     end
+
+    net.Start("HexSh::LoadSingleConfig")
+        net.WriteString(src)
+        HexSh:WriteCompressedTable(export)
+    net.Send(player.GetAll())
+end
+
+
+--[[-----------------------------------------------
+    Write data into the Config
+---------------------------------------------]]--
+local runstr = RunString
+local strform = string.format
+
+function HexSh.Set(src,path,val)
+    if !isstring(src) then return end 
+    if !isstring(path) then return end 
+    --if !isstring(val) then return end
+    --if !HexSh.Srcs[src] then return end 
     
-    Load(ply)
+    local trim = path 
+    trim = string.Split(trim,"/")
+    path = "HexSh.Config.IConfig['"..src.."']"
+    for i=1, #trim do 
+        path = path .. "['"..trim[i].."']"
 
-    hook.Run("HexSh::CommunicateLoad", readNewData)
-    net.Start("HexSh::CommunicateLoad")
-        net.WriteTable(readNewData)
-    net.Send(ply)
-end)
+       /*if ( runstr( strform([[
+            local a = %s
+            if a==nil then
+                error( "_", 1 )
+            end
+            
+        ]],path), "check"..i, false ) == false ) then 
+            error( trim[i].." arent available", 1 )
+        end*/
+    end
 
---Msg(Color(250,0,0), "ICONFIG\n")
---PrintTable(HexSh.Config.IConfig)
---Msg(Color(250,0,0), "IngameCONFIG\n")
---PrintTable(util.JSONToTable(file.Read("hexsh/config.json", "DATA")))
+    if (isbool(val)) then 
+        runstr(strform([[
+            %s = %s
+        ]],path,val),"Execute:ConfigSet:"..path,true)    
+    elseif (isstring(val)) then
+        runstr(strform([[
+            %s = %q
+        ]],path,val),"Execute:ConfigSet:"..path,true)
+    elseif (istable(val)) then 
+        val = util.TableToJSON(val)
+        runstr(strform([[
+            %s = util.JSONToTable(%q)
+        ]],path,val),"Execute:ConfigSet:"..path,true)
+    elseif (isnumber(val)) then 
+        runstr(strform([[
+            %s = %s
+        ]],path,val),"Execute:ConfigSet:"..path,true)
+    end 
+
+    runstr(strform([[
+        local a = %q
+        print(a)
+        file.Write("hexsh/config/"..a..".json",util.TableToJSON(HexSh.Config.IConfig[a],true))
+        HexSh.loadSingleConfig(a)
+    ]],src),"EXECUTE:SAVECONFIG:"..path)
+end
 
 
+--[[-----------------------------------------------
+    network recieves
+---------------------------------------------]]--
+local curT = CurTime
 net.Receive("HexSh::LoadConfig", function(len,ply)
     Load(ply)
 end) 
 
+local delay = 0
+net.Receive("HexSh::Set", function(len,ply)
+    if delay < curT() then 
+        local permission = net.ReadString()
+        if !ply:HC_hasPermission(permission) then 
+            return 
+        end
+        HexSh.Set(net.ReadString(),net.ReadString(),net.ReadType())
+    else
+        return
+    end
+    delay = curT() + 0.3
+end)
+
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    if (!HexSh.Config.IConfig["src_sh"].Ranks[ply:GetUserGroup()]) then return end
+    print("dkkfjkfs")
+   -- if !ply:HC_hasPermission("MenuAccess") then 
+   --     HexSh:Notify(ply,"error","You aren't accessed to this!s")
+   ---     return 
+    --end 
+
 
     net.Start("HexSh::OpenConfigMenu")
+        net.WriteUInt(HexSh.isLIBready,2)
     net.Send(ply)
 end)
 
 hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     if (!ply.hexshinit) then     
         Load(ply)
+        
         local c = {}
         for k,v in pairs(HexSh.Srcs) do 
             if !HexSh.Config.IConfig[k] then 
@@ -122,3 +197,22 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
     ply.hexshinit = false 
 end)
 
+
+--[[----------------------------------s
+        ## Get Config Files ##
+--]]----------------------------------
+util.AddNetworkString("HexSh:getConfigFiles")
+ 
+net.Receive("HexSh:getConfigFiles", function( len, ply )
+    -- Permission akss
+     
+    local files,folder = file.Find("hexsh/config/*", "DATA")
+    local export = {}
+    for k,v in pairs(files) do
+        export[v] = file.Read("hexsh/config/"..v, "DATA")
+    end
+
+    net.Start("HexSh:getConfigFiles")
+        net.WriteTable(export)
+    net.Send(ply)
+end) 
