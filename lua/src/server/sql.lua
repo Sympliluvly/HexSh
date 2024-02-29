@@ -3,9 +3,9 @@
 //---------------------------------------\\
 // Script: Shared (base)
 // src(id): sh
-// Module of: - 
+// Module of: -
 //
-// Do not edit this base by yourself, 
+// Do not edit this base by yourself,
 // because all functions are needed for
 // our script!!!!
 //---------------------------------------\\
@@ -19,8 +19,24 @@ HexSh.SQL = HexSh.SQL or {}
 local D = HexSh_Decrypt
 
 
---Createifnoxexist
-local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
+if !file.Exists("hexsh/sql.json", "DATA") then
+	file.Write("hexsh/sql.json",util.TableToJSON({
+		mysql = false,
+		host = "",
+		username = "",
+		password = "",
+		schema = "",
+		port = "",
+	}))
+end
+
+local sqlfile = file.Read("hexsh/sql.json", "DATA")
+
+if !sqlfile then
+	error("Couldn't read data/hexsh/sql.json")
+end
+
+local data = util.JSONToTable(sqlfile)
 HexSh.SQL.cfg = {}
 HexSh.SQL.cfg.mysql = data.mysql
 HexSh.SQL.cfg.host = data.host
@@ -29,7 +45,7 @@ HexSh.SQL.cfg.password = data.password
 HexSh.SQL.cfg.schema = data.schema
 HexSh.SQL.cfg.port = data.port
 
-if HexSh.SQL.cfg.mysql then 
+if HexSh.SQL.cfg.mysql then
 	require("mysqloo")
 end
 
@@ -40,19 +56,19 @@ util.AddNetworkString("HexSh::SQLWRITE")
 
 net.Receive("HexSh::SQLGET", function(len,ply)
 	print(ply:HC_hasPermission("MySQL"))
-	if ply:HC_hasPermission("MySQL") == false then 
+	if ply:HC_hasPermission("MySQL") == false then
 
 		net.Start("HexSh::SQLGET")
 			net.WriteBool(false)
 		net.Send(ply)
 
-		return 
+		return
 	end
 
 	local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 	net.Start("HexSh::SQLGET")
 		net.WriteBool(true) --access
-		net.WriteBool(data.mysql) 
+		net.WriteBool(data.mysql)
 		net.WriteString(HexSh_Decrypt(data.host))
 		net.WriteString(HexSh_Decrypt(data.username))
 		net.WriteString(HexSh_Decrypt(data.password))
@@ -63,9 +79,9 @@ end)
 net.Receive("HexSh::SQLWRITE", function(len,ply)
 	--if (HexSh_blockspam(ply:SteamID64())) then
 	--	print("SSTOP")
-	--	return 
-	--end 
-	if (!ply:GetUserGroup() == "superadmin") then return end 
+	--	return
+	--end
+	if (!ply:GetUserGroup() == "superadmin") then return end
 
 	local mysql = net.ReadBool()
 	local host = net.ReadString()
@@ -88,7 +104,7 @@ end)
 
 function HexSh.SQL.Constructor( self, config )
 	local sql = {}
-	config = config or {} 
+	config = config or {}
 
 	sql.config = HexSh.SQL.cfg
 	mysqloo.onConnected = function() end
@@ -106,7 +122,7 @@ local function querymysql( self, query, callback, errorCallback )
 
 	function q:onSuccess( data )
 		if callback then
-			callback( data )	
+			callback( data )
 		end
 	end
 
@@ -126,7 +142,7 @@ local function querymysql( self, query, callback, errorCallback )
 		end
 	end
 
-	q:start() 
+	q:start()
 end
 
 local function querySQLite(self, query, callback, errorCallback)
@@ -148,9 +164,9 @@ local function querySQLite(self, query, callback, errorCallback)
 	if callback then
 		callback( result )
 	end
-end 
+end
 
-function HexSh.SQL:RequireModule() 
+function HexSh.SQL:RequireModule()
 	if not HexSh.SQL.cfg.mysql then return end
 	if not pcall( require, "mysqloo" ) then
 		error("Couldn't find mysqlOO. Please install https://github.com/FredyH/mysqlOO. Reverting to SQLite")
@@ -165,7 +181,7 @@ function HexSh.SQL:Connect()
 		self.db = mysqloo.connect( HexSh_Decrypt(HexSh.SQL.cfg.host), HexSh_Decrypt(HexSh.SQL.cfg.username), HexSh_Decrypt(HexSh.SQL.cfg.password), HexSh_Decrypt(HexSh.SQL.cfg.schema), tonumber(HexSh_Decrypt(HexSh.SQL.cfg.port)) )
 		self.db.onConnectionFailed = function(_, msg)
 			timer.Simple(5, function()
-				if not self then 	 
+				if not self then
 					return
 				end
 				self:Connect( D(HexSh.SQL.cfg.host), D(HexSh.SQL.cfg.username), D(HexSh.SQL.cfg.password), D(HexSh.SQL.cfg.schema),tonumber(D(HexSh.SQL.cfg.port)) )
@@ -186,7 +202,7 @@ function HexSh.SQL:Connect()
 		self.db:connect()
 	end
 end
- 
+
 function HexSh.SQL:Disconnect()
 	if IsValid( self.db ) then
 		self.db:disconnect()
@@ -215,8 +231,8 @@ HexSh.SQL.__index = HexSh.SQL
 setmetatable(HexSh.SQL, {
 	__call = HexSh.SQL.Constructor
 })
- 
-if HexSh.SQL then 
+
+if HexSh.SQL then
 	HexSh.SQL:Disconnect()
 end
 
