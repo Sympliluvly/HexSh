@@ -225,22 +225,30 @@ function PANEL:AddButton(title,panel,color)
 
     local button = vgui.Create("DButton", self.ScrollContent)
     button:Dock(TOP)
-    button:DockMargin(0,0,0,2)
+    button:DockMargin(0,0,0,0)
     button:SetTall(30)
     button:SetText("")
     addAnim(button,self.totalwide)
-    button.Paint = function(s,w,h)
-        if (s.LerpWide) then s.LerpWide:DoLerp() end 
-
-        if s:IsHovered() then 
-            draw.RoundedBox(0,0,0,s.LerpWide:GetValue(),h, HexSh.adminUI.Color.purple) 
-        end
-        
-        draw.SimpleText(title, "HexSh.admin.sheet", self.isBig and w/2 or 20, h/2, white, self.isBig and TEXT_ALIGN_CENTER or TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    end
 
     panel:SetParent(self.Content)
     panel:Dock(FILL)
+
+    button.Paint = function(s,w,h)
+        if (s.LerpWide) then s.LerpWide:DoLerp() end 
+
+        
+        if self.last == panel then 
+            draw.RoundedBox(0,0,0,w,h, HexSh.adminUI.Color.purple) 
+        end
+        
+        if s:IsHovered() then 
+            draw.RoundedBox(0,0,0,s.LerpWide:GetValue(),h, HexSh.adminUI.Color.purple) 
+        end
+
+
+        
+        draw.SimpleText(title, "HexSh.admin.sheet", self.isBig and w/2 or 20, h/2, white, self.isBig and TEXT_ALIGN_CENTER or TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    end
 
     if !self.last then  
         self.last = panel
@@ -250,13 +258,13 @@ function PANEL:AddButton(title,panel,color)
     end
 
 
-    button.DoClick = function()
-        self.last:AlphaTo(0,0.2,0,function()
+    button.DoClick = function(s)
+        self.last:AlphaTo(0,0.1,0,function()
             self.last:SetVisible(false)
-            panel:SetVisible(true)
             panel:SetAlpha(0)
+            panel:SetVisible(true)
             panel:AlphaTo(255,0.2,0)
-            last = panel
+            self.last = panel
         end)
     end
 end

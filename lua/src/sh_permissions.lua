@@ -95,7 +95,7 @@ hook.Add("HexSh:ReloadPermissions","",function(idx,src,phrase)
 end)
 
  
---[[---------------------------------------------------------------------------
+--[[--------------------------- ------------------------------------------------
  ** ServerSide Permission to CLIENT Checking **
 ---------------------------------------------------------------------------]]
 if (SERVER) then 
@@ -109,7 +109,7 @@ if (SERVER) then
                 net.WriteBool(false)
             end
         net.Send(ply)
-    end)
+    end) 
 end
 if (CLIENT) then 
     function play:SvPtCl(perm,success,err)

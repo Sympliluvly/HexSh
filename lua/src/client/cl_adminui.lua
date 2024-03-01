@@ -132,13 +132,13 @@ hook.Add("HexSh::GetAdminItems", "", function()
     -- For Adminw
     HexSh.adminUI:AddSubMenu("admin", HexSh:L("src_sh", "Manage"), admin_icon )
 
-    --Repos
+    --Repos 
     surface.CreateFont( "HexSh.EditLayerTitle", {
         font = "Montserrat", 
         extended = false,
         size = 50,
         weight = 1000,
-    } )
+    } ) 
 
     HexSh.adminUI:AddNMenu("logs", HexSh:L("src_sh", "logs"),logs_icon, function(parent)
         net.Start("HexSh:ReadDebugLogs")
@@ -587,7 +587,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 function node:DoClick()
                     text:SetText(v)
                 end
-            end
+            end 
         end)
 
 
