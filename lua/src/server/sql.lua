@@ -25,11 +25,11 @@ if (!file.Exists("hexsh/sql.json", "DATA")) then
 	file.CreateDir("hexsh")
 	file.Write("hexsh/sql.json",util.TableToJSON({
 		mysql = false,
-		host = HexSh_Encrypt(" "),
-		username = HexSh_Encrypt(" "),
-		password = HexSh_Encrypt(" "),
-		schema = HexSh_Encrypt(" "),
-		port = HexSh_Encrypt("3306"),
+		host = "",
+		username = "", 
+		password = "",
+		schema = "",
+		port = 3306,
 	}))
 
 end
@@ -53,7 +53,6 @@ util.AddNetworkString("HexSh::SQLGET")
 util.AddNetworkString("HexSh::SQLWRITE")
 
 net.Receive("HexSh::SQLGET", function(len,ply)
-	print(ply:HC_hasPermission("MySQL"))
 	if ply:HC_hasPermission("MySQL") == false then 
 
 		net.Start("HexSh::SQLGET")
@@ -62,22 +61,22 @@ net.Receive("HexSh::SQLGET", function(len,ply)
 
 		return 
 	end
-
+  
 	local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 	net.Start("HexSh::SQLGET")
 		net.WriteBool(true) --access
 		net.WriteBool(data.mysql) 
-		net.WriteString(HexSh_Decrypt(data.host))
-		net.WriteString(HexSh_Decrypt(data.username))
-		net.WriteString(HexSh_Decrypt(data.password))
-		net.WriteString(HexSh_Decrypt(data.schema))
-		net.WriteUInt(tonumber(HexSh_Decrypt(data.port)), 17 )
+		net.WriteString(data.host)
+		net.WriteString(data.username)
+		net.WriteString(data.password)
+		net.WriteString(data.schema)
+		net.WriteUInt(tonumber(data.port), 17 )
 	net.Send(ply)
 end)
 net.Receive("HexSh::SQLWRITE", function(len,ply)
 	--if (HexSh_blockspam(ply:SteamID64())) then
 	--	print("SSTOP")
-	--	return 
+	--	return  
 	--end 
 	if (!ply:GetUserGroup() == "superadmin") then return end 
 
@@ -90,11 +89,11 @@ net.Receive("HexSh::SQLWRITE", function(len,ply)
 
 	file.Write("hexsh/sql.json",util.TableToJSON({
 		mysql = mysql,
-		host = HexSh_Encrypt(host),
-		username = HexSh_Encrypt(username),
-		password = HexSh_Encrypt(password),
-		schema = HexSh_Encrypt(dbname),
-		port = HexSh_Encrypt(port),
+		host = host,
+		username = username,
+		password = password,
+		schema = dbname,
+		port = port,
 	}))
 
 	HexSh.SQL:Connect()
@@ -107,8 +106,7 @@ function HexSh.SQL.Constructor( self, config )
 	sql.config = HexSh.SQL.cfg
 	mysqloo.onConnected = function() end
 
-	sql.cache = {}
-	setmetatable(sql, HexSh.SQL)
+	sql.cache = {} 
 	sql:RequireModule()
 
 	return sql
@@ -175,15 +173,14 @@ end
 
 function HexSh.SQL:Connect()
 	if HexSh.SQL.cfg.mysql then
-
-		self.db = mysqloo.connect( HexSh_Decrypt(HexSh.SQL.cfg.host), HexSh_Decrypt(HexSh.SQL.cfg.username), HexSh_Decrypt(HexSh.SQL.cfg.password), HexSh_Decrypt(HexSh.SQL.cfg.schema), tonumber(HexSh_Decrypt(HexSh.SQL.cfg.port)) )
+		self.db = mysqloo.connect( HexSh.SQL.cfg.host, HexSh.SQL.cfg.username, HexSh.SQL.cfg.password, HexSh.SQL.cfg.schema, tonumber(HexSh.SQL.cfg.port) )
 		self.db.onConnectionFailed = function(_, msg)
 			timer.Simple(5, function()
 				if not self then 	 
 					return
 				end
-				self:Connect( D(HexSh.SQL.cfg.host), D(HexSh.SQL.cfg.username), D(HexSh.SQL.cfg.password), D(HexSh.SQL.cfg.schema),tonumber(D(HexSh.SQL.cfg.port)) )
-			end )
+				self:Connect( HexSh.SQL.cfg.host, HexSh.SQL.cfg.username, HexSh.SQL.cfg.password, HexSh.SQL.cfg.schema,tonumber(HexSh.SQL.cfg.port) )
+			end ) 
 
 			error("Connection failed! " .. tostring( msg ) ..	"\nTrying again in 5 seconds.")
 		end
@@ -214,21 +211,7 @@ end
 
 function HexSh.SQL:UsingMySQL()
 	return HexSh.SQL.cfg.mysql
-end
-
-function HexSh.SQL:Escape(str)
-	if self:UsingMySQL() then
-		return string.Replace(self.db:escape(tostring(str)), "'", "")
-	else
-		return string.Replace(sql.SQLStr(str), "'", "")
-	end
-end
-
-HexSh.SQL.__index = HexSh.SQL
-
-setmetatable(HexSh.SQL, {
-	__call = HexSh.SQL.Constructor
-})
+end 
  
 if HexSh.SQL then 
 	HexSh.SQL:Disconnect()

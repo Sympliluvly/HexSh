@@ -21,6 +21,9 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["BCfg"] = "Base Config",
     ["changeLang"] = "Language",
     ["back"] = "Back",
+    ["setup.ColumnTitle"] = "Setup",
+
+    ["Permission.ColumnTitle"] = "Permissions",
     ["Access"] = "Access",
     ["Ranks"] = "Ranks",
     ["AddRank"] = "Add Rank",
@@ -33,6 +36,7 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["notRanks"] = "You dont have Permissions to edit Ranks",
     ["SAM_Overtake"] = "SAM overtake",
 
+    ["MYSQL.ColumnTitle"] = "MySQL",
     ["MYSQL"] = "MySQL Setup",
     ["notMYSQL"] = "MySQL is only visible for superadmins",
     ["MYSQLEnabled"] = "Activate MySQL",

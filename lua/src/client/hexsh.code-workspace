@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../hexagonchars"
+		},
+		{
+			"path": "../../../../lightsaberplus"
+		}
+	],
+	"settings": {}
+}

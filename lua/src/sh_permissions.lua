@@ -41,13 +41,27 @@ function HexSh:regPermission(identifier,translation)
     end
 
     HexSh.Permissions[identifier] = translation
- 
+  
     hook.Run("HexSh:PermissionRegistered",identifier,translation)
     hook.Run("HexSh:ReloadPermissions",identifier,translation)
 end
 
+
+--[[----------------------------------------
+        ( DEFAULT BASE PERMISSIONS )
+
+    - * (All Rights) -> that means the player has EVERY right that is registered
+    - basecfg (Base Configuration) -> that means the player has the access to the Base Configuration
+    - MySQL (MySQL Settings) -> that means the player has the access to the MySQL Settings
+    - Debug (Debugging) -> that means the player has the access to the Debugging
+    - MenuAccess (Config Access) -> you only can see the menu and some things!
+    - RankManagement (Manage Ranks) -> that means the player has the access to the Rank Management and can change the Permissions of the ranks
+
+--]]-----------------------------------------
+
 hook.Add("HexSH.Loaded", "HEX_SH_Loaded", function()
     HexSh:regPermission("*","All Rights") 
+    HexSh:regPermission("basecfg","Base Configuration") 
     HexSh:regPermission("MySQL","MySQL Settings")
     HexSh:regPermission("Debug","Debugging")
     HexSh:regPermission("MenuAccess","Config Access")
@@ -83,17 +97,12 @@ function play:HC_hasPermission(identifier)
     return base(self,identifier)
 end
 
-if CLIENT then
-    print(LocalPlayer():HC_hasPermission("Debug"))
-end
-
 --[[---------------------------------------------------------------------------
  ** Hook **
 ---------------------------------------------------------------------------]]
 hook.Add("HexSh:ReloadPermissions","",function(idx,src,phrase)
     HexSh.Permissions[idx] = translation || idx
 end)
-
  
 --[[--------------------------- ------------------------------------------------
  ** ServerSide Permission to CLIENT Checking **

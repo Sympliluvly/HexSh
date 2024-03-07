@@ -19,14 +19,35 @@ local _I_, _L_, _J_ = 1103
 --[[----------------------------------------]]
 HexSh = HexSh or {}
 HexSh.isLIBready = 0
+
 HexSh.Config = HexSh.Config or {}
 HexSh.Config.IConfig = HexSh.Config.IConfig or {}
+
 HexSh.Lang = HexSh.Lang or {}
+
 HexSh.UI =  HexSh.UI or {}
 HexSh.UI.Configs = HexSh.UI.Configs or {}
-HexSh.Srcs = HexSh.Srcs or  {}
+
+HexSh.Srcs = HexSh.Srcs or {} -- General list of Src's
+HexSh.SrcDetails = HexSh.SrcDetails or {} -- Details of Src's
+--[[ FOR EXAMPLE:
+    HexSh.SrcDetails["src_sh"] = {
+        Name = "HexSh",
+        Version = "1.0",
+        Author = "Tameka aka 0v3rSimplified",
+        Description = "The Base of the Hexagon Cryptics Library",
+    }
+
+
+    will load at the same path but: 
+        you need to add a file called src_details.lua
+        and add the given code!
+]]
+
 HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
+
 HexSh.Permissions = HexSh.Permissions or {}
+
 HEXAGON = HEXAGON or HexSh
 
    
@@ -38,10 +59,6 @@ if (SERVER) then
     end 
     HexSh.isLIBready = gebaeck   
 end
-
-
-
-
 
 if (CLIENT) then   
     surface.CreateFont( "HexSh.V", { 
@@ -109,6 +126,12 @@ local function loadbase()
     HexSh.Config["src_sh"] = {}
     HexSh.Config.IConfig["src_sh"] = {}
     HexSh.Srcs["src_sh"] = {}
+    HexSh.SrcDetails["src_sh"] = {
+        Name = "HexSh",
+        Version = "1.1.2",
+        Author = "Tameka",
+        Description = "The Base of the Hexagon Cryptics Library",
+    }
 
     AddCSLuaFile("src/config/sh_config.lua")
     include("src/config/sh_config.lua")
@@ -147,7 +170,7 @@ local function loadbase()
         include("src/"..f)
     end
 
-    MsgC(white, [[|-  ]], pur,[[HEXAGON]], white, [[ SHARED's]], white, [[ LOADED]],"\n")
+    MsgC(white, [[|-  ]], pur,[[HEXAGON]], white, [[ SHARED's]] .. " (v"..HexSh.SrcDetails["src_sh"].Version..")", white, [[ LOADED]],"\n")
     if HexSh.isLIBready == 0 then 
         MsgC(white, [[|-  ]], white,[[BEFORE YOU USE THE LIBRARY, YOU NEED TO FOLLOW THE INSTRUCTIONS INGAME!!]],"\n")
     end
@@ -172,7 +195,10 @@ local function loaddlc()
         ]]
         local countprcs = 0
         local countsrcs = 0
+        
+
         if (string.Left(v,5)=="psrc_") then
+            if v == "psrc_lightsaberplus" then continue end
             local str = string.Trim(v.."psrc_", "psrc_")
             local rep = "src_"..str
             if (HexSh.Srcs[rep]) then 
@@ -185,6 +211,14 @@ local function loaddlc()
                 HexSh.Config[rep] = {}
                 HexSh.Config.IConfig[rep] = {}
                 HexSh.Srcs[rep] = {}
+
+                if file.Exists("hexsh/"..v.."/src_details.lua", "LUA") then 
+                    local succ, err = pcall(include, "hexsh/"..v.."/src_details.lua")
+                    if (succ) then 
+                        HexSh.SrcDetails[rep] = err
+                        haveDetails = true 
+                    end
+                end
                 
                 -- Load Importants
                 local function de()
@@ -202,14 +236,14 @@ local function loaddlc()
                             AddCSLuaFile("hexsh/"..v.."/language//"..f)
                             include("hexsh/"..v.."/language/"..f)
                         end
-                    end
+                    end 
 
                     -- load Script
                     AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                     include("hexsh/"..v.."/sh_init.lua")
                 end
                 de()
-                MsgC(white, [[|-  ]], pur, string.upper(v), white, [[ Successfully]], white, [[ loaded]],"\n")
+                MsgC(white, [[|-  ]], pur, string.upper(v), white, haveDetails && " (v"..HexSh.SrcDetails[rep].Version..")" || "" .. [[ Successfully]], white, [[ loaded]],"\n")
                 
                 
                 hook.Add("InitPostEntity", "HexSh.Psrc"..v, function()
@@ -242,6 +276,20 @@ local function loaddlc()
                 HexSh.Config[v] = {}
                 HexSh.Config.IConfig[v] = {}
                 HexSh.Srcs[v] = {}
+                local haveDetails = false 
+                
+                
+                if file.Exists("hexsh/"..v.."/src_details.lua", "LUA") then 
+                    local succ, err = pcall(include, "hexsh/"..v.."/src_details.lua")
+                    if (succ) then 
+                        HexSh.SrcDetails[v] = err
+                        haveDetails = true 
+                    end
+                end
+                --HexSh.SrcDetails["src_sh"].Version
+
+
+
                 if (file.Exists("hexsh/"..v.."/sh_iconfig.lua", "LUA")) then 
                     AddCSLuaFile("hexsh/"..v.."/sh_iconfig.lua")
                     include("hexsh/"..v.."/sh_iconfig.lua")
@@ -259,11 +307,19 @@ local function loaddlc()
                 end
                 AddCSLuaFile("hexsh/"..v.."/sh_init.lua")
                 include("hexsh/"..v.."/sh_init.lua")
-                MsgC(white, [[|-  ]], pur, string.upper(v), white, [[ Successfully]], white, [[ loaded]],"\n")
+                MsgC(white, [[|-  ]], pur, string.upper(v), white, haveDetails && " (v"..HexSh.SrcDetails[rep].Version..")" || "" .. [[ Successfully]], white, [[ loaded]],"\n")
                 hook.Run("HexSH.SrcLoaded",v)
             end
         end
     end 
+
+
+    if (SERVER) then 
+        MsgC(white, [[|-  ]], pur, "SQL Database", white, [[ Executes Database ]], white, [[Hook]],"\n")
+        local time = SysTime() 
+        hook.Run("HexSh::LoadSQL")
+        MsgC(white, [[|-  ]], pur, "SQL Database", white, [[ Done! tooked: ]], white, math.Round(SysTime()-time,5) .. "s","\n")
+    end
     MsgC(white, "|\n|\n|-  ", [[Thank your for using ]], pur, [[HEXAGON CRYPTICS ]], white, [[ Scripts!]],"\n")
 end
 print(HexSh.isLIBready)

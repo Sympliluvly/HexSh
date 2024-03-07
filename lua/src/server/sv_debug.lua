@@ -16,32 +16,55 @@
 util.AddNetworkString("HexSh:ReadDebugLogs")
 -------------------------------------------
 
+
+--[[------------------------------------- 
+            (  SQL TABLE )
+]]----------------------------------------
+local query_sqltie = [[
+    CREATE TABLE IF NOT EXISTS HexSh_debug (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        src VARCHAR(100),
+        message TEXT,
+        Date DATE,
+        Time CHAR(8)
+    );
+]] 
+
+local query_mysql = [[
+    CREATE TABLE IF NOT EXISTS HexSh_debug (
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        src VARCHAR(100),
+        message TEXT,
+        Date TEXT,
+        Time CHAR(8)
+    );
+]]
+HexSh.SQL:Query(HexSh.SQL:UsingMySQL() && query_mysql or query_sqltie,function()end,nil) 
+
 net.Receive("HexSh:ReadDebugLogs",function(len,ply)
     if !ply:HC_hasPermission("Debug") then return end 
 
-    local file = file.Read("hexsh/debug.json","DATA")
-    net.Start("HexSh:ReadDebugLogs")
-        HexSh:WriteCompressedTable(util.JSONToTable(file))
-    net.Send(ply)
-end)
+    local query = "SELECT * FROM HexSh_debug LIMIT 100"
+    HexSh.SQL:Query(query,function(data)
+        if !data then data = {} end
+        net.Start("HexSh:ReadDebugLogs")
+            HexSh:WriteCompressedTable(data)
+        net.Send(ply)
+    end,nil)
+end) 
 
-function HexSh:LOG(src,msg)
-    local Timestamp = os.time()
-    local TimeString = os.date( "%d/%m/%Y-%H:%M:%S", Timestamp )
-    if !file.Exists("hexsh/debug.json","DATA") then
-        file.Write("hexsh/debug.json", util.TableToJSON({}))
-    end
-    local debugfile = util.JSONToTable(file.Read("hexsh/debug.json","DATA"))
-    table.insert(debugfile,"["..TimeString.."] [".. src .. "] ~" .. msg )
-
-    file.Write("hexsh/debug.json",util.TableToJSON(debugfile,true))
+function HexSh:LOG(src,title,msg)
+    local date = os.date("%Y-%m-%d")
+    local time = os.date("%H:%M:%S")
+    local query = "INSERT INTO HexSh_debug (src,message,Date,Time) VALUES ('"..src.."','"..msg.."','"..date.."','"..time.."')"
+    HexSh.SQL:Query(query,function()end,nil)
 end
+HexSh:LOG("src_sh","Wer ist cool","ich bin coola als justin!")
 
 
 
 
-
-
+ 
 
 
 

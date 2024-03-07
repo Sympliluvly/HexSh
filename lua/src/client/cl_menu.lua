@@ -93,6 +93,16 @@ net.Receive("HexSh::OpenConfigMenu", function()
 
             draw.SimpleText("Hexagon Cryptics - 0.1.4", "HexSh.X", 36, 30 / 2 - 12, white )
         end
+        local cache_plyrank = LocalPlayer():GetUserGroup()
+
+        function Frame:Think()
+            if (cache_plyrank != LocalPlayer():GetUserGroup()) then 
+                self:Remove()
+                net.Start("HexSh::OpenConfigMenu")
+                    net.WriteString("context")
+                net.SendToServer()
+            end
+        end
     -->
 
     local Close = vgui.Create("DButton",Frame)
@@ -143,6 +153,8 @@ net.Receive("HexSh::OpenConfigMenu", function()
             end
         end
     -->
+
+    hook.Run("HexSh::GetAdminItems")
 
     local Selection = vgui.Create("HexSh.adminUI.BSelect",Frame)
     Selection:SetPos(0,50)
@@ -258,10 +270,4 @@ list.Set( "DesktopWindows", "HexConfig", {
 	end
 
 	}
-) 
-
-concommand.Add("kdke,", function()
-    net.Start("HexArmory::RequestItems")
-        net.WriteUInt(0,64)
-    net.SendToServer()
-end)
+)
