@@ -126,7 +126,7 @@ function PANEL:Paint(w,h)
     if (string.len(self:GetText())>=1000) then extralen = 19 end
     
 
-    draw.SimpleText(!self.GetMaxLetters && string.len(self:GetText()).. "/∞" || string.len(self:GetText()).."/"..self.GetMaxLetters, "DermaDefault", self.AreFocus && w-40-extralen || w-22-extralen, h-10, Color(205,205,205), TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
+    draw.SimpleText(!self.GetMaxLetters && string.len(self:GetText()).. "/∞" || string.len(self:GetText()).."/"..self.GetMaxLetters, "HexSh.Default", self.AreFocus && w-40-extralen || w-22-extralen, h-10, Color(205,205,205), TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
 
 end
 

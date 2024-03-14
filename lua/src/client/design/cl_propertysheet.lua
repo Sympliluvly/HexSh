@@ -87,7 +87,7 @@ function PANEL:AddSheet(title, pnl, icon, tooltip)
             surface.DrawTexturedRect(math.toDecimal(6.4)*90,5,15,15)
         end
         
-        draw.SimpleText(title, "DermaDefault", icon && 25 || w/2, h/2, white, icon && TEXT_ALIGN_LEFT || TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(title, "HexSh.Default", icon && 25 || w/2, h/2, white, icon && TEXT_ALIGN_LEFT || TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
 

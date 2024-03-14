@@ -98,7 +98,7 @@ local PANEL = {
 
 function PANEL:Init()
 	self.Title = "Here your Title!"
-	self.Font = "DermaDefault"
+	self.Font = "HexSh.Default"
 	self.TitleX = 10
 	self.TitleY = 5
 
@@ -119,7 +119,7 @@ function PANEL:Init()
 	local searchp = vgui.Create("HexSh.UI.TextEntry",self)        
 		searchp:SetVisible(false)  
 		searchp:SetBackgroundColor(bgLightGray)
-		searchp:SetFont("DermaDefault")
+		searchp:SetFont("HexSh.Default")
 		searchp:SetPlaceholderText("search...")
 		function searchp:OnEnter()
 				local search_text = self:GetText():lower()
@@ -138,7 +138,7 @@ function PANEL:Init()
 			end
 		end
 		self.searchp = searchp
-	-->
+	--> 
 	local searching = vgui.Create("DButton", self)
 		searching:SetText("")
 		searching.OnClick = false

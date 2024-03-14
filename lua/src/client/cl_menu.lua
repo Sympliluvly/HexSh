@@ -27,6 +27,15 @@ local getAlpha = function(col, a)
     return Color(col["r"], col["g"], col["b"], a)
 end
 
+
+surface.CreateFont("HexSh.ad", {
+    font = "MuseoModerno Light",
+    size = 20,
+    weight = 500,
+    antialias = true,
+    shadow = false
+})
+
   
 hook.Add("OnContextMenuOpen", "HexShareds::ContextMenuModeOpen", function()
     if (HC_Mode == "context" && IsValid(HexSh.adminUI.MainMenu)) then 
@@ -88,10 +97,10 @@ net.Receive("HexSh::OpenConfigMenu", function()
             surface.DrawTexturedRect(0,0,36,30) 
 
             if isReady == 0 then 
-                draw.SimpleText(HexSh:L("src_sh","Welcome:HEX"), "DermaLarge", w/2, h/2 - 100, white, TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER )
+                draw.SimpleText(HexSh:L("src_sh","Welcome:HEX"), "HexSh.Large", w/2, h/2 - 100, white, TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER )
             end
 
-            draw.SimpleText("Hexagon Cryptics - 0.1.4", "HexSh.X", 36, 30 / 2 - 12, white )
+            draw.SimpleText("Hexagon Cryptics - 0.1.4", "HexSh.X", 36, 30 / 2 - 10, white )
         end
         local cache_plyrank = LocalPlayer():GetUserGroup()
 
@@ -164,7 +173,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
         install = vgui.Create("HexSh.UI.Button",Frame)
         install:SetSize(250,60)
         install:SetText(HexSh:L("src_sh","Install:Setup"))
-        install:SetFont("DermaLarge")
+        install:SetFont("HexSh.Large")
         
         function install:DoClick()
             install:SizeTo(install:GetWide()+200,install:GetTall(),0.6,0,-1,function()
@@ -205,7 +214,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
                 function install:Paint(w,h)
                     draw.RoundedBox(16,0,0,w,h,bgLightGray)
                     draw.RoundedBox(16,0,0,(state/steps) * w,h,green)
-                    draw.SimpleText(en_able_loading && HexSh:L("src_sh","Install:Loaded") || HexSh:L("src_sh","Install:Load") .. math.Round((state/steps)* 100).. "%", "DermaLarge", w/2, h/2, white, TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER )
+                    draw.SimpleText(en_able_loading && HexSh:L("src_sh","Install:Loaded") || HexSh:L("src_sh","Install:Load") .. math.Round((state/steps)* 100).. "%", "HexSh.Large", w/2, h/2, white, TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER )
                 end
 
 

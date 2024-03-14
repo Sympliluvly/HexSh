@@ -295,7 +295,7 @@ function HexSh.UI.DoChangePopup(title,sveButtonTitle,datatable,savefunc)
         top:SetTall(ScrH()*0.05)
         top.Paint = function(self,w,h)
             draw.RoundedBoxEx(16,0,0,w,h,ac.purple,true,true,false,false)
-            draw.SimpleText("Erstellung", "DermaLarge", self:GetWide()/2, self:GetTall()/2, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText("Erstellung", "HexSh.Large", self:GetWide()/2, self:GetTall()/2, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
     -->
 

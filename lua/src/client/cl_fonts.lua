@@ -15,25 +15,42 @@
 //---------------------------------------\\
 
 surface.CreateFont( "HexSh.X", {
-    font = "Montserrat", 
+    font = "MuseoModerno Light", 
+    extended = false,
+    size = 20,
+    weight = 1000, 
+} )
+surface.CreateFont( "HexSh.Default", {
+    font = "MuseoModerno Light", 
     extended = false,
     size = 20,
     weight = 1000,
 } )
+
 surface.CreateFont( "HexSh.Title", {
-    font = "Montserrat", 
+    font = "MuseoModerno Light", 
     extended = false,
     size = 45,
     weight = 1000,
 } )
 surface.CreateFont( "HexSh.TitleSmall", {
-    font = "Montserrat", 
+    font = "MuseoModerno Light", 
     extended = false,
     size = 40,
     weight = 1000,
 } )
+
+surface.CreateFont( "HexSh.Large", {
+    font = "MuseoModerno Light", 
+    extended = false,
+    size = 50,
+    weight = 1000, 
+} )  
+
+
+
 surface.CreateFont( "HexSh.UI.Title", {
-    font = "Arial",
+    font = "MuseoModerno Light",
     extended = false,
     size = ScrH() * 0.040,
     weight = 1000,
@@ -49,9 +66,12 @@ surface.CreateFont( "HexSh.UI.Title", {
     additive = false,
     outline = false,
 } )
+
+
+
 for i=1, 60 do    
     surface.CreateFont( "HexSh.UI."..tostring(i), {
-        font = "Arial", 
+        font = "MuseoModerno Light", 
         extended = false,
         size = ScrH() * 0.0 + i,
         weight = 1000,
@@ -70,7 +90,7 @@ for i=1, 60 do
 end
 
 local fontdatTITLES = {
-	font = "MuseoModerno Medium",
+	font = "MuseoModerno Light",
 	size = 40,
 	weight = 4000,
 	blursize = 0,
@@ -86,7 +106,7 @@ local fontdatTITLES = {
 	outline = false,
 }
 local fontdatNormals = {
-	font = "Korataki",
+	font = "MuseoModerno Light",
 	size = 20,
 	weight = 2000,
 	blursize = 0,

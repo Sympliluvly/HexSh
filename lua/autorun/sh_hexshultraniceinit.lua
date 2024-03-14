@@ -125,7 +125,7 @@ local function loadbase()
     HexSh.Lang["src_sh"] = {}
     HexSh.Config["src_sh"] = {}
     HexSh.Config.IConfig["src_sh"] = {}
-    HexSh.Srcs["src_sh"] = {}
+    HexSh.Srcs["src_sh"] = {} 
     HexSh.SrcDetails["src_sh"] = {
         Name = "HexSh",
         Version = "1.1.2",
@@ -198,7 +198,6 @@ local function loaddlc()
         
 
         if (string.Left(v,5)=="psrc_") then
-            if v == "psrc_lightsaberplus" then continue end
             local str = string.Trim(v.."psrc_", "psrc_")
             local rep = "src_"..str
             if (HexSh.Srcs[rep]) then 
