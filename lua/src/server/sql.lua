@@ -37,15 +37,17 @@ end
 local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 HexSh.SQL.cfg = {}
 HexSh.SQL.cfg.mysql = data.mysql
+print(data.mysql)
 HexSh.SQL.cfg.host = data.host
 HexSh.SQL.cfg.username = data.username
 HexSh.SQL.cfg.password = data.password
 HexSh.SQL.cfg.schema = data.schema
 HexSh.SQL.cfg.port = data.port
 
-if HexSh.SQL.cfg.mysql then 
+if HexSh.SQL.cfg.mysql then  
 	require("mysqloo")
-end
+
+end 
 
 
 --utils
@@ -96,7 +98,7 @@ net.Receive("HexSh::SQLWRITE", function(len,ply)
 		port = port,
 	}))
 
-	HexSh.SQL:Connect()
+	if mysql == true then HexSh.SQL:Connect() end
 end)
 
 function HexSh.SQL.Constructor( self, config )
@@ -168,7 +170,24 @@ function HexSh.SQL:RequireModule()
 		error("Couldn't find mysqlOO. Please install https://github.com/FredyH/mysqlOO. Reverting to SQLite")
 		HexSh.SQL.cfg.mysql = false
 	end
-end
+end 
+
+function HexSh.SQL:TestConnection(host, username, password, schema, port)
+	--if !host or !username or !password or !schema or !port then return end
+	--if !isnumber(port) then return end
+	print("Testing connection to " .. host .. " with username " .. username .. " and schema " .. schema .. " on port " .. port)
+	local con = mysqloo.connect(host, username, password, schema, port)
+	
+	print(con:ping())
+	
+	mysqloo.onSuccess = function(_, msg)
+		print("Connection failed! " .. tostring( msg ))
+	end  
+
+	mysqloo.onConnected = function()
+		print("Connection successful!")
+	end
+end 
 
 
 function HexSh.SQL:Connect()
@@ -214,8 +233,8 @@ function HexSh.SQL:UsingMySQL()
 end 
  
 if HexSh.SQL then 
-	HexSh.SQL:Disconnect()
+--	HexSh.SQL:Disconnect()
 end
 
-HexSh.SQL:Connect()
+--HexSh.SQL:Connect()
 

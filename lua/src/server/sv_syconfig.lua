@@ -162,7 +162,7 @@ net.Receive("HexSh::Set", function(len,ply)
         return
     end
     delay = curT() + 0.3
-end)
+end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
     print("dkkfjkfs")
@@ -195,9 +195,10 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
         net.Send(ply)
     end
     ply.hexshinit = false 
-end)
-
-
+end)    
+ 
+--HexSh.SQL:TestConnection("45.65.115.45", "el_neverhit_testa", "Fg7w*0d42", "el_neverhit_test", 3306)
+ 
 --[[----------------------------------s
         ## Get Config Files ##
 --]]----------------------------------
@@ -215,4 +216,4 @@ net.Receive("HexSh:getConfigFiles", function( len, ply )
     net.Start("HexSh:getConfigFiles")
         net.WriteTable(export)
     net.Send(ply)
-end) 
+end)  

@@ -523,16 +523,24 @@ hook.Add("HexSh::GetAdminItems", "", function()
 
 
                     if (type=="IP") then -- text
-                        entry(15,host)
+                        entry(15,host).OnChange = function(s)
+                            host = s:GetValue()
+                        end
                     end
                     if (type=="Username") then -- text
-                        entry(false,username)
+                        entry(false,username).OnChange = function(s)
+                            username = s:GetValue()
+                        end
                     end
                     if (type=="Password") then -- text
-                        entry(false,password)
+                        entry(false,password).OnChange = function(s)
+                            password = s:GetValue()
+                        end
                     end
                     if (type=="DB") then -- text
-                        entry(false,schema)
+                        entry(false,schema).OnChange = function(s)
+                            schema = s:GetValue()
+                        end
                     end
                     if (type=="Port") then -- text
                         entry(false,port).OnChange = function(s)
@@ -580,6 +588,26 @@ hook.Add("HexSh::GetAdminItems", "", function()
                 local Username = field("Username",username,HexSh:L("src_sh", "MYSQLDBUser"))
                 local Password = field("Password",password,HexSh:L("src_sh", "MYSQLDBPassword"))
                 local Port = field("Port",port,HexSh:L("src_sh", "MYSQLPort"))
+
+
+                local save = field(Pmysql,HexSh:L("src_sh", "Save"))
+                save.button = vgui.Create("HexSh.UI.Button",save)
+                save.button:Dock(RIGHT)
+                save.button:DockMargin(0,5,5,5)
+                save.button:SetText(HexSh:L("src_sh", "Save"))
+                save.button:SetWide( 200 )
+                save.button:SetRounding(6)
+                function save.button:DoClick()
+                    net.Start("HexSh::SQLWRITE")
+                        net.WriteBool(tobool(mysql))
+                        net.WriteString(tostring(host))
+                        net.WriteString(tostring(username))
+                        net.WriteString(tostring(password))
+                        net.WriteString(tostring(schema))
+                        net.WriteUInt(tonumber(port),17)
+                    net.SendToServer()
+                end
+                
             end)
             
 
