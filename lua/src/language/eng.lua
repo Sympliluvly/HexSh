@@ -18,7 +18,7 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["Cfg"] = "Config",
     ["Admin"] = "Manage",
     ["Control"] = "Control",
-    ["BCfg"] = "Base Config",
+    ["general"] = "General",
     ["changeLang"] = "Language",
     ["back"] = "Back",
     ["setup.ColumnTitle"] = "Setup",
@@ -50,6 +50,8 @@ HexSh.Lang["src_sh"]["ENG"] = {
     ["MYSQLDatabaseTool"] = "The name of the Database e.g `HexChars_Chars`",
     ["MYSQLPort"] = "Port",
     ["MYSQLPortTool"] = "The virtual gateway from your Database",
+
+    ["MYSQL.ModuleNotFound"] = "Required MYSQL Module not found!",
 
     ["Save"] = "Save",
     ["Close"] = "Close",

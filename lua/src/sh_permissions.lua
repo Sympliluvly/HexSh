@@ -35,11 +35,6 @@ function HexSh:regPermission(identifier,translation)
     if !identifier then return end 
     if !isstring(identifier) then return end
 
-    if SAM and HexSh.Config.IConfig["src_sh"].sam_overtake == true then 
-        local sam, command = sam, sam.command
-        sam.permissions.add("Hex_"..identifier, "HexPermissions", "admin")
-    end
-
     HexSh.Permissions[identifier] = translation
   
     hook.Run("HexSh:PermissionRegistered",identifier,translation)
@@ -87,7 +82,7 @@ local function base(ply,identifier)
         return true 
     end
     return false 
-end
+end 
 
 function HexSh:hasPermission(ply,identifier)
     return base(ply,identifier)

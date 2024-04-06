@@ -165,11 +165,10 @@ net.Receive("HexSh::Set", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    print("dkkfjkfs")
-   -- if !ply:HC_hasPermission("MenuAccess") then 
-   --     HexSh:Notify(ply,"error","You aren't accessed to this!s")
-   ---     return 
-    --end 
+    if !ply:HC_hasPermission("MenuAccess") then 
+        HexSh:Notify(ply,"error","You aren't accessed to this!s")
+        return 
+    end 
 
 
     net.Start("HexSh::OpenConfigMenu")
@@ -217,3 +216,5 @@ net.Receive("HexSh:getConfigFiles", function( len, ply )
         net.WriteTable(export)
     net.Send(ply)
 end)  
+
+

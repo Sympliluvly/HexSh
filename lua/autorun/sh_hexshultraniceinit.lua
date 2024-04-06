@@ -52,14 +52,6 @@ HEXAGON = HEXAGON or HexSh
 
    
 -------------------------------------------------
-if (SERVER) then 
-    local gebaeck = cookie.GetNumber("HexSH.IsLIBReady")
-    if !gebaeck then 
-        gebaeck = 0
-    end 
-    HexSh.isLIBready = gebaeck   
-end
-
 if (CLIENT) then   
     surface.CreateFont( "HexSh.V", { 
         font = "Roboto", 

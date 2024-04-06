@@ -188,7 +188,13 @@ function PANEL:SetPage(...)
         self:Clear()
         self:AddBackButton()
         for k,v in pairs(HexSh.adminUI.Items.S[category].Btns) do 
-            self:AddButton(v.title,v.icon,v.f)
+            if !v.permission then 
+                self:AddButton(v.title,v.icon,v.f)
+            else
+                if ( LocalPlayer():HC_hasPermission(v.permission) ) then 
+                    self:AddButton(v.title,v.icon,v.f)
+                end
+            end
         end
 
     elseif  table.Count(args) == 1 then 
@@ -205,10 +211,16 @@ function PANEL:firstButtons()
         self:AddSubMenu(k,v.title,v.icon)
     end
     
-    local new = {}
+    local new = {} 
     for k,v in pairs(HexSh.adminUI.Items) do 
-        if k == "S" then continue end 
-        new[v.order] = v
+        if k == "S" then continue end
+        if !v.permission then 
+            new[v.order] = v    
+        else   
+             if ( LocalPlayer():HC_hasPermission(v.permission) ) then 
+                new[v.order] = v
+             end
+        end
     end
     for k,v in SortedPairs(new) do
         self:AddButton(v.title,v.icon,v.f)
@@ -290,7 +302,7 @@ function PANEL:AddSubMenu(ix,t,i,f)
                 self:AddButton(v.title,v.icon,v.f)
             end
             self.Scroll:GetCanvas():AlphaTo(255,0.15,0)
-        end)
+        end) 
     end
     addAnim(btn)
     btn.Paint = function(s,w,h)

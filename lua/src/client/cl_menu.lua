@@ -96,11 +96,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
             surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
             surface.DrawTexturedRect(0,0,36,30) 
 
-            if isReady == 0 then 
-                draw.SimpleText(HexSh:L("src_sh","Welcome:HEX"), "HexSh.Large", w/2, h/2 - 100, white, TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER )
-            end
-
-            draw.SimpleText("Hexagon Cryptics - 0.1.4", "HexSh.X", 36, 30 / 2 - 10, white )
+            draw.SimpleText("Hexagon Cryptics - "..HexSh.SrcDetails["src_sh"].Version, "HexSh.X", 36, 30 / 2 - 10, white )
         end
         local cache_plyrank = LocalPlayer():GetUserGroup()
 
@@ -168,71 +164,9 @@ net.Receive("HexSh::OpenConfigMenu", function()
     local Selection = vgui.Create("HexSh.adminUI.BSelect",Frame)
     Selection:SetPos(0,50)
 
-    if isReady == 0 then
-        Selection:Remove()
-        install = vgui.Create("HexSh.UI.Button",Frame)
-        install:SetSize(250,60)
-        install:SetText(HexSh:L("src_sh","Install:Setup"))
-        install:SetFont("HexSh.Large")
-        
-        function install:DoClick()
-            install:SizeTo(install:GetWide()+200,install:GetTall(),0.6,0,-1,function()
-                install:SetText("")
-    
-                
-                local cache = {}
-                cache.W, cache.H = install:GetWide(), install:GetTall()
-                cache.X, cache.Y = install:GetPos()
-                install:Remove()
-                install = vgui.Create("DPanel", Frame)
-                install:SetSize(cache.W,cache.H)
-                install:SetPos(cache.X,cache.Y)
-                cache = nil
-
-
-                -- Time to Load
-                net.Start("HexSh:I:Start")
-                net.SendToServer()
-                    -->
-                    local en_able_loading = false
-                    local steps = 0
-                    local state = 0
-                    net.Receive("HexSh:I:Start",function()
-                        steps = net.ReadUInt(16)
-                    end)
-
-                    net.Receive("HexSh:I:GetState", function() 
-                        state = net.ReadUInt(16)      
-                        
-                        if state == steps then 
-                            en_able_loading = true
-
-                        end
-                    end)
-
-
-                function install:Paint(w,h)
-                    draw.RoundedBox(16,0,0,w,h,bgLightGray)
-                    draw.RoundedBox(16,0,0,(state/steps) * w,h,green)
-                    draw.SimpleText(en_able_loading && HexSh:L("src_sh","Install:Loaded") || HexSh:L("src_sh","Install:Load") .. math.Round((state/steps)* 100).. "%", "HexSh.Large", w/2, h/2, white, TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER )
-                end
-
-
-
-
-
-            end)
-        end
-    
-    end
-
     function Frame:PerformLayout(w,h)
         Close:SetPos(self:GetWide() - Close:GetWide(), 0 )
         Minim:SetPos(self:GetWide() - Close:GetWide() - Minim:GetWide(), 0)
-        if isReady == 0 then 
-            install:SetPos(Frame:GetWide()/2-install:GetWide()/2,Frame:GetTall()/2-install:GetTall()/2)
-            return 
-        end
 
         if Selection && Selection.isBig then 
             Selection:SetSize(190, self:GetTall())
@@ -244,9 +178,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
         Selection.EditLayer:SetPos(Selection:GetWide() + 10, 45)
 
     end
-    if isReady == 1 then 
-        Frame.Selection = Selection
-    end
+
     -->
 
     --[[local Minimum = vgui.Create("DButton",Frame)

@@ -5,7 +5,7 @@
 // src(id): sh
 // Module of: - 
 //
-// Do not edit this base by yourself, 
+// Do not edit this base by yourself,   
 // because all functions are needed for
 // our script!!!!
 //---------------------------------------\\
@@ -18,8 +18,6 @@ local chars = {
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
     "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+", "[", "]", "{", "}", "|", "\\", ":", ";", ",", ".", "<", ">", "?", "/", "~"
 }
-
-
 -- ###X##X#########X########X####
 -- 1 => 4
 -- 2 = 7
@@ -62,8 +60,11 @@ end
 
 function recognize_Hash(hash)
     local len = string.len(hash)
+    print(len)
     local cache_steps = len / 30
+    print(cache_steps)
     local decrypted = ""
+    
 
     for i=1, cache_steps do 
         local start = (i-1) * 30 + 1
@@ -84,9 +85,43 @@ function recognize_Hash(hash)
     end
     return decrypted
 end
+/*
 
-local txt = [[
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-]]
+
+local plaintext = util.TableToJSON({
+    ip = "149.50.102.39:27016", 
+    steamid = "76561198333075385",
+    token = "akkikikikikikloikjhuzgtfrdeswq"
+})
+http.Fetch("https://api.hexacrypt.net/gm/enc.php?doenc="..plaintext, function(body) 
+    local decryptedText = recognize_Hash(body)
+    print("Entschlüsselter Text:", decryptedText)
+end)*/
+
+local plaintext = util.TableToJSON({
+    ip = "149.50.102.39:27016", 
+    steamid = "76561198333075385",
+    token = "akkikikikikikloikjhuzgtfrdeswq"
+})
+file.Write("hexsh/_gateway.txt", g_Hash(plaintext))
+
+
+local Ys = SysTime()
+http.Post("https://api.hexacrypt.net/gm/intial_gateway.php",
+{ 
+    _gateway = file.Read("hexsh/_gateway.txt", "DATA"),
+    _script = "src_lightsaberplus",
+    _version = "1.0.0",
+},  
+function(body)   
+   -- RunString(body)  
+    print(body) 
+    print("Loaded in", SysTime() - Ys.."s")
+end,function(err) 
+    print(err)   
+end)
+--print("Entschlüsselter Text:", decryptedText)
+
+ 
+
