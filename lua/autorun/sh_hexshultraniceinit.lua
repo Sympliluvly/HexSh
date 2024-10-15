@@ -133,6 +133,10 @@ local function loadbase()
         Description = "The Base of the Hexagon Cryptics Library",
     }
 
+
+    AddCSLuaFile("src/sh_cami.lua")
+    include("src/sh_cami.lua")
+
     AddCSLuaFile("src/config/sh_config.lua")
     include("src/config/sh_config.lua")
     

@@ -251,14 +251,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
             setup:DockMargin(0,0,0,0)
             setup.Paint = nil
             columns:AddButton( HexSh:L("src_sh", "setup.ColumnTitle"),setup,Color(250,0,0))
-                
-                
-            local permissions = vgui.Create("HexSh.UI.Scroll", columns)
-            permissions:Dock(FILL)
-            permissions:DockMargin(0,0,0,0)
-            permissions.Paint = nil
-            columns:AddButton( HexSh:L("src_sh", "Permission.ColumnTitle"),permissions,Color(250,0,0))
-                
+            
                 
             local Pmysql = vgui.Create("HexSh.UI.Scroll", columns)
             Pmysql:Dock(FILL)
@@ -299,181 +292,6 @@ hook.Add("HexSh::GetAdminItems", "", function()
                     net.SendToServer()
                 end
             -->
-
-
-            LocalPlayer():SvPtCl("RankManagement",
-            function()
-                local sam_overtake = field(permissions,HexSh:L("src_sh", "SAM_Overtake"))
-                sam_overtake:SetTall(50)
-                local cache_rankPanel; 
-
-                local sam_overtake_f = HexSh.adminUI.AddEditField(sam_overtake, HexSh:L("src_sh", "SAM_Overtake"), "switch", HexSh.Config.IConfig["src_sh"]["sam_overtake"], "", false, true, function(s) 
-                    local cache =  HexSh.Config.IConfig["src_sh"]["sam_overtake"]
-                    cache = s:GetChecked()
-                    HexSh.Set("src_sh","sam_overtake",cache,"RankManagement")
-
-                    if s:GetChecked() then 
-                        cache_rankPanel:SetTall(0)
-                        cache_rankPanel:SetVisible(false)
-                    else
-                        cache_rankPanel:SetTall(400)
-                        cache_rankPanel:SetVisible(true)
-                    end
-
-                end)
-
-                local Ranks = field(permissions,"")
-                Ranks:SetTall(400)
-                function Ranks:PaintOver(w,h)
-                    draw.SimpleText("Permission","HexSh.UI.25",130,2,white,TEXT_ALIGN_LEFT)
-                end
-
-                cache_rankPanel = Ranks 
-
-                local perm = vgui.Create("HexSh.UI.Scroll", Ranks)
-                    perm:Dock(FILL)
-                    perm:DockMargin(0,29,0,0)
-
-                    local function getPermission(tab)
-                        perm:Clear()
-                        for k,v in pairs(HexSh.Permissions) do 
-                            local perms = vgui.Create("DButton", perm)
-                                perms:Dock(TOP)
-                                perms:SetTall(30)
-                                perms:DockMargin(5,0,5,0)
-                                perms:SetText("")
-                                perms.have = false
-
-                                if cfg.Permissions[tab][k] then 
-                                    perms.have = true
-                                end
-                                
-                                function perms:Paint(w,h)
-                                    draw.RoundedBox(0,0,0,w,h,self:IsHovered() && HexSh.adminUI.Color.purple || HexSh.adminUI.Color.bgLightGray)
-                                    draw.RoundedBox(0,10,2.5,25,25,white)
-                                    if self.have == true || tab == "superadmin" then 
-                                        surface.SetDrawColor(white)
-                                        surface.SetMaterial(HexSh:getImgurImage('Kttbjxw'))
-                                        surface.DrawTexturedRect(11,2.5,23,23)
-                                    end
-                                    
-                                    draw.SimpleText(v,"HexSh.UI.20",45,h/2,white,TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
-                                end
-                                function perms:DoClick()
-                                    if tab == "superadmin" then 
-                                        return 
-                                    end
-
-                                    if self.have == true then 
-                                        self.have = false
-                                    else
-                                        self.have = true 
-                                    end
-
-                                    local cache =  HexSh.Config.IConfig["src_sh"].Permissions[tab]
-                                    cache[k] = self.have
-                                    HexSh.Set("src_sh","Permissions/"..tab,cache,"RankManagement")
-                                end
-                            -->
-                        end
-                    end
-                -->
-                local ranks = vgui.Create("DPanel",Ranks)
-                    ranks:Dock(LEFT)
-                    ranks:SetWide(120)
-                    function ranks:Paint(w,h)
-                        draw.RoundedBoxEx(14,0,0,w,h,HexSh.adminUI.Color.purple,true,false,false,false)
-                        draw.RoundedBoxEx(14,2,2,w-4,h-4,HexSh.adminUI.Color.bgLightGray,true,false,false,false)
-                    end
-
-                    local rscroll = vgui.Create("HexSh.UI.Scroll",ranks)
-                    rscroll:Dock(FILL)
-                    rscroll:DockMargin(2,10,2,2)
-
-                    local rank_add = vgui.Create("HexSh.UI.Button",ranks)
-                    rank_add:Dock(BOTTOM)
-                    rank_add:SetText("Add")
-                    rank_add:SetRounding(0)
-                    rank_add:DockMargin(2,4,2,2)
-                    rank_add:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
-
-                    local cache_rank = cfg.Permissions
-                    local cache_rank_derma = {}
-                    local function getRanks(tb)
-                        local current = nil
-                        rscroll:Clear()
-                        for k,v in pairs(tb) do 
-                            local rank = vgui.Create("HexSh.UI.Button", rscroll)
-                            cache_rank_derma[k] = rank
-                            rank:Dock(TOP)
-                            rank:SetTall(30)
-                            rank:DockMargin(5,5,5,0)
-                            rank:SetText(k)
-                            rank:SetBackgroundColor(HexSh.adminUI.Color.bgGray2)
-                            rank.DoClick = function(s)
-                                if current then 
-                                    current:SetFixed(false)
-                                end
-                                current = s
-                                if s:GetFixed() then 
-                                    s:SetFixed(false)
-                                else 
-                                    s:SetFixed(true)
-                                end
-                                getPermission(k)
-                            end
-                            rank.DoRightClick = function(s)
-                                local Menu = DermaMenu()
-
-                                Menu:AddOption( "Delete", function()
-                                    if current == s then current = nil end
-                                    cache_rank_derma[k]:Remove()
-                                    cache_rank[k] = nil
-
-                                    local cache = HexSh.Config.IConfig["src_sh"].Permissions
-                                    cache[k] = nil 
-                                    HexSh.Set("src_sh","Permissions",cache,"RankManagement")
-                                end)
-
-                                Menu:Open()
-                            end
-                        end
-                    end
-
-                    function rank_add:DoClick()
-                        Derma_StringRequest(
-                            "AddRank", 
-                            "RankName",
-                            "",
-                            function(text)  
-                                
-                                local cache = HexSh.Config.IConfig["src_sh"].Permissions
-                                cache[text] = {}
-                                cache_rank[text] = {}
-
-                                HexSh.Set("src_sh","Permissions",cache,"RankManagement")
-                                getRanks(cache_rank)
-                            end,
-                            function(text) print("Cancelled input") end
-                        )
-                    end
-                    getRanks(cache_rank)
-                -->   
-                
-                if cfg.sam_overtake then 
-                    Ranks:SetTall(0) 
-                    Ranks:SetVisible(false)
-                else
-                    Ranks:SetTall(400)
-                    Ranks:SetVisible(true) 
-                end
-
-
-            end,
-            function()
-                local Ranks = field(permissions,HexSh:L("src_sh", "notRanks"))
-                Ranks:SetTall(100)
-            end)
 
 
             net.Start("HexSh::SQLGET")
@@ -536,6 +354,7 @@ hook.Add("HexSh::GetAdminItems", "", function()
                         entry(false,password).OnChange = function(s)
                             password = s:GetValue()
                         end
+                        p.entry:SetPassword(true)
                     end
                     if (type=="DB") then -- text
                         entry(false,schema).OnChange = function(s)
