@@ -64,11 +64,14 @@ function PANEL:OnGetFocus()
     self.AreFocus = true 
     self.Lerp = HexSh:Lerp(0,self:GetWide(),0.3)
     self.Lerp:DoLerp()
+
+    hook.Run( "OnTextEntryGetFocus", self )
 end
 function PANEL:OnLoseFocus()
     self.AreFocus = false
     self.Lerp = HexSh:Lerp(self:GetWide(),0,0.3)
     self.Lerp:DoLerp()
+    hook.Call( "OnTextEntryLoseFocus", nil, self )
 end
 
 function PANEL:DoError(bool)

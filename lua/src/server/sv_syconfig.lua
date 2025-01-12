@@ -165,13 +165,6 @@ net.Receive("HexSh::Set", function(len,ply)
 end) 
 
 net.Receive("HexSh::OpenConfigMenu", function(len,ply)
-    print("dkkfjkfs")
-   -- if !ply:HC_hasPermission("MenuAccess") then 
-   --     HexSh:Notify(ply,"error","You aren't accessed to this!s")
-   ---     return 
-    --end 
-
-
     net.Start("HexSh::OpenConfigMenu")
         net.WriteUInt(HexSh.isLIBready,2)
     net.Send(ply)
@@ -194,7 +187,7 @@ hook.Add("PlayerSpawn","HexSh_ConfigLoad",function(ply)
             net.WriteTable(c)
         net.Send(ply)
     end
-    ply.hexshinit = false 
+    ply.hexshinit = true  
 end)    
  
 --HexSh.SQL:TestConnection("45.65.115.45", "el_neverhit_testa", "Fg7w*0d42", "el_neverhit_test", 3306)

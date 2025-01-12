@@ -13,6 +13,37 @@
 // CO's: -
 // Licensed to: -
 //---------------------------------------\\
+--[[---------------------------------------------------------------------------
+ ** HexColors **
+---------------------------------------------------------------------------]]
+
+HexSh.cachedColors = {}
+local function hexToColor(hexcode)
+    hexcode = hexcode:gsub("#", "")
+    
+    local r = tonumber("0x" .. hexcode:sub(1, 2))
+    local g = tonumber("0x" .. hexcode:sub(3, 4))
+    local b = tonumber("0x" .. hexcode:sub(5, 6))
+    
+    return Color(r, g, b)
+end
+
+
+-- hexColor
+-- @Param {STRING} : HexColorcode
+function hexColor(hexcode)
+    if HexSh.cachedColors[hexcode] then return HexSh.cachedColors[hexcode] end
+
+    local converthex = hexToColor(hexcode)
+    local toColor = Color(converthex.r, converthex.g, converthex.b)
+
+    HexSh.cachedColors[hexcode] = toColor
+
+    return HexSh.cachedColors[hexcode]
+end
+-- Internal Alias
+HexSh.HexColor = HexColor
+
 
 --[[---------------------------------------------------------------------------
  ** Findplayer **
