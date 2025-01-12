@@ -36,59 +36,17 @@ surface.CreateFont("HexSh.ad", {
     shadow = false
 })
 
-  
-hook.Add("OnContextMenuOpen", "HexShareds::ContextMenuModeOpen", function()
-    if (HC_Mode == "context" && IsValid(HexSh.adminUI.MainMenu)) then 
-        HexSh.adminUI.MainMenu:SetVisible(true)
-    end
-end)
 
 
-hook.Add("OnContextMenuClose", "HexShareds::ContextMenuModeClose", function()
-    if (HC_Mode == "context" && IsValid(HexSh.adminUI.MainMenu)) then 
-        HexSh.adminUI.MainMenu:SetVisible(false)
-    end
-end)
 
-
-net.Receive("HexSh::OpenConfigMenu", function()
-    local isReady = net.ReadUInt(2)
-    local mode = net.ReadString()
-
+--[[
+    # Open Adminmenu 
+]]
+HexSh.openedMenuVariable = nil 
+function HexSh.openAdminmenu(window)
     local scrw,scrh = ScrW(), ScrH()
 
-    HC_Mode = mode  
-
-    --[[if (!LocalPlayer().HCS_AdminMenuconfig) then 
-        hook.Run("HexSh::GetAdminItems")
-        
-        LocalPlayer().HCS_AdminMenuconfig = true
-    end]]
-
-
-    if HexSh.adminUI.Minimized then 
-        HexSh.adminUI.MainMenu:SetVisible(true)
-        HexSh.adminUI.Minimized = false
-        return
-    end
-
-    HexSh.adminUI.Minimized = false
-    local Frame = vgui.Create("DFrame")
-        Frame:SetSize(800, 600)
-        Frame:SetMinHeight(390)
-        Frame:SetMinWidth(620)
-        Frame:Center()
-        Frame:MakePopup()
-        Frame:SetDraggable(true)
-        Frame:SetSizable(true)
-        Frame:ShowCloseButton(false)
-        Frame:SetTitle("")
-
-        -- Pre vars for install
-        if isReady == 0 then
-            local install
-        end
-        
+    Frame = window
         function Frame:Paint(w,h)
             draw.RoundedBox(16,0,0,w,h,bgDarkGray)
             
@@ -96,16 +54,14 @@ net.Receive("HexSh::OpenConfigMenu", function()
             surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
             surface.DrawTexturedRect(0,0,36,30) 
 
-            draw.SimpleText("Hexagon Cryptics - "..HexSh.SrcDetails["src_sh"].Version, "HexSh.X", 36, 30 / 2 - 10, white )
+            draw.SimpleText("Hexagon Cryptics - 0.1.4", "HexSh.X", 36, 30 / 2 - 10, white )
         end
         local cache_plyrank = LocalPlayer():GetUserGroup()
 
         function Frame:Think()
             if (cache_plyrank != LocalPlayer():GetUserGroup()) then 
                 self:Remove()
-                net.Start("HexSh::OpenConfigMenu")
-                    net.WriteString("context")
-                net.SendToServer()
+                HexSh.openedMenuVariable = nil
             end
         end
     -->
@@ -117,6 +73,7 @@ net.Receive("HexSh::OpenConfigMenu", function()
         Close.Lerp = HexSh:Lerp(0,0,0.3)
         function Close:DoClick()
             Frame:Remove()
+            HexSh.openedMenuVariable = nil
             surface.PlaySound("data/hdm.wav")
         end
         function Close:OnCursorEntered()
@@ -134,39 +91,16 @@ net.Receive("HexSh::OpenConfigMenu", function()
             end
         end
     -->
-    local Minim = vgui.Create("DButton",Frame)
-        Minim:SetSize(36,30)
-        Minim:SetText("-")
-        Minim:SetTextColor(white)
-        Minim.Lerp = HexSh:Lerp(0,0,0.3)
-        function Minim:DoClick()
-            HexSh.adminUI.Minimized = true
-            Frame:SetVisible(false)
-        end
-        function Minim:OnCursorEntered()
-            self.Lerp = HexSh:Lerp(0,255,0.3)
-            self.Lerp:DoLerp()
-        end
-        function Minim:OnCursorExited()
-            self.Lerp = HexSh:Lerp(255,0,0.3)
-            self.Lerp:DoLerp()
-        end
-        function Minim:Paint(w,h)
-            if (self.Lerp) then self.Lerp:DoLerp() end
-            if (self.Lerp:GetValue() > 1) then      
-                draw.RoundedBoxEx(16,0,0,w,h,getAlpha(bghovergray,self.Lerp:GetValue()),false,false,false,false)
-            end
-        end
-    -->
+
 
     hook.Run("HexSh::GetAdminItems")
+
 
     local Selection = vgui.Create("HexSh.adminUI.BSelect",Frame)
     Selection:SetPos(0,50)
 
     function Frame:PerformLayout(w,h)
         Close:SetPos(self:GetWide() - Close:GetWide(), 0 )
-        Minim:SetPos(self:GetWide() - Close:GetWide() - Minim:GetWide(), 0)
 
         if Selection && Selection.isBig then 
             Selection:SetSize(190, self:GetTall())
@@ -178,37 +112,31 @@ net.Receive("HexSh::OpenConfigMenu", function()
         Selection.EditLayer:SetPos(Selection:GetWide() + 10, 45)
 
     end
-
+    Frame.Selection = Selection
     -->
-
-    --[[local Minimum = vgui.Create("DButton",Frame)
-        Minimum:SetSize(36,30)
-        Minimum:SetText("X")
-        function Minimum:DoClick()
-        end
-        function Minimum:Paint(w,h)
-            self:SetPos(Frame:GetWide() - self:GetWide() - Close:GetWide(), 0 )         
-            draw.RoundedBox(0,0,0,w,h,white)
-        end
-    -->]]
 
     HexSh.adminUI.MainMenu = Frame 
     HexSh.adminUI.Selection = Selection
-end)
+
+
+    return Frame
+end
+
+
 
 list.Set( "DesktopWindows", "HexConfig", {
 	icon = "data/hexsh/cache/img/BmestJw.png",
 	title = "HexConfig",
 	width = 100,
 	height = 100,
-	onewindow = false,
+	onewindow = true,
 	init = function( icon, window )
-		window:Close()
-
-        net.Start("HexSh::OpenConfigMenu")
-            net.WriteString("context")
-        net.SendToServer()
+        window:SetSize(ScrW()*0.6, ScrH()*0.8)
+        window:Center()
+        window:ShowCloseButton(false)
+        window:SetTitle("")
+		HexSh.openAdminmenu(window)
 	end
 
 	}
-)
+) 

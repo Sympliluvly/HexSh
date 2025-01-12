@@ -20,9 +20,6 @@ local D = HexSh_Decrypt
 
 
 --Createifnoxexist
-file.CreateDir("hexsh")
-file.CreateDir("hexsh/config")
-file.CreateDir("hexsh/cache")
 if (!file.Exists("hexsh/sql.json", "DATA")) then
 	
 	file.CreateDir("hexsh")
@@ -34,12 +31,12 @@ if (!file.Exists("hexsh/sql.json", "DATA")) then
 		schema = "",
 		port = 3306,
 	}))
-end
 
+end
 
 local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 HexSh.SQL.cfg = {}
-HexSh.SQL.cfg.mysql = false
+HexSh.SQL.cfg.mysql = data.mysql
 print(data.mysql)
 HexSh.SQL.cfg.host = data.host
 HexSh.SQL.cfg.username = data.username
@@ -66,15 +63,7 @@ net.Receive("HexSh::SQLGET", function(len,ply)
 
 		return 
 	end
-	if !HexSh.SQL:RequireModule() then 
-		net.Start("HexSh::SQLGET")
-			net.WriteBool(false)
-			net.WriteString("Nomo")
-		net.Send(ply)
-		return 
-	end
-
-
+  
 	local data = util.JSONToTable(file.Read("hexsh/sql.json", "DATA"))
 	net.Start("HexSh::SQLGET")
 		net.WriteBool(true) --access
@@ -109,37 +98,7 @@ net.Receive("HexSh::SQLWRITE", function(len,ply)
 		port = port,
 	}))
 
-
-
-	-- test connection
-	if mysql == true then 
-		local db = mysqloo.connect(host, username, password, dbname, port)
-
-		function db:onConnected()
-			net.Start("HexSh::SQLWRITE")
-				net.WriteString("Connected! Please Restart the Server to apply the changes!")
-				net.WriteString("MYSQL")
-				net.WriteString("Ok")
-			net.Send(ply)
-		end 
-
-		function db:onConnectionFailed(err)
-			net.Start("HexSh::SQLWRITE")
-				net.WriteString(err)
-				net.WriteString("MYSQL")
-				net.WriteString("Ok")
-			net.Send(ply)
-		end
-		db:connect()
-		db:disconnect()
-	end
-
-
-
-
-
-
-
+	if mysql == true then HexSh.SQL:Connect() end
 end)
 
 function HexSh.SQL.Constructor( self, config )
@@ -204,13 +163,13 @@ local function querySQLite(self, query, callback, errorCallback)
 		callback( result )
 	end
 end 
- 
+
 function HexSh.SQL:RequireModule() 
+	if not HexSh.SQL.cfg.mysql then return end
 	if not pcall( require, "mysqloo" ) then
 		error("Couldn't find mysqlOO. Please install https://github.com/FredyH/mysqlOO. Reverting to SQLite")
-		return false
+		HexSh.SQL.cfg.mysql = false
 	end
-	return true
 end 
 
 function HexSh.SQL:TestConnection(host, username, password, schema, port)
@@ -274,8 +233,8 @@ function HexSh.SQL:UsingMySQL()
 end 
  
 if HexSh.SQL then 
-	HexSh.SQL:Disconnect()
+--	HexSh.SQL:Disconnect()
 end
 
-HexSh.SQL:Connect()
+--HexSh.SQL:Connect()
 

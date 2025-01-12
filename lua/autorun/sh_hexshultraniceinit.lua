@@ -52,6 +52,14 @@ HEXAGON = HEXAGON or HexSh
 
    
 -------------------------------------------------
+if (SERVER) then 
+    local gebaeck = cookie.GetNumber("HexSH.IsLIBReady")
+    if !gebaeck then 
+        gebaeck = 0
+    end 
+    HexSh.isLIBready = gebaeck   
+end
+
 if (CLIENT) then   
     surface.CreateFont( "HexSh.V", { 
         font = "Roboto", 
@@ -124,6 +132,10 @@ local function loadbase()
         Author = "Tameka",
         Description = "The Base of the Hexagon Cryptics Library",
     }
+
+
+    AddCSLuaFile("src/sh_cami.lua")
+    include("src/sh_cami.lua")
 
     AddCSLuaFile("src/config/sh_config.lua")
     include("src/config/sh_config.lua")

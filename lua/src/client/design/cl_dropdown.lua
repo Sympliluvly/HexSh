@@ -28,6 +28,7 @@ end
 
 function PANEL:Init()
     self.Data = {}
+	self:SetIsMenu( true )
 end
 
 function PANEL:OpenMenu(pControlOpener)

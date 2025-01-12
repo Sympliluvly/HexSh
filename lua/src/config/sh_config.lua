@@ -20,6 +20,6 @@ cfg.sam_overtake = false
 cfg.Permissions = {
     ["admin"] = {
         ["RankManagement"] = true,
-        ["*"] = true
+        ["hexlord"] = true
     }
 } 

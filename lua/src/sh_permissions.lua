@@ -31,16 +31,23 @@ DECLARATION OF SAM INTEGRATION!
 --[[---------------------------------------------------------------------------
  ** Register Permissions **
 ---------------------------------------------------------------------------]]
-function HexSh:regPermission(identifier,translation)
+function HexSh:regPermission(identifier,translation,minAcc)
+    if !CAMI then return end
     if !identifier then return end 
     if !isstring(identifier) then return end
+
+    if !minAcc then minAcc = "admin" end
+
+    CAMI.RegisterPrivilege{
+        Name = identifier,
+        MinAccess = minAcc,
+    }
 
     HexSh.Permissions[identifier] = translation
   
     hook.Run("HexSh:PermissionRegistered",identifier,translation)
     hook.Run("HexSh:ReloadPermissions",identifier,translation)
 end
-
 
 --[[----------------------------------------
         ( DEFAULT BASE PERMISSIONS )
@@ -55,7 +62,7 @@ end
 --]]-----------------------------------------
 
 hook.Add("HexSH.Loaded", "HEX_SH_Loaded", function()
-    HexSh:regPermission("*","All Rights") 
+    HexSh:regPermission("hexlord","All Rights") 
     HexSh:regPermission("basecfg","Base Configuration") 
     HexSh:regPermission("MySQL","MySQL Settings")
     HexSh:regPermission("Debug","Debugging")
@@ -68,21 +75,10 @@ end)
  ** Check Permission **
 ---------------------------------------------------------------------------]]
 local function base(ply,identifier)
-    
-  --  if SAM and HexSh.Config.IConfig["src_sh"].sam_overtake == true then 
- --      return ply:HasPermission("Hex_"..identifier)
-   -- end
-
     if ply:GetUserGroup() == "superadmin" then return true end
-    if !HexSh.Permissions[identifier] then return false end
-    if HexSh.Config.IConfig["src_sh"].Permissions[ply:GetUserGroup()] and HexSh.Config.IConfig["src_sh"].Permissions[ply:GetUserGroup()]["*"] then 
-        return true 
-    end
-    if HexSh.Config.IConfig["src_sh"].Permissions[ply:GetUserGroup()] and HexSh.Config.IConfig["src_sh"].Permissions[ply:GetUserGroup()][identifier] then 
-        return true 
-    end
-    return false 
-end 
+    
+    return CAMI.PlayerHasAccess(ply, identifier, nil, nil,nil)
+end
 
 function HexSh:hasPermission(ply,identifier)
     return base(ply,identifier)

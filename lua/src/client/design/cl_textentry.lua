@@ -30,19 +30,18 @@ end
 surface.CreateFont( "HexSh.Entry.Text", {
     font = "Montserrat", 
     extended = false,
-    size = 20,
+    size = 20, 
     weight = 1000,
 } )
 
-
---ELEMEN
+--ELEMEN 
 function PANEL:Init()
     self:SetPaintBackground( false )
-    self:SetFont("HexSh.Entry.Text")
 
     self.Lerp = HexSh:Lerp(0,0,0.3)
     self.bg = bgLightGray
     self.ErrorLerp = HexSh:Lerp( 0, 0, 0.5 );
+    self.Password = false 
 end
 
 function PANEL:SetMaxLetters(num)
@@ -53,16 +52,26 @@ function PANEL:SetBackgroundColor(clr)
     self.bg = clr
 end
 
+function PANEL:SetPassword(bool)
+    self.Password = bool
+end
+function PANEL:GetPermission(bool)
+    return self.Permission
+end
+
 function PANEL:OnGetFocus()
     if (self.AreFocus) then return end
     self.AreFocus = true 
     self.Lerp = HexSh:Lerp(0,self:GetWide(),0.3)
     self.Lerp:DoLerp()
+
+    hook.Run( "OnTextEntryGetFocus", self )
 end
 function PANEL:OnLoseFocus()
     self.AreFocus = false
     self.Lerp = HexSh:Lerp(self:GetWide(),0,0.3)
     self.Lerp:DoLerp()
+    hook.Call( "OnTextEntryLoseFocus", nil, self )
 end
 
 function PANEL:DoError(bool)
@@ -87,6 +96,10 @@ function PANEL:OnChange()
     end
 end
 
+function PANEL:PerformLayout(w,h)
+
+end
+
 function PANEL:Paint(w,h)
     if (self.ErrorLerp) then self.ErrorLerp:DoLerp(); end
 
@@ -106,9 +119,24 @@ function PANEL:Paint(w,h)
     else 
         draw.RoundedBox(7.5,0,0,w,h,self.ErrorLerp:GetValue() > 1 && getAlpha(deactivatered, self.ErrorLerp:GetValue()) ||self.bg)
     end
-    self:DrawTextEntryText(Color(255,255,255), Color(255, 30, 255),Color(255, 30, 255) );
-    self:SetTextColor(white)
 
+    if (self.Password) then
+        self:DrawTextEntryText(Color(255,255,255,0),Color(255, 30, 255),Color(255, 30, 255) );
+        self:SetTextColor(Color(255,255,255,0))
+        local symbol = "♥"
+        local strlen = string.len(self:GetText())
+        local txt = ""
+        for i=1,strlen do
+            txt = txt.."♥"
+        end
+
+        draw.SimpleText(txt, self:GetFont(), 3, h/2, Color(205,205,205), TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
+
+    else
+        self:DrawTextEntryText(Color(255,255,255,255),Color(255, 30, 255),Color(255, 30, 255) );
+        self:SetTextColor(white)
+    end
+    
     if (self:GetText()=="") then 
         draw.SimpleText(self:GetPlaceholderText() || "", self:GetFont(), 3, h/2, Color(205,205,205), TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
     end
