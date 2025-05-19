@@ -41,6 +41,7 @@ function hexColor(hexcode)
 
     return HexSh.cachedColors[hexcode]
 end
+function HexColor(hexcode) return hexColor(hexcode) end
 -- Internal Alias
 HexSh.HexColor = HexColor
 

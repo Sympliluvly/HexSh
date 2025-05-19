@@ -13,11 +13,8 @@
 // CO's: -
 // Licensed to: -
 //---------------------------------------\\
-
---[[----------------------------------------]]
-local _I_, _L_, _J_ = 1103
---[[----------------------------------------]]
 HexSh = HexSh or {}
+HexSh.Version = "1.1.0"
 HexSh.isLIBready = 0
 
 HexSh.Config = HexSh.Config or {}
@@ -45,9 +42,7 @@ HexSh.SrcDetails = HexSh.SrcDetails or {} -- Details of Src's
 ]]
 
 HexSh.CachedImgurImage = HexSh.CachedImgurImage or {}
-
 HexSh.Permissions = HexSh.Permissions or {}
-
 HEXAGON = HEXAGON or HexSh
 
    
@@ -130,7 +125,7 @@ local function loadbase()
         Name = "HexSh",
         Version = "1.1.2",
         Author = "Tameka",
-        Description = "The Base of the Hexagon Cryptics Library",
+        Description = "",
     }
 
 

@@ -124,8 +124,10 @@ function PANEL:Init()
     
     self.EditLayer.PaintOver = function(s,w,h)
         surface.SetDrawColor( white )
-        surface.SetMaterial(HexSh:getImgurImage("wkm6FEZ"))
+        surface.SetMaterial(HexSh.Assets.logo)
         surface.DrawTexturedRectRotated( toDecimal(50)*s:GetWide(), toDecimal(47)*s:GetTall(), 300, 300, CurTime() * 25 % 360 )
+      --  draw.SimpleText("Hexa Crypt", "HexSh.X", toDecimal(50)*s:GetWide(), toDecimal(50)*s:GetTall(), white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+      -- draw.SimpleText("Studio", "HexSh.X", toDecimal(50)*s:GetWide(), toDecimal(50)*s:GetTall(), white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
     local ScrollBar = self.Scroll:GetVBar();
@@ -280,37 +282,41 @@ end
 function PANEL:AddSubMenu(ix,t,i,f)
     local btn = vgui.Create("DButton",self.Scroll)
     btn:Dock(TOP)
-    btn:SetTall(40)
+    btn:SetTall(25)
     btn:SetText("")
+    btn:DockMargin(0,5,0,5)
     btn.DoClick = function()
-        self.Scroll:GetCanvas():AlphaTo(0,0.15,0, function()
-            self.Scroll:Clear()
-            self:AddBackButton()
-            for k,v in pairs(HexSh.adminUI.Items.S[ix].Btns) do 
-                self:AddButton(v.title,v.icon,v.f)
-            end
-            self.Scroll:GetCanvas():AlphaTo(255,0.15,0)
-        end)
     end
     addAnim(btn)
     btn.Paint = function(s,w,h)
         if s.LerpAlpha then s.LerpAlpha:DoLerp() end 
 
         if (s.LerpAlpha:GetValue() > 0) then 
-            draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
-            local hh = toDecimal(40)*btn:GetTall()
-            local y = (toDecimal(65)*btn:GetTall())-hh
-            if self.isBig then draw.RoundedBox(100,0,y,6,hh,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue())) end
+          --  draw.RoundedBoxEx(7.5,0,0,w,h,getAlpha(bgButton,s.LerpAlpha:GetValue()),true,true,true,true)
+          --  local hh = toDecimal(40)*btn:GetTall()
+          --  local y = (toDecimal(65)*btn:GetTall())-hh
+           -- if self.isBig then draw.RoundedBox(100,0,y,6,hh,getAlpha(HexSh.adminUI.Color.purple,s.LerpAlpha:GetValue())) end
         end
 
-        if i then
+        if i  and self.isBig == false  then
             AddMat(s,i)
         end
         if self.isBig == true  then 
-            draw.SimpleText(t, "HexSh.X", toDecimal(20)*btn:GetWide()+25, h/2-2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-            draw.SimpleText(">", "HexSh.X", toDecimal(90)*btn:GetWide(), h/2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            draw.SimpleText(t, "HexSh.X", toDecimal(20)*btn:GetWide()+25, h/2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            --draw.SimpleText(">", "HexSh.X", toDecimal(90)*btn:GetWide(), h/2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         end
+
+        draw.RoundedBox(0,0,h-h*0.025,w,h*0.25,math.colorAlpha(HexSh.adminUI.Color.purple,40))
     end
+
+        --self.Scroll:GetCanvas():AlphaTo(0,0.15,0, function()
+        --    self.Scroll:Clear()
+        --    self:AddBackButton()
+            for k,v in pairs(HexSh.adminUI.Items.S[ix].Btns) do 
+                self:AddButton(v.title,v.icon,v.f)
+            end
+        --    self.Scroll:GetCanvas():AlphaTo(255,0.15,0)
+       -- end)
 end
  
 

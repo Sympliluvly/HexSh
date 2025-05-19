@@ -27,7 +27,6 @@ local getAlpha = function(col, a)
     return Color(col["r"], col["g"], col["b"], a)
 end
 
-
 surface.CreateFont("HexSh.ad", {
     font = "MuseoModerno Light",
     size = 20,
@@ -51,10 +50,10 @@ function HexSh.openAdminmenu(window)
             draw.RoundedBox(16,0,0,w,h,bgDarkGray)
             
             surface.SetDrawColor(white)
-            surface.SetMaterial(HexSh:getImgurImage("BmestJw"))
-            surface.DrawTexturedRect(0,0,36,30) 
+            surface.SetMaterial(HexSh.Assets.logo)
+            surface.DrawTexturedRect(0,0,46,46) 
 
-            draw.SimpleText("Hexagon Cryptics - 0.1.4", "HexSh.X", 36, 30 / 2 - 10, white )
+            draw.SimpleText("HC Studio - " .. HexSh.Version, "HexSh.X", w * 0.038, h*0.015, white )
         end
         local cache_plyrank = LocalPlayer():GetUserGroup()
 
@@ -125,8 +124,8 @@ end
 
 
 list.Set( "DesktopWindows", "HexConfig", {
-	icon = "data/hexsh/cache/img/BmestJw.png",
-	title = "HexConfig",
+	icon = "hexsh/logo/hcstudio.png",
+	title = "HexSh Base",
 	width = 100,
 	height = 100,
 	onewindow = true,

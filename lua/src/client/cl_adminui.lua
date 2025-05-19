@@ -30,6 +30,11 @@ HexSh.adminUI.Color = {
     bghovergray = Color(46,48,52,250),
 }
 HEXAGON.Col = HexSh.adminUI.Color
+HexSh.Col = HexSh.adminUI.Color
+HexSh.Assets = {
+    logo = Material("hexsh/logo/hcstudio_large.png", "noclamp smooth"),
+}
+
 
 HexSh.adminUI.Items = {}
 HexSh.adminUI.Items.S =  {}
@@ -134,11 +139,238 @@ hook.Add("HexSh::GetAdminItems", "", function()
     local l = function(p) return HexSh:L("src_sh", p) end 
     -- For Config
     
+    
     HexSh.adminUI:AddSubMenu("cfg", HexSh:L("src_sh", "Cfg"), cfg_icon )
+   
+    HexSh.adminUI:AddMenu("cfg", HexSh:L("src_sh", "BCfg"), basecfg_icon, function(parent)
+
+        local topp = vgui.Create("DPanel",parent)
+        topp:Dock(TOP)
+        topp:SetTall(50)
+        topp.Paint = function(s,w,h)
+            draw.RoundedBox(0,0,0,w,40,HexSh.adminUI.Color.purple)
+            surface.SetDrawColor(white)
+            surface.SetMaterial(HexSh:getImgurImage(basecfg_icon))
+            surface.DrawTexturedRect(5,5,32,32)
+
+            draw.SimpleText(HexSh:L("src_sh", "BCfg"), "HexSh.EditLayerTitle", 45, 19, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)      
+        end
+
+        local columns = vgui.Create("HexSh.UI.Columnsheet",parent) 
+        columns:Dock(FILL)
+        columns:DockMargin(0,0,0,0)
+
+        local setup = vgui.Create("HexSh.UI.Scroll", columns)
+        setup:Dock(FILL)
+        setup:DockMargin(0,0,0,0)
+        setup.Paint = nil
+        columns:AddButton( HexSh:L("src_sh", "setup.ColumnTitle"),setup,Color(250,0,0))
+        
+            
+        local Pmysql = vgui.Create("HexSh.UI.Scroll", columns)
+        Pmysql:Dock(FILL)
+        Pmysql:DockMargin(0,0,0,0)
+        Pmysql.Paint = nil
+        columns:AddButton( HexSh:L("src_sh", "MYSQL.ColumnTitle"),Pmysql,Color(250,0,0))
+
+        local field = function(pa,title)
+            local p = vgui.Create("DPanel",pa)
+            p:Dock(TOP)
+            p:DockMargin(5,2,5,3)
+            p:SetTall( 50 )
+            p.Paint = function( self,w,h )
+                draw.RoundedBoxEx(7.5,0,0,101,h,HexSh.adminUI.Color.purple,true,true,true,true)
+                draw.RoundedBoxEx(7.5,5,0,w-5,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
+                draw.SimpleText(title, "HexSh.X", 15, h/2, white, TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER )
+            end
+
+            return p 
+        end
+
+        local cfg = HexSh.Config.IConfig["src_sh"]
+
+        local ChangeLang = field(setup,HexSh:L("src_sh","changeLang"))
+            ChangeLang.Change = vgui.Create("HexSh.UI.DropDown",ChangeLang)
+            ChangeLang.Change:Dock(RIGHT)
+            ChangeLang.Change:DockMargin(0,5,5,5)
+            ChangeLang.Change:SetValue(HexSh.Config.IConfig["src_sh"].Language)
+            ChangeLang.Change:SetFont("HexSh.X") 
+            ChangeLang.Change:SetWide( 150 )
+            for k,v in pairs(HexSh._Languages) do 
+                ChangeLang.Change:AddChoice(k,k)
+            end
+            ChangeLang.Change.OnSelect = function(self, index, value)
+                HexSh.Set("src_sh","Language",value,"MenuAccess")
+                hook.Run("HexSh::GetAdminItems")
+                HexSh.adminUI.MainMenu:Remove()
+                net.Start("HexSh::OpenConfigMenu")
+                net.SendToServer()
+            end
+        -->
+
+        local UseStatistic = field(setup,HexSh:L("src_sh","UseStatistic"))
+            UseStatistic.Use = vgui.Create("HexSh.Switch",UseStatistic)
+            UseStatistic.Use:Dock(RIGHT)
+            UseStatistic.Use:DockMargin(0,15,5,5)
+            UseStatistic.Use:SetChecked(HexSh.Config.IConfig["src_sh"].UseStatistics or false)
+            UseStatistic.Use:SetText("")
+        -->
+
+
+
+        net.Start("HexSh::SQLGET")
+        net.SendToServer()
+            
+        local sqqql = false 
+        net.Receive("HexSh::SQLGET", function()
+            sqqql = true
+            local access = net.ReadBool()
+            if (!access) then 
+                local MySQL = field(Pmysql,HexSh:L("src_sh", "notMYSQL"))
+                MySQL:SetTall(100)
+                return 
+            end
+            local mysql = net.ReadBool()
+            local host = net.ReadString()
+            local username = net.ReadString()
+            local password = net.ReadString()
+            local schema = net.ReadString()
+            local port = net.ReadUInt(17)
+
+
+            local field = function(type,value,title,tooltip)
+                local p = vgui.Create("DPanel",Pmysql)
+                p:Dock(TOP)
+                p:DockMargin(5,2,5,3)
+                p:SetTall( 50 )
+                p.Paint = function( self,w,h )
+                    draw.RoundedBoxEx(7.5,0,0,101,h,HexSh.adminUI.Color.purple,true,true,true,true)
+                    draw.RoundedBoxEx(7.5,5,0,w-5,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
+                    draw.SimpleText(title, "HexSh.ad", 10, h/2, white, TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER )
+                end
+
+                local function entry(max,value)
+                    p.entry = vgui.Create("HexSh.UI.TextEntry",p)
+                    p.entry:Dock(RIGHT)
+                    p.entry:DockMargin(0,5,5,5)
+                    p.entry:SetPlaceholderText(title)
+                    p.entry:SetFont("HexSh.X")
+                    p.entry:SetWide( 200 )
+                    p.entry:SetNumeric(false)
+                    p.entry:SetValue(value)
+                    if !max then else p.entry:SetMaxLetters(max) end
+
+                    return p.entry
+                end
+
+
+                if (type=="IP") then -- text
+                    entry(15,host).OnChange = function(s)
+                        host = s:GetValue()
+                    end
+                end
+                if (type=="Username") then -- text
+                    entry(false,username).OnChange = function(s)
+                        username = s:GetValue()
+                    end
+                end
+                if (type=="Password") then -- text
+                    entry(false,password).OnChange = function(s)
+                        password = s:GetValue()
+                    end
+                    p.entry:SetPassword(true)
+                end
+                if (type=="DB") then -- text
+                    entry(false,schema).OnChange = function(s)
+                        schema = s:GetValue()
+                    end
+                end
+                if (type=="Port") then -- text
+                    entry(false,port).OnChange = function(s)
+                        port = s:GetValue()
+                    end
+                end
+
+                if (type=="enable") then 
+                    p.switch = vgui.Create( "HexSh.Switch",p );
+                    p.switch:Dock(RIGHT);
+                    p.switch:DockMargin( 9, 15, 10, 0 );
+                    p.switch:SetText( "dd" );
+                    p.switch:SetWide( 40 )
+                    p.switch:SetTooltip(tooltip)
+                    p.switch:SetChecked( value );
+                    p.switch.OnChange = function(s)
+                        mysql = s:GetChecked()
+                    end
+                end
+
+
+                return p 
+            end
+
+
+
+            local info = vgui.Create("DPanel",Pmysql)
+            info:Dock(TOP)
+            info:DockMargin(5,2,5,3)
+            info:SetTall( 120 )
+            function info:Paint(w,h)
+                draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.purple,true,true,true,true)
+                draw.RoundedBoxEx(7.5,1,1,w-2,h-2,HexSh.adminUI.Color.bgGray,true,true,true,true)
+            end
+
+            local enable = field("enable",mysql,HexSh:L("src_sh", "MYSQLEnabled"))
+
+            local Ip = field(
+                "IP",
+                host,
+                HexSh:L("src_sh", "MYSQLIPs"),
+                ""
+            )
+            local DBNames = field("DB",schema,HexSh:L("src_sh", "MYSQLDatabase"))
+            local Username = field("Username",username,HexSh:L("src_sh", "MYSQLDBUser"))
+            local Password = field("Password",password,HexSh:L("src_sh", "MYSQLDBPassword"))
+            local Port = field("Port",port,HexSh:L("src_sh", "MYSQLPort"))
+
+
+            local save = field(Pmysql,HexSh:L("src_sh", "Save"))
+            save.button = vgui.Create("HexSh.UI.Button",save)
+            save.button:Dock(RIGHT)
+            save.button:DockMargin(0,5,5,5)
+            save.button:SetText(HexSh:L("src_sh", "Save"))
+            save.button:SetWide( 200 )
+            save.button:SetRounding(6)
+            function save.button:DoClick()
+                net.Start("HexSh::SQLWRITE")
+                    net.WriteBool(tobool(mysql))
+                    net.WriteString(tostring(host))
+                    net.WriteString(tostring(username))
+                    net.WriteString(tostring(password))
+                    net.WriteString(tostring(schema))
+                    net.WriteUInt(tonumber(port),17)
+                net.SendToServer()
+            end
+            
+        end)
+        
+
+
+        function HexSh.adminUI.MainMenu.Selection.EditLayer:PerformLayout(w,h)
+            --sChangeLang.Change:SetWide( w/2.3 )
+            -- btnp:SetSize(w/3,200)
+            --btnp:SetPos(20, 50)
+            --  li:SetWide(w/1.8)
+            if (sqqql) then 
+
+
+            end
+        end
+        
+    end,3)
 
     -- For Adminw
     HexSh.adminUI:AddSubMenu("admin", HexSh:L("src_sh", "Manage"), admin_icon )
-
+    
     --Repos 
 
         HexSh.adminUI:AddNMenu("logs", HexSh:L("src_sh", "logs"),logs_icon, function(parent)
@@ -228,221 +460,6 @@ hook.Add("HexSh::GetAdminItems", "", function()
             end
         end,4)
 
-        HexSh.adminUI:AddNMenu("baseconfig", HexSh:L("src_sh", "BCfg"), basecfg_icon, function(parent)
-
-            local topp = vgui.Create("DPanel",parent)
-            topp:Dock(TOP)
-            topp:SetTall(50)
-            topp.Paint = function(s,w,h)
-                draw.RoundedBox(0,0,0,w,40,HexSh.adminUI.Color.purple)
-                surface.SetDrawColor(white)
-                surface.SetMaterial(HexSh:getImgurImage(basecfg_icon))
-                surface.DrawTexturedRect(5,5,32,32)
-
-                draw.SimpleText(HexSh:L("src_sh", "BCfg"), "HexSh.EditLayerTitle", 45, 19, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)      
-            end
-
-            local columns = vgui.Create("HexSh.UI.Columnsheet",parent) 
-            columns:Dock(FILL)
-            columns:DockMargin(0,0,0,0)
-
-            local setup = vgui.Create("HexSh.UI.Scroll", columns)
-            setup:Dock(FILL)
-            setup:DockMargin(0,0,0,0)
-            setup.Paint = nil
-            columns:AddButton( HexSh:L("src_sh", "setup.ColumnTitle"),setup,Color(250,0,0))
-            
-                
-            local Pmysql = vgui.Create("HexSh.UI.Scroll", columns)
-            Pmysql:Dock(FILL)
-            Pmysql:DockMargin(0,0,0,0)
-            Pmysql.Paint = nil
-            columns:AddButton( HexSh:L("src_sh", "MYSQL.ColumnTitle"),Pmysql,Color(250,0,0))
-
-            local field = function(pa,title)
-                local p = vgui.Create("DPanel",pa)
-                p:Dock(TOP)
-                p:DockMargin(5,2,5,3)
-                p:SetTall( 50 )
-                p.Paint = function( self,w,h )
-                    draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
-                    draw.SimpleText(title, "HexSh.X", 5, h/2, white, TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER )
-                end
-
-                return p 
-            end
-
-            local cfg = HexSh.Config.IConfig["src_sh"]
-
-            local ChangeLang = field(setup,HexSh:L("src_sh","changeLang"))
-                ChangeLang.Change = vgui.Create("HexSh.UI.DropDown",ChangeLang)
-                ChangeLang.Change:Dock(RIGHT)
-                ChangeLang.Change:DockMargin(0,5,5,5)
-                ChangeLang.Change:SetValue(HexSh.Config.IConfig["src_sh"].Language)
-                ChangeLang.Change:SetFont("HexSh.X") 
-                ChangeLang.Change:SetWide( 150 )
-                for k,v in pairs(HexSh._Languages) do 
-                    ChangeLang.Change:AddChoice(k,k)
-                end
-                ChangeLang.Change.OnSelect = function(self, index, value)
-                    HexSh.Set("src_sh","Language",value,"MenuAccess")
-                    hook.Run("HexSh::GetAdminItems")
-                    HexSh.adminUI.MainMenu:Remove()
-                    net.Start("HexSh::OpenConfigMenu")
-                    net.SendToServer()
-                end
-            -->
-
-
-            net.Start("HexSh::SQLGET")
-            net.SendToServer()
-                
-            local sqqql = false 
-            net.Receive("HexSh::SQLGET", function()
-                sqqql = true
-                local access = net.ReadBool()
-                if (!access) then 
-                    local MySQL = field(Pmysql,HexSh:L("src_sh", "notMYSQL"))
-                    MySQL:SetTall(100)
-                    return 
-                end
-                local mysql = net.ReadBool()
-                local host = net.ReadString()
-                local username = net.ReadString()
-                local password = net.ReadString()
-                local schema = net.ReadString()
-                local port = net.ReadUInt(17)
-
-
-                local field = function(type,value,title,tooltip)
-                    local p = vgui.Create("DPanel",Pmysql)
-                    p:Dock(TOP)
-                    p:DockMargin(5,2,5,3)
-                    p:SetTall( 50 )
-                    p.Paint = function( self,w,h )
-                        draw.RoundedBoxEx(7.5,0,0,101,h,HexSh.adminUI.Color.purple,true,true,true,true)
-                        draw.RoundedBoxEx(7.5,5,0,w-5,h,HexSh.adminUI.Color.bgGray,true,true,true,true)
-                        draw.SimpleText(title, "HexSh.ad", 10, h/2, white, TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER )
-                    end
-
-                    local function entry(max,value)
-                        p.entry = vgui.Create("HexSh.UI.TextEntry",p)
-                        p.entry:Dock(RIGHT)
-                        p.entry:DockMargin(0,5,5,5)
-                        p.entry:SetPlaceholderText(title)
-                        p.entry:SetFont("HexSh.X")
-                        p.entry:SetWide( 200 )
-                        p.entry:SetNumeric(false)
-                        p.entry:SetValue(value)
-                        if !max then else p.entry:SetMaxLetters(max) end
-
-                        return p.entry
-                    end
-
-
-                    if (type=="IP") then -- text
-                        entry(15,host).OnChange = function(s)
-                            host = s:GetValue()
-                        end
-                    end
-                    if (type=="Username") then -- text
-                        entry(false,username).OnChange = function(s)
-                            username = s:GetValue()
-                        end
-                    end
-                    if (type=="Password") then -- text
-                        entry(false,password).OnChange = function(s)
-                            password = s:GetValue()
-                        end
-                        p.entry:SetPassword(true)
-                    end
-                    if (type=="DB") then -- text
-                        entry(false,schema).OnChange = function(s)
-                            schema = s:GetValue()
-                        end
-                    end
-                    if (type=="Port") then -- text
-                        entry(false,port).OnChange = function(s)
-                            port = s:GetValue()
-                        end
-                    end
-
-                    if (type=="enable") then 
-                        p.switch = vgui.Create( "HexSh.Switch",p );
-                        p.switch:Dock(RIGHT);
-                        p.switch:DockMargin( 9, 15, 10, 0 );
-                        p.switch:SetText( "dd" );
-                        p.switch:SetWide( 40 )
-                        p.switch:SetTooltip(tooltip)
-                        p.switch:SetChecked( value );
-                        p.switch.OnChange = function(s)
-                            mysql = s:GetChecked()
-                        end
-                    end
-
-
-                    return p 
-                end
-
-
-
-                local info = vgui.Create("DPanel",Pmysql)
-                info:Dock(TOP)
-                info:DockMargin(5,2,5,3)
-                info:SetTall( 120 )
-                function info:Paint(w,h)
-                    draw.RoundedBoxEx(7.5,0,0,w,h,HexSh.adminUI.Color.purple,true,true,true,true)
-                    draw.RoundedBoxEx(7.5,1,1,w-2,h-2,HexSh.adminUI.Color.bgGray,true,true,true,true)
-                end
-
-                local enable = field("enable",mysql,HexSh:L("src_sh", "MYSQLEnabled"))
-
-                local Ip = field(
-                    "IP",
-                    host,
-                    HexSh:L("src_sh", "MYSQLIPs"),
-                    ""
-                )
-                local DBNames = field("DB",schema,HexSh:L("src_sh", "MYSQLDatabase"))
-                local Username = field("Username",username,HexSh:L("src_sh", "MYSQLDBUser"))
-                local Password = field("Password",password,HexSh:L("src_sh", "MYSQLDBPassword"))
-                local Port = field("Port",port,HexSh:L("src_sh", "MYSQLPort"))
-
-
-                local save = field(Pmysql,HexSh:L("src_sh", "Save"))
-                save.button = vgui.Create("HexSh.UI.Button",save)
-                save.button:Dock(RIGHT)
-                save.button:DockMargin(0,5,5,5)
-                save.button:SetText(HexSh:L("src_sh", "Save"))
-                save.button:SetWide( 200 )
-                save.button:SetRounding(6)
-                function save.button:DoClick()
-                    net.Start("HexSh::SQLWRITE")
-                        net.WriteBool(tobool(mysql))
-                        net.WriteString(tostring(host))
-                        net.WriteString(tostring(username))
-                        net.WriteString(tostring(password))
-                        net.WriteString(tostring(schema))
-                        net.WriteUInt(tonumber(port),17)
-                    net.SendToServer()
-                end
-                
-            end)
-            
-
-
-            function HexSh.adminUI.MainMenu.Selection.EditLayer:PerformLayout(w,h)
-                --sChangeLang.Change:SetWide( w/2.3 )
-                -- btnp:SetSize(w/3,200)
-                --btnp:SetPos(20, 50)
-                --  li:SetWide(w/1.8)
-                if (sqqql) then 
-
-
-                end
-            end
-            
-        end,3)
 
     
 end)

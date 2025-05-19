@@ -59,7 +59,7 @@ function HexSh:LOG(src,title,msg)
     local query = "INSERT INTO HexSh_debug (src,message,Date,Time) VALUES ('"..src.."','"..msg.."','"..date.."','"..time.."')"
     HexSh.SQL:Query(query,function()end,nil)
 end
-HexSh:LOG("src_sh","Wer ist cool","ich bin coola als justin!")
+--HexSh:LOG("src_sh","Wer ist cool","ich bin coola als justin!")
 
 
 

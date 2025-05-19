@@ -20,6 +20,14 @@ surface.CreateFont( "HexSh.X", {
     size = 20,
     weight = 1000, 
 } )
+surface.CreateFont( "HexSh.X.Sub", {
+    font = "MuseoModerno Light", 
+    extended = false,
+    italic = true,
+    size = 15,
+    weight = 1000, 
+} )
+
 surface.CreateFont( "HexSh.Default", {
     font = "MuseoModerno Light", 
     extended = false,
